@@ -1,5 +1,4 @@
-import { Flex, SimpleGrid, Stack, Text, Heading, Icon } from "@chakra-ui/react"
-import { FiArrowUp, FiArrowDown, FiDollarSign } from "react-icons/fi"
+import { SimpleGrid, Stack } from "@chakra-ui/react"
 import { CardTransaction } from "../components/CardTransaction"
 
 export default function Transactions() {
