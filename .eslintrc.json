@@ -2,22 +2,11 @@
   "extends": "next/core-web-vitals",
   "rules": {
     "no-trailing-spaces": "error",
-    "semi": [
-      "error",
-      "never"
-    ],
-    "quotes": [
-      "warn",
-      "double"
-    ],
-    "jsx-quotes": [
-      "error",
-      "prefer-double"
-    ],
-    "comma-dangle": [
-      "error",
-      "always-multiline"
-    ],
+    "no-unused-vars": "warn",
+    "semi": ["error", "never"],
+    "quotes": ["warn", "double"],
+    "jsx-quotes": ["error", "prefer-double"],
+    "comma-dangle": ["error", "always-multiline"],
     "no-multiple-empty-lines": [
       "error",
       {
@@ -25,17 +14,11 @@
         "maxEOF": 0
       }
     ],
-    "eol-last": [
-      "error",
-      "always"
-    ],
+    "eol-last": ["error", "always"],
     "no-console": [
       "warn",
       {
-        "allow": [
-          "warn",
-          "error"
-        ]
+        "allow": ["warn", "error"]
       }
     ]
   }
