@@ -1,6 +1,6 @@
-import { useRouter } from 'next/router'
-import NextLink from 'next/link'
-import { Link, LinkProps } from '@chakra-ui/react'
+import { useRouter } from "next/router"
+import NextLink from "next/link"
+import { Link, LinkProps } from "@chakra-ui/react"
 
 interface ActiveLinkProps extends LinkProps {
   href: string
@@ -28,8 +28,8 @@ export function ActiveLink({ href, children, shouldMatchExactHref = false, ...re
       <Link
         fontSize="lg"
         opacity={isActive ? 1 : 0.7}
-        color={isActive ? 'blue.300' : 'gray.50'}
-        fontWeight={isActive ? 'semibold' : 'normal'}
+        color={isActive ? "blue.300" : "gray.50"}
+        fontWeight={isActive ? "semibold" : "normal"}
         _hover={{ opacity: 1 }}
         {...rest}
       >

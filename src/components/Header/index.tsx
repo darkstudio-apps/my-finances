@@ -7,14 +7,14 @@ export function Header() {
       <Heading size="lg" color="gray.200">My Finances</Heading>
 
       <HStack as="nav" spacing={8}>
-        <ActiveLink href="/projects">Projetos</ActiveLink>
-        <ActiveLink href="/stopwatchs">Cronômetros</ActiveLink>
+        <ActiveLink href="/transactions">Transações</ActiveLink>
+        <ActiveLink href="/lists">Listas</ActiveLink>
       </HStack>
 
       <HStack spacing={4}>
         <Box >
           <Heading fontSize="xl" fontWeight="semibold" color="gray.200">Vitor DevSP</Heading>
-          <Text fontSize="xs" color="gray.200">21h Trabalhadas</Text>
+          <Text fontSize="xs" color="gray.200">1 pendência</Text>
         </Box>
 
         <Avatar name="Vitor DevSP" src="" />
