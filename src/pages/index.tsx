@@ -1,12 +1,9 @@
-import { Flex, Button } from "@chakra-ui/react"
-import { useRouter } from "next/router"
+import { GetServerSideProps } from "next"
+import { getSession, signIn, signOut, useSession } from "next-auth/client"
+import { Flex, Stack, Button } from "@chakra-ui/react"
 
 export default function SignIn() {
-  const router = useRouter()
-
-  const handleSignIn = () => {
-    router.push("/transactions")
-  }
+  const [session, loading] = useSession()
 
   return (
     <Flex
@@ -20,21 +17,50 @@ export default function SignIn() {
       align="center"
       justify="center"
     >
-      <Button
-        type="submit"
-        mt="6"
-        size="lg"
-        colorScheme="blue"
-        isLoading={false}
-        onClick={handleSignIn}
-      >
-        Entrar com Google
-      </Button>
+      {session ? (
+        <Stack>
+          Signed in as {session?.user?.email} <br />
+          <Button
+            type="submit"
+            mt="6"
+            size="lg"
+            colorScheme="red"
+            isLoading={loading}
+            onClick={() => signOut()}
+          >
+            Sign out
+          </Button>
+        </Stack>
+      ) : (
+        <Button
+          type="submit"
+          mt="6"
+          size="lg"
+          colorScheme="blue"
+          isLoading={loading}
+          onClick={() => signIn("google")}
+        >
+          Entrar com Google
+        </Button>
+      )}
     </Flex>
   )
 }
 
-var get = () => {
-  var urlCardInfo = "https://prod-global-webapp-proxy.nubank.com.br/api/proxy/AJxL5LBovXDuZA9OWntVOvcUFnTXWe-2zA.aHR0cHM6Ly9wcm9kLXM5LWZhY2FkZS5udWJhbmsuY29tLmJyL2FwaS9hY2NvdW50cy81Y2VlOWEzOC02MzVhLTQwYzktOWRjNC1hMGQxZGY2MWJjODI"
-  fetch(urlCardInfo).then(res => res.json()).then(data => console.log(data))
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context)
+
+  if (session) {
+    return {
+      props: {},
+      redirect: {
+        destination: "/transactions",
+        permanent: false,
+      },
+    }
+  }
+
+  return {
+    props: {},
+  }
 }
