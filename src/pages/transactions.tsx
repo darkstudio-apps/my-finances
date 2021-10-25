@@ -3,7 +3,6 @@ import { getSession } from "next-auth/client"
 import { SimpleGrid, Stack } from "@chakra-ui/react"
 import { CardTransaction } from "../components/CardTransaction"
 import { TableTransaction } from "../components/TableTransaction"
-import { Table, Thead, Tbody, Tfoot, Tr, Th } from "@chakra-ui/react"
 
 interface TransactionsProps {
   id: number
@@ -57,7 +56,7 @@ export default function Transactions() {
   }, [])
 
   return (
-    <Stack paddingY={10}>
+    <Stack paddingY={10} spacing={10}>
       <SimpleGrid columns={3} spacing={10}>
         <CardTransaction
           description="Entradas"
@@ -76,37 +75,7 @@ export default function Transactions() {
         />
       </SimpleGrid>
 
-      <Stack paddingY={10}>
-        <Table variant="simple" bg="gray.700" borderRadius="xl">
-          <Thead>
-            <Tr>
-              <Th>Título</Th>
-              <Th>Preço</Th>
-              <Th>Categoria</Th>
-              <Th>Data</Th>
-            </Tr>
-          </Thead>
-
-          <Tbody>
-            {transactions.map((transaction) => (
-              <TableTransaction
-                key={transaction.id}
-                title={transaction.title}
-                price={transaction.price}
-                category={transaction.category}
-                date={transaction.date}
-                isIncome={transaction.isIncome}
-              />
-            ))}
-          </Tbody>
-
-          <Tfoot>
-            <Tr>
-              <Th></Th>
-            </Tr>
-          </Tfoot>
-        </Table>
-      </Stack>
+      <TableTransaction data={transactions} />
     </Stack>
   )
 }
