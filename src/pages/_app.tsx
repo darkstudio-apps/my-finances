@@ -12,7 +12,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <Provider session={session}>
       <Head>
-        <title>Projects Manager</title>
+        <title>My Finances</title>
       </Head>
 
       <ChakraProvider theme={theme}>
