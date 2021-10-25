@@ -1,16 +1,8 @@
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-  color,
-} from "@chakra-ui/react"
+import { Table, Thead, Tbody, Tfoot, Tr, Th } from "@chakra-ui/react"
+import { TableTransactionRow } from "./TableTransactionRow"
 
-interface TableTransactionProps {
+interface TransactionsProps {
+  id: number
   title: string
   price: string
   category: string
@@ -18,19 +10,40 @@ interface TableTransactionProps {
   isIncome: boolean
 }
 
-export function TableTransaction({
-  title,
-  price,
-  category,
-  date,
-  isIncome,
-}: TableTransactionProps) {
+interface TableTransactionProps {
+  data: TransactionsProps[]
+}
+
+export function TableTransaction({ data }: TableTransactionProps) {
   return (
-    <Tr>
-      <Td>{title}</Td>
-      <Td color={isIncome ? "green.500" : "red.500"}>{price}</Td>
-      <Td>{category}</Td>
-      <Td>{date}</Td>
-    </Tr>
+    <Table variant="simple" bg="gray.700" borderRadius="xl">
+      <Thead>
+        <Tr>
+          <Th>Título</Th>
+          <Th>Preço</Th>
+          <Th>Categoria</Th>
+          <Th>Data</Th>
+        </Tr>
+      </Thead>
+
+      <Tbody>
+        {data.map((transaction) => (
+          <TableTransactionRow
+            key={transaction.id}
+            title={transaction.title}
+            price={transaction.price}
+            category={transaction.category}
+            date={transaction.date}
+            isIncome={transaction.isIncome}
+          />
+        ))}
+      </Tbody>
+
+      <Tfoot>
+        <Tr>
+          <Th></Th>
+        </Tr>
+      </Tfoot>
+    </Table>
   )
 }
