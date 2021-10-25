@@ -1,4 +1,5 @@
 import { AppProps } from "next/app"
+import { Provider } from "next-auth/client"
 import Head from "next/head"
 import { Box, ChakraProvider, Divider } from "@chakra-ui/react"
 
@@ -7,19 +8,21 @@ import { Header } from "../components/Header"
 import { theme } from "../styles/theme"
 import "../styles/scrollbar.css"
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
-    <ChakraProvider theme={theme}>
+    <Provider session={session}>
       <Head>
-        <title>Projects Manager</title>
+        <title>My Finances</title>
       </Head>
 
-      <Box maxW="1168px" mx="auto" px={6}>
-        <Header />
-        <Divider borderColor="gray.700" />
-        <Component {...pageProps} />
-      </Box>
-    </ChakraProvider>
+      <ChakraProvider theme={theme}>
+        <Box maxW="1168px" h="100vh" mx="auto" px={6}>
+          <Header />
+          <Divider borderColor="gray.700" />
+          <Component {...pageProps} />
+        </Box>
+      </ChakraProvider>
+    </Provider>
   )
 }
 
