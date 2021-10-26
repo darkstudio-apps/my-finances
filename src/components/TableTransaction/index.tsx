@@ -1,5 +1,6 @@
 import { Table, Thead, Tbody, Tfoot, Tr, Th } from "@chakra-ui/react"
 import { TableTransactionRow } from "./TableTransactionRow"
+import { TableTransactionTh } from "./TableTransactionTh"
 
 interface TransactionsProps {
   id: number
@@ -19,10 +20,10 @@ export function TableTransaction({ data }: TableTransactionProps) {
     <Table variant="simple" bg="gray.700" borderRadius="xl">
       <Thead>
         <Tr>
-          <Th>Título</Th>
-          <Th>Preço</Th>
-          <Th>Categoria</Th>
-          <Th>Data</Th>
+          <TableTransactionTh>Título</TableTransactionTh>
+          <TableTransactionTh>Preço</TableTransactionTh>
+          <TableTransactionTh>Categoria</TableTransactionTh>
+          <TableTransactionTh>Data</TableTransactionTh>
         </Tr>
       </Thead>
 
