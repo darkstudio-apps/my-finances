@@ -8,21 +8,21 @@ interface TableTransactionRowProps {
   isIncome: boolean
 }
 
-export function TableTransactionRow(
-  {
-    title,
-    price,
-    category,
-    date,
-    isIncome,
-  }: TableTransactionRowProps
-) {
+export function TableTransactionRow({
+  title,
+  price,
+  category,
+  date,
+  isIncome,
+}: TableTransactionRowProps) {
   return (
     <Tr>
-      <Td>{title}</Td>
-      <Td color={isIncome ? "green.500" : "red.500"}>{price}</Td>
-      <Td>{category}</Td>
-      <Td>{date}</Td>
+      <Td borderColor="gray.600">{title}</Td>
+      <Td borderColor="gray.600" color={isIncome ? "green.400" : "red.400"}>
+        {price}
+      </Td>
+      <Td borderColor="gray.600">{category}</Td>
+      <Td borderColor="gray.600">{date}</Td>
     </Tr>
   )
 }

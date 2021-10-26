@@ -10,11 +10,11 @@ interface CardTransactionProps {
 const icons = {
   arrowUp: {
     icon: FiArrowUp,
-    color: "green.500",
+    color: "green.400",
   },
   arrowDown: {
     icon: FiArrowDown,
-    color: "red.500",
+    color: "red.400",
   },
   dollarSign: {
     icon: FiDollarSign,
@@ -22,12 +22,18 @@ const icons = {
   },
 }
 
-export function CardTransaction({ description, title, icon }: CardTransactionProps) {
+export function CardTransaction({
+  description,
+  title,
+  icon,
+}: CardTransactionProps) {
   return (
     <Stack bg="gray.700" borderRadius="xl" padding={6} spacing={2}>
       <Flex alignItems="center" justifyContent="space-between">
         <Text>{description}</Text>
-        {icon && <Icon as={icons[icon].icon} w={6} h={6} color={icons[icon].color} />}
+        {icon && (
+          <Icon as={icons[icon].icon} w={6} h={6} color={icons[icon].color} />
+        )}
       </Flex>
 
       <Heading>{title}</Heading>
