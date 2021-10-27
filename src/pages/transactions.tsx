@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react"
 import { GetServerSideProps } from "next"
 import { getSession } from "next-auth/client"
-import { SimpleGrid, Stack } from "@chakra-ui/react"
 import { CardTransaction } from "../components/CardTransaction"
 import { TableTransaction } from "../components/TableTransaction"
+import { SimpleGrid, Stack, useDisclosure, Button } from "@chakra-ui/react"
+import { ModalTransaction } from "../components/ModalTransaction"
 
 interface TransactionsProps {
   id: number
@@ -16,6 +17,7 @@ interface TransactionsProps {
 
 export default function Transactions() {
   const [transactions, setTransactions] = useState<TransactionsProps[]>([])
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   useEffect(() => {
     const fetchTransactions = [
@@ -76,7 +78,20 @@ export default function Transactions() {
         />
       </SimpleGrid>
 
-      <TableTransaction data={transactions} />
+      <Stack spacing={4}>
+        <Button
+          onClick={onOpen}
+          maxWidth="200px"
+          borderRadius="md"
+          colorScheme="blue"
+        >
+          Nova Transação
+        </Button>
+
+        <TableTransaction data={transactions} />
+      </Stack>
+
+      <ModalTransaction isOpen={isOpen} onClose={onClose} />
     </Stack>
   )
 }
