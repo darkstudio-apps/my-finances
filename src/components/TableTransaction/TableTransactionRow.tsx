@@ -16,7 +16,7 @@ export function TableTransactionRow({
   isIncome,
 }: TableTransactionRowProps) {
   return (
-    <Tr>
+    <Tr _hover={{ bg: "gray.600" }} cursor="pointer">
       <Td borderColor="gray.600">{title}</Td>
       <Td borderColor="gray.600" color={isIncome ? "green.400" : "red.400"}>
         {price}
