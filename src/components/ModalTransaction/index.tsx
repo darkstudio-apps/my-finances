@@ -1,5 +1,4 @@
 import { useRef } from "react"
-import { FiArrowUp, FiArrowDown } from "react-icons/fi"
 import {
   Modal,
   ModalOverlay,
@@ -9,13 +8,7 @@ import {
   ModalBody,
   ModalCloseButton,
   Button,
-  FormControl,
-  FormLabel,
   Input,
-  Flex,
-  VStack,
-  Icon,
-  Text,
   HStack,
   Stack,
 } from "@chakra-ui/react"
@@ -39,7 +32,7 @@ export function ModalTransaction({ isOpen, onClose }: ModalTransactionProps) {
       isCentered
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent borderRadius="xl">
         <ModalHeader>Cadastrar Transação</ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>

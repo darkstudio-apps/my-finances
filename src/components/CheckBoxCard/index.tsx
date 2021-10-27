@@ -1,4 +1,4 @@
-import { HStack, Text, Icon, Checkbox } from "@chakra-ui/react"
+import { HStack, Text, Icon } from "@chakra-ui/react"
 import { FiArrowUp, FiArrowDown } from "react-icons/fi"
 
 interface CheckBoxCardProps {
