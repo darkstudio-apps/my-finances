@@ -1,39 +1,58 @@
 import { HStack, Text, Icon } from "@chakra-ui/react"
 import { FiArrowUp, FiArrowDown } from "react-icons/fi"
 
+export type CheckBoxTypeProps = "deposit" | "withdraw"
+
 interface CheckBoxCardProps {
   label: string
-  icon?: "arrowUp" | "arrowDown"
+  type: CheckBoxTypeProps
+  checkedType?: CheckBoxTypeProps | null
+  onClick?: (typeSelected: CheckBoxTypeProps) => void
 }
 
-const icons = {
-  arrowUp: {
-    icon: FiArrowUp,
+const themes = {
+  deposit: {
+    iconSvg: FiArrowUp,
     color: "green.400",
+    backgroundColor: "rgba(72, 187, 120, 0.2)",
   },
-  arrowDown: {
-    icon: FiArrowDown,
+  withdraw: {
+    iconSvg: FiArrowDown,
     color: "red.400",
+    backgroundColor: "rgba(245, 101, 101, 0.2)",
   },
 }
 
-export function CheckBoxCard({ label, icon }: CheckBoxCardProps) {
+export function CheckBoxCard({ label, type, checkedType, onClick }: CheckBoxCardProps) {
+  let backgroundColor = "initial"
+
+  if (checkedType === type) {
+    backgroundColor = themes[type].backgroundColor
+  }
+
+  const handleOnClick = () => {
+    if (onClick) {
+      onClick(type)
+    }
+  }
+
   return (
     <HStack
       alignItems="center"
       justifyContent="center"
       bg="gray.700"
       borderRadius="xl"
-      padding={6}
+      padding={4}
       spacing={2}
       width="100%"
       border="solid 1px"
-      borderColor="gray.500"
+      borderColor="gray.600"
+      backgroundColor={backgroundColor}
+      onClick={handleOnClick}
+      cursor="pointer"
     >
       <Text>{label}</Text>
-      {icon && (
-        <Icon as={icons[icon].icon} w={6} h={6} color={icons[icon].color} />
-      )}
+      <Icon as={themes[type].iconSvg} w={6} h={6} color={themes[type].color} />
     </HStack>
   )
 }
