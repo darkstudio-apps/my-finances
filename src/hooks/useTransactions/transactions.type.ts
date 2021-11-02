@@ -6,7 +6,7 @@ export interface TransactionReqProps {
   amount: number
   date: string
   type: TransactionTypeProps
-  category: string
+  category?: string
 }
 
 export interface TransactionModelProps {
@@ -14,5 +14,5 @@ export interface TransactionModelProps {
   amount: number
   date: string
   type: TransactionTypeProps
-  category: string
+  category?: string
 }

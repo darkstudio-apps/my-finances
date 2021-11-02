@@ -15,7 +15,6 @@ export function TableTransaction({ data }: TableTransactionProps) {
         <Tr>
           <TableTransactionTh>Título</TableTransactionTh>
           <TableTransactionTh>Preço</TableTransactionTh>
-          <TableTransactionTh>Categoria</TableTransactionTh>
           <TableTransactionTh>Data</TableTransactionTh>
         </Tr>
       </Thead>
@@ -26,7 +25,6 @@ export function TableTransaction({ data }: TableTransactionProps) {
             key={transaction.id}
             title={transaction.title}
             amount={formatCurrency(transaction.amount)}
-            category={transaction.category}
             date={transaction.date}
             type={transaction.type}
           />

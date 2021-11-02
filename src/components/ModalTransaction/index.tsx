@@ -34,7 +34,6 @@ const transactionObjInitial: TransactionModelProps = {
   title: "",
   amount: 0,
   date: "",
-  category: "",
   type: "deposit",
 }
 
@@ -135,13 +134,6 @@ export function ModalTransaction({ isOpen, onClose, onSave }: ModalTransactionPr
                 onClick={handleChangeType}
               />
             </HStack>
-
-            <Input
-              name="category"
-              placeholder="Categoria"
-              value={transaction.category}
-              onChange={handleChangeTransaction}
-            />
           </Stack>
         </ModalBody>
 
