@@ -1,18 +1,11 @@
 import { Table, Thead, Tbody, Tfoot, Tr, Th } from "@chakra-ui/react"
 import { TableTransactionRow } from "./TableTransactionRow"
 import { TableTransactionTh } from "./TableTransactionTh"
-
-interface TransactionsProps {
-  id: number
-  title: string
-  price: string
-  category: string
-  date: string
-  isIncome: boolean
-}
+import { TransactionProps } from "../../hooks/useTransactions"
+import { formatCurrency } from "../../utils/maskUtil"
 
 interface TableTransactionProps {
-  data: TransactionsProps[]
+  data: TransactionProps[]
 }
 
 export function TableTransaction({ data }: TableTransactionProps) {
@@ -32,10 +25,10 @@ export function TableTransaction({ data }: TableTransactionProps) {
           <TableTransactionRow
             key={transaction.id}
             title={transaction.title}
-            price={transaction.price}
+            amount={formatCurrency(transaction.amount)}
             category={transaction.category}
             date={transaction.date}
-            isIncome={transaction.isIncome}
+            type={transaction.type}
           />
         ))}
       </Tbody>

@@ -5,20 +5,12 @@ import { SimpleGrid, Stack, useDisclosure, Button, Select, HStack } from "@chakr
 
 import { CardTransaction } from "../components/CardTransaction"
 import { TableTransaction } from "../components/TableTransaction"
-import { SimpleGrid, Stack, useDisclosure, Button } from "@chakra-ui/react"
 import { ModalTransaction } from "../components/ModalTransaction"
-
-interface TransactionsProps {
-  id: number
-  title: string
-  price: string
-  category: string
-  date: string
-  isIncome: boolean
-}
+import { useTransactions } from "../hooks/useTransactions"
 
 export default function Transactions() {
-  const [transactions, setTransactions] = useState<TransactionsProps[]>([])
+  const { transactions, summary, create } = useTransactions()
+
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const [filters, setFilters] = useState(() => {
@@ -37,19 +29,19 @@ export default function Transactions() {
       <SimpleGrid columns={3} spacing={10}>
         <CardTransaction
           description="Entradas"
-          title="R$ 1.400,00"
+          title={summary.deposit}
           icon="arrowUp"
         />
 
         <CardTransaction
           description="Saídas"
-          title="R$ 400,00"
+          title={summary.withdraw}
           icon="arrowDown"
         />
 
         <CardTransaction
           description="Total"
-          title="R$ 1.000,00"
+          title={summary.total}
           icon="dollarSign"
         />
       </SimpleGrid>
@@ -93,7 +85,6 @@ export default function Transactions() {
 
           <Button
             onClick={onOpen}
-          maxWidth="200px"
             borderRadius="md"
             colorScheme="blue"
             paddingX={10}
@@ -105,7 +96,11 @@ export default function Transactions() {
         <TableTransaction data={transactions} />
       </Stack>
 
-      <ModalTransaction isOpen={isOpen} onClose={onClose} />
+      <ModalTransaction
+        isOpen={isOpen}
+        onClose={onClose}
+        onSave={create}
+      />
     </Stack>
   )
 }

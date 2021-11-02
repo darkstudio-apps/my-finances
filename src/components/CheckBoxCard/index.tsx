@@ -1,13 +1,12 @@
 import { HStack, Text, Icon } from "@chakra-ui/react"
 import { FiArrowUp, FiArrowDown } from "react-icons/fi"
-
-export type CheckBoxTypeProps = "deposit" | "withdraw"
+import { TransactionTypeProps } from "../../hooks/useTransactions/transactions.type"
 
 interface CheckBoxCardProps {
   label: string
-  type: CheckBoxTypeProps
-  checkedType?: CheckBoxTypeProps | null
-  onClick?: (typeSelected: CheckBoxTypeProps) => void
+  type: TransactionTypeProps
+  checkedType?: TransactionTypeProps | null
+  onClick?: (typeSelected: TransactionTypeProps) => void
 }
 
 const themes = {
