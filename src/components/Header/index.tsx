@@ -24,7 +24,7 @@ export function Header() {
           <Text fontSize="xs" color="gray.200">1 pendência</Text>
         </Box>
 
-        <Menu>
+        <Menu id="menu-avatar" isLazy>
           <MenuButton>
             <Avatar name={session?.user?.name || ""} src={session?.user?.image || ""} />
           </MenuButton>
