@@ -16,6 +16,7 @@ import {
 
 import { CheckBoxCard } from "../CheckBoxCard"
 import { TransactionModelProps, TransactionTypeProps } from "../../hooks/useTransactions/transactions.type"
+import { formatFloat, formatReal } from "../../utils/maskUtil"
 
 interface ModalTransactionProps {
   isOpen: boolean
@@ -23,16 +24,16 @@ interface ModalTransactionProps {
   onSave: (transaction: TransactionModelProps) => void
 }
 
-interface OnChangeProps { // TODO: remover isso e fazer certo
-  target: {
-    name: string
-    value: string
-  }
+interface TransactionStateProps {
+  title: string
+  amount: string
+  date: string
+  type: TransactionTypeProps
 }
 
-const transactionObjInitial: TransactionModelProps = {
+const transactionObjInitial: TransactionStateProps = {
   title: "",
-  amount: 0,
+  amount: "",
   date: "",
   type: "deposit",
 }
@@ -41,27 +42,26 @@ export function ModalTransaction({ isOpen, onClose, onSave }: ModalTransactionPr
   const initialRef = useRef(null)
   const finalRef = useRef(null)
 
-  const [transaction, setTransaction] = useState<TransactionModelProps>(transactionObjInitial)
+  const [transaction, setTransaction] = useState<TransactionStateProps>(transactionObjInitial)
 
-  const handleChangeType = (type: TransactionTypeProps) => {
+  const handleChangeTransaction = (prop: string, value: string) => {
+    if (prop === "amount") value = formatReal(value)
+
     setTransaction({
       ...transaction,
-      type,
-    })
-  }
-
-  const handleChangeTransaction = (event: OnChangeProps) => {
-    const { name, value } = event.target
-    setTransaction({
-      ...transaction,
-      [name]: value,
+      [prop]: value,
     })
   }
 
   const handleSave = () => {
+    const newTransaction: TransactionModelProps = {
+      ...transaction,
+      amount: formatFloat(transaction.amount),
+    }
+
     // TODO: validar os dados
 
-    onSave(transaction)
+    onSave(newTransaction)
     onClose()
     clearTransaction()
   }
@@ -89,7 +89,7 @@ export function ModalTransaction({ isOpen, onClose, onSave }: ModalTransactionPr
               name="title"
               placeholder="Nome"
               value={transaction.title}
-              onChange={handleChangeTransaction}
+              onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
               ref={initialRef}
             />
 
@@ -98,15 +98,14 @@ export function ModalTransaction({ isOpen, onClose, onSave }: ModalTransactionPr
                 name="amount"
                 placeholder="Preço"
                 value={transaction.amount}
-                onChange={handleChangeTransaction}
-                type="number"
+                onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
               />
 
               <Input
                 name="date"
                 placeholder="Preço"
                 value={transaction.date}
-                onChange={handleChangeTransaction}
+                onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
                 type="date"
                 css={
                   css`
@@ -124,14 +123,14 @@ export function ModalTransaction({ isOpen, onClose, onSave }: ModalTransactionPr
                 type="deposit"
                 label="Entrada"
                 checkedType={transaction.type}
-                onClick={handleChangeType}
+                onClick={(typeSelected) => handleChangeTransaction("type", typeSelected)}
               />
 
               <CheckBoxCard
                 type="withdraw"
                 label="Saída"
                 checkedType={transaction.type}
-                onClick={handleChangeType}
+                onClick={(typeSelected) => handleChangeTransaction("type", typeSelected)}
               />
             </HStack>
           </Stack>
