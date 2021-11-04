@@ -14,7 +14,7 @@ export function TableTransaction({ data }: TableTransactionProps) {
       <Thead>
         <Tr>
           <TableTransactionTh>Título</TableTransactionTh>
-          <TableTransactionTh>Preço</TableTransactionTh>
+          <TableTransactionTh>Valor</TableTransactionTh>
           <TableTransactionTh>Data</TableTransactionTh>
         </Tr>
       </Thead>

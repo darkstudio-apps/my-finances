@@ -30,10 +30,10 @@ export function useModalTransaction() {
   }
 
   const generateTransactionToSave = (): TransactionModelProps | null => {
-    const includesString = Object.values(transaction).includes("")
+    const includesValueEmpty = Object.values(transaction).includes("")
     const amountZero = transaction.amount === "0,00"
 
-    if (includesString || amountZero || transaction.type === null) {
+    if (includesValueEmpty || amountZero || transaction.type === null) {
       return null
     }
 

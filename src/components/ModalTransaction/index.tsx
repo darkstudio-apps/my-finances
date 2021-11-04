@@ -40,7 +40,7 @@ export function ModalTransaction({ isOpen, onClose, onSave }: ModalTransactionPr
   const handleSave = () => {
     const newTransaction = generateTransactionToSave()
 
-    if (!newTransaction) {
+    if (newTransaction === null) {
       return toast({
         title: "Campos obrigatórios",
         description: "Todos os campos devem ser preenchidos.",
@@ -82,14 +82,14 @@ export function ModalTransaction({ isOpen, onClose, onSave }: ModalTransactionPr
             <HStack spacing={2}>
               <Input
                 name="amount"
-                placeholder="Preço"
+                placeholder="Valor"
                 value={transaction.amount}
                 onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
               />
 
               <Input
                 name="date"
-                placeholder="Preço"
+                placeholder="Data"
                 value={transaction.date}
                 onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
                 type="date"
