@@ -25,7 +25,7 @@ export function TableTransaction({ data }: TableTransactionProps) {
             key={transaction.id}
             title={transaction.title}
             amount={formatCurrency(transaction.amount)}
-            date={transaction.date}
+            date={transaction.dateDisplay}
             type={transaction.type}
           />
         ))}

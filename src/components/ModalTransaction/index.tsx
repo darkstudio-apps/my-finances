@@ -12,11 +12,13 @@ import {
   Input,
   HStack,
   Stack,
+  useToast,
 } from "@chakra-ui/react"
 
 import { CheckBoxCard } from "../CheckBoxCard"
 import { TransactionModelProps, TransactionTypeProps } from "../../hooks/useTransactions/transactions.type"
 import { formatFloat, formatReal } from "../../utils/maskUtil"
+import { parseToUTCandISO } from "../../utils/dateUtil"
 
 interface ModalTransactionProps {
   isOpen: boolean
@@ -28,17 +30,19 @@ interface TransactionStateProps {
   title: string
   amount: string
   date: string
-  type: TransactionTypeProps
+  type: TransactionTypeProps | null
 }
 
 const transactionObjInitial: TransactionStateProps = {
   title: "",
-  amount: "",
+  amount: "0,00",
   date: "",
-  type: "deposit",
+  type: null,
 }
 
 export function ModalTransaction({ isOpen, onClose, onSave }: ModalTransactionProps) {
+  const toast = useToast()
+
   const initialRef = useRef(null)
   const finalRef = useRef(null)
 
@@ -53,13 +57,39 @@ export function ModalTransaction({ isOpen, onClose, onSave }: ModalTransactionPr
     })
   }
 
-  const handleSave = () => {
-    const newTransaction: TransactionModelProps = {
-      ...transaction,
-      amount: formatFloat(transaction.amount),
+  const generateTransactionToSave = (): TransactionModelProps | null => {
+    const includesString = Object.values(transaction).includes("")
+    const amountZero = transaction.amount === "0,00"
+
+    if (includesString || amountZero || transaction.type === null) {
+      return null
     }
 
-    // TODO: validar os dados
+    const type: TransactionTypeProps = transaction.type
+
+    const newTransaction: TransactionModelProps = {
+      ...transaction,
+      type,
+      amount: formatFloat(transaction.amount),
+      date: parseToUTCandISO(transaction.date),
+    }
+
+    return newTransaction
+  }
+
+  const handleSave = () => {
+    const newTransaction = generateTransactionToSave()
+
+    if (!newTransaction) {
+      return toast({
+        title: "Campos obrigatórios",
+        description: "Todos os campos devem ser preenchidos.",
+        status: "warning",
+        position: "top",
+        duration: 4000,
+        isClosable: true,
+      })
+    }
 
     onSave(newTransaction)
     onClose()

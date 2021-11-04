@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react"
+import { parseYearMonthDay, parseDateBr } from "../../utils/dateUtil"
 import { UUID } from "../../utils/generateID"
 import { formatCurrency } from "../../utils/maskUtil"
 import { TransactionReqProps, TransactionModelProps } from "./transactions.type"
 
-export type TransactionProps = TransactionReqProps
+export interface TransactionProps extends TransactionReqProps {
+  dateDisplay: string
+}
 
 export function useTransactions() {
   const [transactions, setTransactions] = useState<TransactionProps[]>([])
@@ -44,29 +47,42 @@ export function useTransactions() {
   }, [transactions])
 
   const getAll = () => {
-    const fetchTransactions: TransactionProps[] = [
+    const fetchTransactions: TransactionReqProps[] = [
       {
         id: UUID(),
         title: "Desenvolvimento de site",
         amount: 5000,
-        date: "13/04/2021",
+        date: "2021-11-04",
         type: "deposit",
         category: "Venda",
       },
     ]
 
-    setTransactions(fetchTransactions)
+    const mappedTransactions = fetchTransactions.map(transaction => ({
+      ...transaction,
+      date: parseYearMonthDay(transaction.date),
+      dateDisplay: parseDateBr(transaction.date),
+    }))
+
+    setTransactions(mappedTransactions)
   }
 
   const create = (transaction: TransactionModelProps) => {
-    const newTransaction: TransactionProps = {
+    const newTransaction: TransactionReqProps = {
       ...transaction,
       id: UUID(),
     }
 
+    const mapTransaction: TransactionProps = {
+      ...newTransaction,
+      id: UUID(),
+      date: parseYearMonthDay(newTransaction.date),
+      dateDisplay: parseDateBr(newTransaction.date),
+    }
+
     const newTransactions = [
       ...transactions,
-      newTransaction,
+      mapTransaction,
     ]
 
     setTransactions(newTransactions)
@@ -76,7 +92,7 @@ export function useTransactions() {
     console.log("edit: ", transaction)
   }
 
-  const remove = (transaction: TransactionModelProps) => {
+  const remove = (transaction: TransactionProps) => {
     console.log("remove: ", transaction)
   }
 
