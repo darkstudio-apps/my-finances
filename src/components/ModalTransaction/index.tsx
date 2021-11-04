@@ -1,4 +1,4 @@
-import { useRef, useState } from "react"
+import { useRef } from "react"
 import { css } from "@emotion/react"
 import {
   Modal,
@@ -16,9 +16,8 @@ import {
 } from "@chakra-ui/react"
 
 import { CheckBoxCard } from "../CheckBoxCard"
-import { TransactionModelProps, TransactionTypeProps } from "../../hooks/useTransactions/transactions.type"
-import { formatFloat, formatReal } from "../../utils/maskUtil"
-import { parseToUTCandISO } from "../../utils/dateUtil"
+import { TransactionModelProps } from "../../hooks/useTransactions/transactions.type"
+import { useModalTransaction } from "./useModalTransaction"
 
 interface ModalTransactionProps {
   isOpen: boolean
@@ -26,56 +25,17 @@ interface ModalTransactionProps {
   onSave: (transaction: TransactionModelProps) => void
 }
 
-interface TransactionStateProps {
-  title: string
-  amount: string
-  date: string
-  type: TransactionTypeProps | null
-}
-
-const transactionObjInitial: TransactionStateProps = {
-  title: "",
-  amount: "0,00",
-  date: "",
-  type: null,
-}
-
 export function ModalTransaction({ isOpen, onClose, onSave }: ModalTransactionProps) {
   const toast = useToast()
-
   const initialRef = useRef(null)
   const finalRef = useRef(null)
 
-  const [transaction, setTransaction] = useState<TransactionStateProps>(transactionObjInitial)
-
-  const handleChangeTransaction = (prop: string, value: string) => {
-    if (prop === "amount") value = formatReal(value)
-
-    setTransaction({
-      ...transaction,
-      [prop]: value,
-    })
-  }
-
-  const generateTransactionToSave = (): TransactionModelProps | null => {
-    const includesString = Object.values(transaction).includes("")
-    const amountZero = transaction.amount === "0,00"
-
-    if (includesString || amountZero || transaction.type === null) {
-      return null
-    }
-
-    const type: TransactionTypeProps = transaction.type
-
-    const newTransaction: TransactionModelProps = {
-      ...transaction,
-      type,
-      amount: formatFloat(transaction.amount),
-      date: parseToUTCandISO(transaction.date),
-    }
-
-    return newTransaction
-  }
+  const {
+    transaction,
+    handleChangeTransaction,
+    generateTransactionToSave,
+    clearState,
+  } = useModalTransaction()
 
   const handleSave = () => {
     const newTransaction = generateTransactionToSave()
@@ -93,11 +53,7 @@ export function ModalTransaction({ isOpen, onClose, onSave }: ModalTransactionPr
 
     onSave(newTransaction)
     onClose()
-    clearTransaction()
-  }
-
-  const clearTransaction = () => {
-    setTransaction(transactionObjInitial)
+    clearState()
   }
 
   return (
