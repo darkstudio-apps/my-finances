@@ -6,6 +6,7 @@ import { TransactionReqProps, TransactionModelProps } from "./transactions.type"
 
 export interface TransactionProps extends TransactionReqProps {
   dateDisplay: string
+  amountDisplay: string
 }
 
 export function useTransactions() {
@@ -52,7 +53,7 @@ export function useTransactions() {
         id: UUID(),
         title: "Desenvolvimento de site",
         amount: 5000,
-        date: "2021-11-04",
+        date: "2021-11-03T16:21:40.451Z",
         type: "deposit",
         category: "Venda",
       },
@@ -62,6 +63,7 @@ export function useTransactions() {
       ...transaction,
       date: parseYearMonthDay(transaction.date),
       dateDisplay: parseDateBr(transaction.date),
+      amountDisplay: formatCurrency(transaction.amount),
     }))
 
     setTransactions(mappedTransactions)
@@ -78,6 +80,7 @@ export function useTransactions() {
       id: UUID(),
       date: parseYearMonthDay(newTransaction.date),
       dateDisplay: parseDateBr(newTransaction.date),
+      amountDisplay: formatCurrency(newTransaction.amount),
     }
 
     const newTransactions = [
