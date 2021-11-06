@@ -1,29 +1,38 @@
 import { NextApiRequest, NextApiResponse } from "next"
+import { TransactionReqProps } from "../../../hooks/useTransactions/transactions.type"
 import { transactionController } from "./_resources/controller/transactionController"
 
-export default async function transactions(req: NextApiRequest, res: NextApiResponse) {
-  const { method, query } = req
+export interface RequestType {
+  query: {
+    id: string
+  }
+  body: Partial<TransactionReqProps>
+}
 
-  if (query.id) {
-    const idTransaction = Array.isArray(query.id) ? query.id[0] : query.id
-    req.query.id = idTransaction
+export default async function transactions(req: NextApiRequest, res: NextApiResponse) {
+  const { method, query, body } = req
+
+  const idTransaction = Array.isArray(query.id) ? query.id[0] : query.id
+
+  const request: RequestType = {
+    query: {
+      id: idTransaction,
+    },
+    body,
   }
 
   switch (method) {
     case "GET":
-      transactionController.get(req, res)
-      break
-    case "POST":
-      transactionController.post(req, res)
+      transactionController.get(request, res)
       break
     case "PUT":
-      transactionController.put(req, res)
+      transactionController.put(request, res)
       break
     case "PATCH":
-      transactionController.patch(req, res)
+      transactionController.patch(request, res)
       break
     case "DELETE":
-      transactionController.remove(req, res)
+      transactionController.remove(request, res)
       break
     default:
       res.setHeader("Allow", ["GET", "PUT"])
