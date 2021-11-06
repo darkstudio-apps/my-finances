@@ -1,1 +1,1 @@
-export const UUID = (): number => Date.now()
+export const UUID = (): string => String(Date.now())

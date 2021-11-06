@@ -1,7 +1,7 @@
 export type TransactionTypeProps = "deposit" | "withdraw"
 
 export interface TransactionReqProps {
-  id: number
+  id: string
   title: string
   amount: number
   date: string
