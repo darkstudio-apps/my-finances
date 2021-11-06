@@ -1,13 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next"
-import { TransactionReqProps } from "../../../hooks/useTransactions/transactions.type"
+import { RequestType } from "./_resources/types/transactionRequests.type"
 import { transactionController } from "./_resources/controller/transactionController"
-
-export interface RequestType {
-  query: {
-    id: string
-  }
-  body: Partial<TransactionReqProps>
-}
 
 export default async function transactions(req: NextApiRequest, res: NextApiResponse) {
   const { method, query, body } = req

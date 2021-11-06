@@ -1,7 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next"
-import { RequestPostType } from "../.."
-import { RequestType } from "../../[id]"
-
+import { RequestPostType, RequestType } from "../types/transactionRequests.type"
 import { transactionService } from "../services/transactionService"
 
 function list(req: NextApiRequest, res: NextApiResponse) {
