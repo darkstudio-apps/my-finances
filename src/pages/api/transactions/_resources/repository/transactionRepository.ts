@@ -1,4 +1,7 @@
-const transactions = [
+import { TransactionModelProps, TransactionReqProps } from "../../../../../hooks/useTransactions/transactions.type"
+import { UUID } from "../../../../../utils/generateID"
+
+let transactions: TransactionReqProps[] = [
   {
     id: "63453252532",
     title: "Desenvolvimento de site",
@@ -17,28 +20,72 @@ const transactions = [
   },
 ]
 
-function list() {
+function list(): TransactionReqProps[] {
   return transactions
 }
 
-function get(idTransaction: string) {
-  return transactions.find(({ id }) => id === idTransaction)
+function get(idTransaction: string): TransactionReqProps | undefined {
+  const transaction = transactions.find(({ id }) => id === idTransaction)
+  return transaction
 }
 
-function post() {
+function post(transaction: TransactionModelProps): TransactionReqProps | undefined {
+  const newTransaction: TransactionReqProps = {
+    ...transaction,
+    id: UUID(),
+  }
 
+  transactions.push(newTransaction)
+
+  return newTransaction
 }
 
-function put() {
+function put(
+  idTransaction: string,
+  transaction: Partial<TransactionReqProps>
+): Partial<TransactionReqProps> | undefined {
+  const currentTransaction = get(idTransaction)
 
+  if (!currentTransaction) return currentTransaction
+
+  const editedTransaction = {
+    ...currentTransaction,
+    ...transaction,
+  }
+
+  transactions = transactions.map((tr) => {
+    if (tr.id !== idTransaction) return tr
+    else return editedTransaction
+  })
+
+  return editedTransaction
 }
 
-function patch() {
+function patch(
+  idTransaction: string,
+  transaction: Partial<TransactionReqProps>
+): Partial<TransactionReqProps> | undefined {
+  const currentTransaction = get(idTransaction)
 
+  if (!currentTransaction) return currentTransaction
+
+  const editedTransaction = {
+    ...currentTransaction,
+    ...transaction,
+  }
+
+  transactions = transactions.map((tr) => {
+    if (tr.id === idTransaction) return editedTransaction
+    else return tr
+  })
+
+  return editedTransaction
 }
 
-function remove() {
-
+function remove(idTransaction: string): boolean {
+  const filteredTransactions = transactions.filter(({ id }) => id !== idTransaction)
+  transactions = filteredTransactions
+  return true
 }
 
 export const transactionRepository = {

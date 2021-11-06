@@ -1,34 +1,52 @@
 import { NextApiRequest, NextApiResponse } from "next"
-import { transactionRepository } from "../repository/transactionRepository"
+import { RequestPostType } from "../.."
+import { RequestType } from "../../[id]"
+
+import { transactionService } from "../services/transactionService"
 
 function list(req: NextApiRequest, res: NextApiResponse) {
-  const transactions = transactionRepository.list()
+  const transactions = transactionService.list()
   return res.status(200).json({ transactions })
 }
 
-function get(req: NextApiRequest, res: NextApiResponse) {
+function get(req: RequestType, res: NextApiResponse) {
   const { id } = req.query
-  let idTransaction = Array.isArray(id) ? id[0] : id
 
-  const transaction = transactionRepository.get(idTransaction)
+  const transaction = transactionService.get(id)
 
   return res.status(200).json({ transaction })
 }
 
-function post(req: NextApiRequest, res: NextApiResponse) {
+function post(req: RequestPostType, res: NextApiResponse) {
+  const { body } = req
 
+  const transaction = transactionService.post(body)
+
+  return res.status(200).json({ transaction })
 }
 
-function put(req: NextApiRequest, res: NextApiResponse) {
+function put(req: RequestType, res: NextApiResponse) {
+  const { query, body } = req
 
+  const transaction = transactionService.put(query.id, body)
+
+  return res.status(200).json({ transaction })
 }
 
-function patch(req: NextApiRequest, res: NextApiResponse) {
+function patch(req: RequestType, res: NextApiResponse) {
+  const { query, body } = req
 
+  const transaction = transactionService.put(query.id, body)
+
+  return res.status(200).json({ transaction })
 }
 
-function remove(req: NextApiRequest, res: NextApiResponse) {
+function remove(req: RequestType, res: NextApiResponse) {
+  const { id } = req.query
 
+  const ok = transactionService.remove(id)
+
+  return res.status(200).json({ ok })
 }
 
 export const transactionController = {
