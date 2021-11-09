@@ -1,4 +1,4 @@
-import { TransactionModelProps, TransactionReqProps } from "../../../../../hooks/useTransactions/transactions.type"
+import { TransactionModelProps, TransactionReqProps } from "../../../../../hooks/useTransactions/transaction.types"
 import { UUID } from "../../../../../utils/generateID"
 
 let transactions: TransactionReqProps[] = [

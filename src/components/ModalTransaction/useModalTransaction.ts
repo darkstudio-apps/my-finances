@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { TransactionModelProps, TransactionTypeProps } from "../../hooks/useTransactions/transactions.type"
+import { TransactionModelProps, TransactionTypeProps } from "../../hooks/useTransactions/transaction.types"
 import { parseToUTCandISO } from "../../utils/dateUtil"
 import { formatFloat, formatReal } from "../../utils/maskUtil"
 

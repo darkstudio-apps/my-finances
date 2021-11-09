@@ -1,5 +1,5 @@
 import { Tr, Td } from "@chakra-ui/react"
-import { TransactionTypeProps } from "../../hooks/useTransactions/transactions.type"
+import { TransactionTypeProps } from "../../hooks/useTransactions/transaction.types"
 
 interface TableTransactionRowProps {
   title: string
