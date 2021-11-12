@@ -19,10 +19,8 @@ export const parseDateBr = (dateUTC: string) => {
   return `${day}/${month}/${year}`
 }
 
-// ---------- helpers ----------
-
-const getObjYearMonthDay = (dateString: string) => {
-  const date = new Date(dateString)
+export const getObjYearMonthDay = (dateString?: string) => {
+  const date = dateString ? new Date(dateString) : new Date()
 
   let year = String(date.getFullYear())
 

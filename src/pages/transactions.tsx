@@ -6,23 +6,25 @@ import { SimpleGrid, Stack, useDisclosure, Button, Select, HStack } from "@chakr
 import { CardTransaction } from "../components/CardTransaction"
 import { TableTransaction } from "../components/TableTransaction"
 import { ModalTransaction } from "../components/ModalTransaction"
-import { useTransactions } from "../hooks/useTransactions"
+import { TransactionProps, useTransactions } from "../hooks/useTransactions"
+import { getObjYearMonthDay } from "../utils/dateUtil"
 
 export default function Transactions() {
   const { transactions, summary, create } = useTransactions()
-
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const [filters, setFilters] = useState(() => {
-    const today = new Date()
-    const year = today.getFullYear()
-    const month = today.getMonth() + 1
-
-    return {
-      month,
-      year,
-    }
+    const { month, year } = getObjYearMonthDay()
+    return { month, year }
   })
+
+  const handleEdit = (transaction: TransactionProps) => {
+    console.log(transaction)
+  }
+
+  const handleDelete = (idTransaction: string) => {
+    console.log(idTransaction)
+  }
 
   return (
     <Stack paddingY={10} spacing={10}>
@@ -55,15 +57,15 @@ export default function Transactions() {
               value={filters.month}
               onChange={({ target: { name, value } }) => setFilters(old => ({ ...old, [name]: value }))}
             >
-              <option value="1">Janeiro</option>
-              <option value="2">Fevereiro</option>
-              <option value="3">Março</option>
-              <option value="4">Abril</option>
-              <option value="5">Maio</option>
-              <option value="6">Junho</option>
-              <option value="7">Julho</option>
-              <option value="8">Agosto</option>
-              <option value="9">Setembro</option>
+              <option value="01">Janeiro</option>
+              <option value="02">Fevereiro</option>
+              <option value="03">Março</option>
+              <option value="04">Abril</option>
+              <option value="05">Maio</option>
+              <option value="06">Junho</option>
+              <option value="07">Julho</option>
+              <option value="08">Agosto</option>
+              <option value="09">Setembro</option>
               <option value="10">Outubro</option>
               <option value="11">Novembro</option>
               <option value="12">Dezembro</option>
@@ -93,7 +95,7 @@ export default function Transactions() {
           </Button>
         </HStack>
 
-        <TableTransaction data={transactions} />
+        <TableTransaction data={transactions} onEdit={handleEdit} onDelete={handleDelete} />
       </Stack>
 
       <ModalTransaction
