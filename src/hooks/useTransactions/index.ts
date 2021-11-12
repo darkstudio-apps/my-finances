@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react"
-import { parseYearMonthDay, parseDateBr } from "../../utils/dateUtil"
+import { api } from "../../services/api"
 import { UUID } from "../../utils/generateID"
+import { TransactionReqProps, TransactionModelProps } from "./transaction.types"
 import { formatCurrency } from "../../utils/maskUtil"
-import { TransactionReqProps, TransactionModelProps } from "./transactions.type"
+import { parseDateBr, parseYearMonthDay } from "../../utils/dateUtil"
 
 export interface TransactionProps extends TransactionReqProps {
   dateDisplay: string
   amountDisplay: string
+}
+
+interface GetType {
+  transactions: TransactionReqProps[]
 }
 
 export function useTransactions() {
@@ -47,19 +52,10 @@ export function useTransactions() {
     }
   }, [transactions])
 
-  const getAll = () => {
-    const fetchTransactions: TransactionReqProps[] = [
-      {
-        id: UUID(),
-        title: "Desenvolvimento de site",
-        amount: 5000,
-        date: "2021-11-03T16:21:40.451Z",
-        type: "deposit",
-        category: "Venda",
-      },
-    ]
+  const getAll = async () => {
+    const { data } = await api.get<GetType>("/transactions")
 
-    const mappedTransactions = fetchTransactions.map(transaction => ({
+    const mappedTransactions = data.transactions.map(transaction => ({
       ...transaction,
       date: parseYearMonthDay(transaction.date),
       dateDisplay: parseDateBr(transaction.date),
@@ -75,7 +71,7 @@ export function useTransactions() {
       id: UUID(),
     }
 
-    const mapTransaction: TransactionProps = {
+    const formattedTransaction: TransactionProps = {
       ...newTransaction,
       id: UUID(),
       date: parseYearMonthDay(newTransaction.date),
@@ -85,7 +81,7 @@ export function useTransactions() {
 
     const newTransactions = [
       ...transactions,
-      mapTransaction,
+      formattedTransaction,
     ]
 
     setTransactions(newTransactions)
