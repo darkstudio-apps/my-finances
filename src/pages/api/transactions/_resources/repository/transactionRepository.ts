@@ -1,6 +1,7 @@
-import { TransactionModelProps, TransactionReqProps } from "../../../../../hooks/useTransactions/transactions.type"
+import { TransactionModelProps, TransactionReqProps } from "../../../../../hooks/useTransactions/transaction.types"
 import { PrismaClient } from "@prisma/client"
 
+type PartialTransaction = Partial<TransactionReqProps>
 
 const prisma = new PrismaClient()
 
@@ -15,6 +16,7 @@ async function get(idTransaction: string) {
       id: idTransaction,
     },
   })
+
   return transaction
 }
 
@@ -26,40 +28,30 @@ async function post(transaction: TransactionModelProps) {
   return newTransaction
 }
 
-async function put(
-  idTransaction: string,
-  transaction: Partial<TransactionReqProps>
-) {
+async function put(idTransaction: string, transaction: PartialTransaction) {
   const editedTransaction = await prisma.transaction.update({
     where: { id: idTransaction },
     data: transaction,
   })
+
   return editedTransaction
 }
 
-function patch(
-  idTransaction: string,
-  transaction: Partial<TransactionReqProps>
-): Partial<TransactionReqProps> | undefined {
-  const currentTransaction = get(idTransaction)
-
-  if (!currentTransaction) return currentTransaction
-
-  const editedTransaction = {
-    ...currentTransaction,
+function patch(idTransaction: string, transaction: PartialTransaction) {
+  const obj = {
     ...transaction,
+    id: idTransaction,
   }
 
-  return editedTransaction
+  return obj
 }
 
 async function remove(idTransaction: string): Promise<boolean> {
-
   const transaction = await prisma.transaction.delete({
     where: { id: idTransaction },
   })
-  return !!transaction
 
+  return !!transaction
 }
 
 export const transactionRepository = {
