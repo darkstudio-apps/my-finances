@@ -15,3 +15,10 @@ model Transaction {
   title  String
   type   String
 }
+
+model User {
+  id       String @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  email    String
+  name     String
+  username String
+}
