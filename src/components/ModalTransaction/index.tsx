@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react"
 
 import { CheckBoxCard } from "../CheckBoxCard"
-import { TransactionModelProps } from "../../hooks/useTransactions/transactions.type"
+import { TransactionModelProps } from "../../hooks/useTransactions/transaction.types"
 import { useModalTransaction } from "./useModalTransaction"
 
 interface ModalTransactionProps {
