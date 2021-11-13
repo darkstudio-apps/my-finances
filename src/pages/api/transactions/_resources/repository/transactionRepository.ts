@@ -1,91 +1,57 @@
 import { TransactionModelProps, TransactionReqProps } from "../../../../../hooks/useTransactions/transaction.types"
-import { UUID } from "../../../../../utils/generateID"
+import { PrismaClient } from "@prisma/client"
 
-let transactions: TransactionReqProps[] = [
-  {
-    id: "63453252532",
-    title: "Desenvolvimento de site",
-    amount: 4000,
-    date: "2021-11-03T16:21:40.451Z",
-    type: "deposit",
-    category: "Venda",
-  },
-  {
-    id: "45353252532",
-    title: "Desenvolvimento de app",
-    amount: 3000,
-    date: "2021-11-05T16:21:40.451Z",
-    type: "deposit",
-    category: "Venda",
-  },
-]
+type PartialTransaction = Partial<TransactionReqProps>
 
-function list(): TransactionReqProps[] {
+const prisma = new PrismaClient()
+
+async function list() {
+  const transactions = await prisma.transaction.findMany()
   return transactions
 }
 
-function get(idTransaction: string): TransactionReqProps | undefined {
-  const transaction = transactions.find(({ id }) => id === idTransaction)
+async function get(idTransaction: string) {
+  const transaction = await prisma.transaction.findUnique({
+    where: {
+      id: idTransaction,
+    },
+  })
+
   return transaction
 }
 
-function post(transaction: TransactionModelProps): TransactionReqProps | undefined {
-  const newTransaction: TransactionReqProps = {
-    ...transaction,
-    id: UUID(),
-  }
-
-  transactions.push(newTransaction)
+async function post(transaction: TransactionModelProps) {
+  const newTransaction = await prisma.transaction.create({
+    data: transaction,
+  })
 
   return newTransaction
 }
 
-function put(
-  idTransaction: string,
-  transaction: Partial<TransactionReqProps>
-): Partial<TransactionReqProps> | undefined {
-  const currentTransaction = get(idTransaction)
-
-  if (!currentTransaction) return currentTransaction
-
-  const editedTransaction = {
-    ...currentTransaction,
-    ...transaction,
-  }
-
-  transactions = transactions.map((tr) => {
-    if (tr.id !== idTransaction) return tr
-    else return editedTransaction
+async function put(idTransaction: string, transaction: PartialTransaction) {
+  const editedTransaction = await prisma.transaction.update({
+    where: { id: idTransaction },
+    data: transaction,
   })
 
   return editedTransaction
 }
 
-function patch(
-  idTransaction: string,
-  transaction: Partial<TransactionReqProps>
-): Partial<TransactionReqProps> | undefined {
-  const currentTransaction = get(idTransaction)
-
-  if (!currentTransaction) return currentTransaction
-
-  const editedTransaction = {
-    ...currentTransaction,
+function patch(idTransaction: string, transaction: PartialTransaction) {
+  const obj = {
     ...transaction,
+    id: idTransaction,
   }
 
-  transactions = transactions.map((tr) => {
-    if (tr.id === idTransaction) return editedTransaction
-    else return tr
-  })
-
-  return editedTransaction
+  return obj
 }
 
-function remove(idTransaction: string): boolean {
-  const filteredTransactions = transactions.filter(({ id }) => id !== idTransaction)
-  transactions = filteredTransactions
-  return true
+async function remove(idTransaction: string): Promise<boolean> {
+  const transaction = await prisma.transaction.delete({
+    where: { id: idTransaction },
+  })
+
+  return !!transaction
 }
 
 export const transactionRepository = {

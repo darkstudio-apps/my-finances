@@ -1,0 +1,17 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["mongoDb"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Transaction {
+  id     String @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  amount Float
+  date   String
+  title  String
+  type   String
+}

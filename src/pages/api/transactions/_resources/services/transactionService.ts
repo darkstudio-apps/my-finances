@@ -1,23 +1,23 @@
 import { TransactionModelProps, TransactionReqProps } from "../../../../../hooks/useTransactions/transaction.types"
 import { transactionRepository } from "../repository/transactionRepository"
 
-function list() {
-  const transactions = transactionRepository.list()
+async function list() {
+  const transactions = await transactionRepository.list()
   return transactions
 }
 
-function get(id: string) {
-  const transaction = transactionRepository.get(id)
+async function get(id: string) {
+  const transaction = await transactionRepository.get(id)
   return transaction
 }
 
-function post(transaction: TransactionModelProps) {
-  const createdTransaction = transactionRepository.post(transaction)
+async function post(transaction: TransactionModelProps) {
+  const createdTransaction = await transactionRepository.post(transaction)
   return createdTransaction
 }
 
-function put(id: string, transaction: Partial<TransactionReqProps>) {
-  const editedTransaction = transactionRepository.put(id, transaction)
+async function put(id: string, transaction: Partial<TransactionReqProps>) {
+  const editedTransaction = await transactionRepository.put(id, transaction)
   return editedTransaction
 }
 

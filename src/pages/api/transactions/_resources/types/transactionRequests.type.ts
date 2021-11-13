@@ -1,3 +1,4 @@
+import { Transactions } from ".prisma/client"
 import { NextApiRequest } from "next"
 import { TransactionModelProps, TransactionReqProps } from "../../../../../hooks/useTransactions/transaction.types"
 
@@ -9,5 +10,5 @@ export interface RequestType {
 }
 
 export interface RequestPostType extends NextApiRequest {
-  body: TransactionModelProps
+  body: Transactions
 }

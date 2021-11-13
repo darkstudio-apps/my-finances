@@ -2,49 +2,79 @@ import { NextApiRequest, NextApiResponse } from "next"
 import { RequestPostType, RequestType } from "../types/transactionRequests.type"
 import { transactionService } from "../services/transactionService"
 
-function list(req: NextApiRequest, res: NextApiResponse) {
-  const transactions = transactionService.list()
-  return res.status(200).json({ transactions })
+async function list(req: NextApiRequest, res: NextApiResponse) {
+  try {
+    const transactions = await transactionService.list()
+    return res.status(200).json({ transactions })
+  } catch (error) {
+    return res.status(400).json({ message: error })
+  }
+
 }
 
-function get(req: RequestType, res: NextApiResponse) {
-  const { id } = req.query
+async function get(req: RequestType, res: NextApiResponse) {
+  try {
+    const { id } = req.query
 
-  const transaction = transactionService.get(id)
+    const transaction = await transactionService.get(id)
 
-  return res.status(200).json({ transaction })
+    return res.status(200).json({ transaction })
+  } catch (error) {
+    return res.status(400).json({ message: error })
+  }
+
 }
 
-function post(req: RequestPostType, res: NextApiResponse) {
-  const { body } = req
+async function post(req: RequestPostType, res: NextApiResponse) {
+  try {
+    const { body } = req
 
-  const transaction = transactionService.post(body)
+    const transaction = await transactionService.post(body)
 
-  return res.status(200).json({ transaction })
+    return res.status(200).json({ transaction })
+  } catch (error) {
+    return res.status(400).json({ message: error })
+  }
+
 }
 
-function put(req: RequestType, res: NextApiResponse) {
-  const { query, body } = req
+async function put(req: RequestType, res: NextApiResponse) {
+  try {
+    const { query, body } = req
 
-  const transaction = transactionService.put(query.id, body)
+    const transaction = await transactionService.put(query.id, body)
 
-  return res.status(200).json({ transaction })
+    return res.status(200).json({ transaction })
+  } catch (error) {
+    return res.status(400).json({ message: error })
+  }
+
 }
 
 function patch(req: RequestType, res: NextApiResponse) {
-  const { query, body } = req
+  try {
+    const { query, body } = req
 
-  const transaction = transactionService.put(query.id, body)
+    const transaction = transactionService.put(query.id, body)
 
-  return res.status(200).json({ transaction })
+    return res.status(200).json({ transaction })
+  } catch (error) {
+
+  }
+
 }
 
-function remove(req: RequestType, res: NextApiResponse) {
-  const { id } = req.query
+async function remove(req: RequestType, res: NextApiResponse) {
+  try {
+    const { id } = req.query
+    await transactionService.remove(id)
 
-  const ok = transactionService.remove(id)
+    return res.status(200).json({ message: "Success" })
 
-  return res.status(200).json({ ok })
+  } catch (error) {
+    return res.status(400).json({ message: error })
+  }
+
 }
 
 export const transactionController = {
