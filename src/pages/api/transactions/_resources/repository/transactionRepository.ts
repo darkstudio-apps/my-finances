@@ -1,9 +1,7 @@
 import { TransactionModelProps, TransactionReqProps } from "../../../../../hooks/useTransactions/transaction.types"
-import { PrismaClient } from "@prisma/client"
+import { prisma } from "../../../../../services/prisma"
 
 type PartialTransaction = Partial<TransactionReqProps>
-
-const prisma = new PrismaClient()
 
 async function list() {
   const transactions = await prisma.transaction.findMany()
