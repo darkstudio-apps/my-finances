@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { GetServerSideProps } from "next"
 import { getSession } from "next-auth/client"
-import { SimpleGrid, Stack, useDisclosure, Button, Select, HStack } from "@chakra-ui/react"
+import { SimpleGrid, Stack, Button, Select, HStack, useToast, useDisclosure } from "@chakra-ui/react"
 
 import { CardTransaction } from "../components/CardTransaction"
 import { TableTransaction } from "../components/TableTransaction"
@@ -10,8 +10,10 @@ import { TransactionProps, useTransactions } from "../hooks/useTransactions"
 import { getObjYearMonthDay } from "../utils/dateUtil"
 
 export default function Transactions() {
-  const { transactions, summary, create } = useTransactions()
+  const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure()
+
+  const { transactions, summary, create, remove } = useTransactions()
 
   const [filters, setFilters] = useState(() => {
     const { month, year } = getObjYearMonthDay()
@@ -22,8 +24,17 @@ export default function Transactions() {
     console.log(transaction)
   }
 
-  const handleDelete = (idTransaction: string) => {
-    console.log(idTransaction)
+  const handleDelete = async (idTransaction: string) => {
+    const status = await remove(idTransaction)
+    if (status) {
+      toast({
+        title: "Transação removida.",
+        status: "success",
+        position: "top",
+        duration: 2000,
+        isClosable: true,
+      })
+    }
   }
 
   return (

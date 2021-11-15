@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import { api } from "../../services/api"
-import { UUID } from "../../utils/generateID"
 import { TransactionReqProps, TransactionModelProps } from "./transaction.types"
 import { formatCurrency } from "../../utils/maskUtil"
 import { parseDateBr, parseYearMonthDay } from "../../utils/dateUtil"
@@ -12,6 +11,7 @@ export interface TransactionProps extends TransactionReqProps {
 
 interface GetType {
   transactions: TransactionReqProps[]
+  transaction?: TransactionReqProps
 }
 
 export function useTransactions() {
@@ -65,34 +65,31 @@ export function useTransactions() {
     setTransactions(mappedTransactions)
   }
 
-  const create = (transaction: TransactionModelProps) => {
-    const newTransaction: TransactionReqProps = {
-      ...transaction,
-      id: UUID(),
-    }
+  const create = async (transaction: TransactionModelProps) => {
+    const { data } = await api.post<GetType>("/transactions", transaction)
+    if (!data.transaction) return
 
-    const formattedTransaction: TransactionProps = {
-      ...newTransaction,
-      id: UUID(),
-      date: parseYearMonthDay(newTransaction.date),
-      dateDisplay: parseDateBr(newTransaction.date),
-      amountDisplay: formatCurrency(newTransaction.amount),
-    }
-
-    const newTransactions = [
-      ...transactions,
-      formattedTransaction,
-    ]
-
-    setTransactions(newTransactions)
+    getAll()
   }
 
-  const edit = (transaction: TransactionProps) => {
-    console.log("edit: ", transaction)
+  const edit = async (transaction: TransactionProps) => {
+    const { id: idTransaction } = transaction
+
+    const { data } = await api.delete<GetType>(`/transactions/${idTransaction}`)
+    if (!data.transaction) return
+
+    getAll()
   }
 
-  const remove = (transaction: TransactionProps) => {
-    console.log("remove: ", transaction)
+  const remove = async (idTransaction: string) => {
+    const { status } = await api.delete<{ ok?: true }>(`/transactions/${idTransaction}`)
+
+    if (status === 200) {
+      getAll()
+      return true
+    }
+
+    return undefined
   }
 
   return {

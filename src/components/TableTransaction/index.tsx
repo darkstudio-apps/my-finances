@@ -1,8 +1,10 @@
-import { Table, Thead, Tbody, Tfoot, Tr, Th, Td, Icon, HStack } from "@chakra-ui/react"
+import { useState } from "react"
+import { Table, Thead, Tbody, Tfoot, Tr, Th, Td, Icon, HStack, useDisclosure } from "@chakra-ui/react"
 import { FiEdit3, FiTrash } from "react-icons/fi"
 
 import { TableTransactionTh } from "./TableTransactionTh"
 import { TransactionProps } from "../../hooks/useTransactions"
+import { AlertDialogDelete } from "../AlertDialogDelete"
 
 interface TableTransactionProps {
   data: TransactionProps[]
@@ -11,6 +13,19 @@ interface TableTransactionProps {
 }
 
 export function TableTransaction({ data, onEdit, onDelete }: TableTransactionProps) {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [idTransaction, setIdTransaction] = useState("")
+
+  const openDialogDelete = (idTransaction: string) => {
+    setIdTransaction(idTransaction)
+    onOpen()
+  }
+
+  const submitDialogDelete = (idTransaction: string) => {
+    onClose()
+    onDelete && onDelete(idTransaction)
+  }
+
   return (
     <Table variant="simple" bg="gray.700" borderRadius="xl">
       <Thead>
@@ -33,11 +48,11 @@ export function TableTransaction({ data, onEdit, onDelete }: TableTransactionPro
               </Td>
 
               <Td borderColor="gray.600" color={isIncome ? "green.400" : "red.400"}>
-                {transaction.amount}
+                {transaction.amountDisplay}
               </Td>
 
               <Td borderColor="gray.600">
-                {transaction.date}
+                {transaction.dateDisplay}
               </Td>
 
               {(onEdit || onDelete) && (
@@ -59,7 +74,7 @@ export function TableTransaction({ data, onEdit, onDelete }: TableTransactionPro
                         as={FiTrash}
                         width={5}
                         height={5}
-                        onClick={() => onDelete(transaction.id)}
+                        onClick={() => openDialogDelete(transaction.id)}
                         transition="200ms"
                         _hover={{ color: "red.400" }}
                       />
@@ -74,7 +89,16 @@ export function TableTransaction({ data, onEdit, onDelete }: TableTransactionPro
 
       <Tfoot>
         <Tr>
-          <Th></Th>
+          <Th>
+            <AlertDialogDelete
+              id={idTransaction}
+              title="Deletar transação"
+              description="Deseja realmente exluir a transação?"
+              isOpen={isOpen}
+              onClose={onClose}
+              onSubmit={submitDialogDelete}
+            />
+          </Th>
         </Tr>
       </Tfoot>
     </Table>
