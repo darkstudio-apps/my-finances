@@ -1,4 +1,4 @@
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { css } from "@emotion/react"
 import {
   Modal,
@@ -16,31 +16,55 @@ import {
 } from "@chakra-ui/react"
 
 import { CheckBoxCard } from "../CheckBoxCard"
-import { TransactionModelProps } from "../../hooks/useTransactions/transaction.types"
-import { useModalTransaction } from "./useModalTransaction"
+import { TransactionModelProps, } from "../../hooks/useTransactions/transaction.types"
+import { TransactionStateProps, useModalTransaction } from "./useModalTransaction"
+import { TransactionProps } from "../../hooks/useTransactions"
 
 interface ModalTransactionProps {
+  dataToEdit?: TransactionProps | null
   isOpen: boolean
   onClose: () => void
   onSave: (transaction: TransactionModelProps) => void
+  onSaveEdit: (id: string, transaction: TransactionModelProps) => void
 }
 
-export function ModalTransaction({ isOpen, onClose, onSave }: ModalTransactionProps) {
+export function ModalTransaction({ dataToEdit, isOpen, onClose, onSave, onSaveEdit }: ModalTransactionProps) {
   const toast = useToast()
   const initialRef = useRef(null)
   const finalRef = useRef(null)
 
   const {
     transaction,
+    setTransaction,
     handleChangeTransaction,
+    validateTransaction,
     generateTransactionToSave,
     clearState,
   } = useModalTransaction()
 
-  const handleSave = () => {
-    const newTransaction = generateTransactionToSave()
+  const [enableEditing, setEnableEditing] = useState(false)
+  const isDisabled = !!dataToEdit && !enableEditing
 
-    if (newTransaction === null) {
+  useEffect(() => {
+    if (dataToEdit) {
+      const transitionToEdit: TransactionStateProps = {
+        title: dataToEdit.title,
+        amount: dataToEdit.amountDisplay,
+        date: dataToEdit.date,
+        type: dataToEdit.type,
+      }
+
+      setTransaction(transitionToEdit)
+      setEnableEditing(false)
+    } else {
+      setTransaction(null)
+    }
+  }, [dataToEdit])
+
+  const handleSave = () => {
+    const isValid = validateTransaction()
+
+    if (!isValid) {
       return toast({
         title: "Campos obrigatórios",
         description: "Todos os campos devem ser preenchidos.",
@@ -51,7 +75,14 @@ export function ModalTransaction({ isOpen, onClose, onSave }: ModalTransactionPr
       })
     }
 
-    onSave(newTransaction)
+    if (!dataToEdit) {
+      const newTransaction = generateTransactionToSave()
+      if (newTransaction) onSave(newTransaction)
+    } else {
+      const modifiedTransaction = generateTransactionToSave()
+      if (modifiedTransaction) onSaveEdit(dataToEdit.id, modifiedTransaction)
+    }
+
     onClose()
     clearState()
   }
@@ -66,7 +97,7 @@ export function ModalTransaction({ isOpen, onClose, onSave }: ModalTransactionPr
     >
       <ModalOverlay />
       <ModalContent borderRadius="xl">
-        <ModalHeader>Cadastrar Transação</ModalHeader>
+        <ModalHeader>{!dataToEdit ? "Cadastrar uma Transação" : "Editar uma Transação"}</ModalHeader>
         <ModalCloseButton />
 
         <ModalBody pb={6}>
@@ -77,6 +108,7 @@ export function ModalTransaction({ isOpen, onClose, onSave }: ModalTransactionPr
               value={transaction.title}
               onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
               ref={initialRef}
+              disabled={isDisabled}
             />
 
             <HStack spacing={2}>
@@ -85,6 +117,7 @@ export function ModalTransaction({ isOpen, onClose, onSave }: ModalTransactionPr
                 placeholder="Valor"
                 value={transaction.amount}
                 onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
+                disabled={isDisabled}
               />
 
               <Input
@@ -93,6 +126,7 @@ export function ModalTransaction({ isOpen, onClose, onSave }: ModalTransactionPr
                 value={transaction.date}
                 onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
                 type="date"
+                disabled={isDisabled}
                 css={
                   css`
                     &[type="date"]::-webkit-calendar-picker-indicator {
@@ -110,6 +144,7 @@ export function ModalTransaction({ isOpen, onClose, onSave }: ModalTransactionPr
                 label="Entrada"
                 checkedType={transaction.type}
                 onClick={(typeSelected) => handleChangeTransaction("type", typeSelected)}
+                disabled={isDisabled}
               />
 
               <CheckBoxCard
@@ -117,17 +152,24 @@ export function ModalTransaction({ isOpen, onClose, onSave }: ModalTransactionPr
                 label="Saída"
                 checkedType={transaction.type}
                 onClick={(typeSelected) => handleChangeTransaction("type", typeSelected)}
+                disabled={isDisabled}
               />
             </HStack>
           </Stack>
         </ModalBody>
 
         <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={handleSave}>
-            Save
-          </Button>
+          {(!dataToEdit || enableEditing) ? (
+            <>
+              <Button colorScheme="blue" mr={3} onClick={handleSave}>
+                Save
+              </Button>
 
-          <Button onClick={onClose}>Cancel</Button>
+              <Button onClick={onClose}>Cancel</Button>
+            </>
+          ) : (
+            <Button w="240px" mx="auto" onClick={() => setEnableEditing(true)}>Editar</Button>
+          )}
         </ModalFooter>
       </ModalContent>
     </Modal>

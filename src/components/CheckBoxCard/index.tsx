@@ -7,6 +7,7 @@ interface CheckBoxCardProps {
   type: TransactionTypeProps
   checkedType?: TransactionTypeProps | null
   onClick?: (typeSelected: TransactionTypeProps) => void
+  disabled?: boolean
 }
 
 const themes = {
@@ -22,7 +23,7 @@ const themes = {
   },
 }
 
-export function CheckBoxCard({ label, type, checkedType, onClick }: CheckBoxCardProps) {
+export function CheckBoxCard({ label, type, checkedType, onClick, disabled }: CheckBoxCardProps) {
   let backgroundColor = "initial"
 
   if (checkedType === type) {
@@ -30,7 +31,7 @@ export function CheckBoxCard({ label, type, checkedType, onClick }: CheckBoxCard
   }
 
   const handleOnClick = () => {
-    if (onClick) {
+    if (onClick && !disabled) {
       onClick(type)
     }
   }
@@ -48,7 +49,7 @@ export function CheckBoxCard({ label, type, checkedType, onClick }: CheckBoxCard
       borderColor="gray.600"
       backgroundColor={backgroundColor}
       onClick={handleOnClick}
-      cursor="pointer"
+      cursor={!disabled ? "pointer" : "no-drop"}
     >
       <Text>{label}</Text>
       <Icon as={themes[type].iconSvg} w={6} h={6} color={themes[type].color} />

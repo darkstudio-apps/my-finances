@@ -14,7 +14,8 @@ export const onlyNumbers = (txt: string) => {
 }
 
 export const formatFloat = (amount: string) => {
-  return parseFloat(amount.replace(".", "").replace(",", "."))
+  const amountFormatReal = formatReal(amount).replace(".", "").replace(",", ".")
+  return parseFloat(amountFormatReal)
 }
 
 export const formatReal = (amount: string | number) => {

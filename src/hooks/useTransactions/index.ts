@@ -72,10 +72,8 @@ export function useTransactions() {
     getAll()
   }
 
-  const edit = async (transaction: TransactionProps) => {
-    const { id: idTransaction } = transaction
-
-    const { data } = await api.delete<GetType>(`/transactions/${idTransaction}`)
+  const edit = async (id: string, transaction: TransactionModelProps) => {
+    const { data } = await api.put<GetType>(`/transactions/${id}`, transaction)
     if (!data.transaction) return
 
     getAll()

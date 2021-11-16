@@ -3,7 +3,7 @@ import { TransactionModelProps, TransactionTypeProps } from "../../hooks/useTran
 import { parseToUTCandISO } from "../../utils/dateUtil"
 import { formatFloat, formatReal } from "../../utils/maskUtil"
 
-interface TransactionStateProps {
+export interface TransactionStateProps {
   title: string
   amount: string
   date: string
@@ -29,13 +29,19 @@ export function useModalTransaction() {
     })
   }
 
-  const generateTransactionToSave = (): TransactionModelProps | null => {
+  const validateTransaction = () => {
     const includesValueEmpty = Object.values(transaction).includes("")
     const amountZero = transaction.amount === "0,00"
 
     if (includesValueEmpty || amountZero || transaction.type === null) {
-      return null
+      return false
     }
+
+    return true
+  }
+
+  const generateTransactionToSave = (): TransactionModelProps | null => {
+    if (transaction.type === null) return null
 
     const type: TransactionTypeProps = transaction.type
 
@@ -55,7 +61,12 @@ export function useModalTransaction() {
 
   return {
     transaction,
+    setTransaction: (transaction: TransactionStateProps | null) => {
+      if (transaction) setTransaction(transaction)
+      else setTransaction(transactionObjInitial)
+    },
     handleChangeTransaction,
+    validateTransaction,
     generateTransactionToSave,
     clearState,
   }

@@ -13,15 +13,23 @@ export default function Transactions() {
   const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const { transactions, summary, create, remove } = useTransactions()
+  const { transactions, summary, create, edit, remove } = useTransactions()
+
+  const [transactionToEdit, setTransactionToEdit] = useState<TransactionProps | null>(null)
 
   const [filters, setFilters] = useState(() => {
     const { month, year } = getObjYearMonthDay()
     return { month, year }
   })
 
+  const handleOpenNewTransaction = () => {
+    setTransactionToEdit(null)
+    onOpen()
+  }
+
   const handleEdit = (transaction: TransactionProps) => {
-    console.log(transaction)
+    setTransactionToEdit(transaction)
+    onOpen()
   }
 
   const handleDelete = async (idTransaction: string) => {
@@ -97,7 +105,7 @@ export default function Transactions() {
           </HStack>
 
           <Button
-            onClick={onOpen}
+            onClick={handleOpenNewTransaction}
             borderRadius="md"
             colorScheme="blue"
             paddingX={10}
@@ -110,9 +118,11 @@ export default function Transactions() {
       </Stack>
 
       <ModalTransaction
+        dataToEdit={transactionToEdit}
         isOpen={isOpen}
         onClose={onClose}
         onSave={create}
+        onSaveEdit={edit}
       />
     </Stack>
   )
