@@ -10,6 +10,7 @@ import {
   ModalCloseButton,
   Button,
   Input,
+  Select,
   HStack,
   Stack,
   useToast,
@@ -51,6 +52,8 @@ export function ModalTransaction({ dataToEdit, isOpen, onClose, onSave, onSaveEd
         title: dataToEdit.title,
         amount: dataToEdit.amountDisplay,
         date: dataToEdit.date,
+        status: dataToEdit.status,
+        recurrence: dataToEdit.recurrence,
         type: dataToEdit.type,
       }
 
@@ -139,6 +142,33 @@ export function ModalTransaction({ dataToEdit, isOpen, onClose, onSave, onSaveEd
             </HStack>
 
             <HStack spacing={2}>
+              <Select
+                name="status"
+                value={transaction.status}
+                onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
+                placeholder="Status"
+                disabled={isDisabled}
+              >
+                <option value="cinza">cinza</option>
+                <option value="laranja">laranja</option>
+                <option value="verde">verde</option>
+              </Select>
+
+              <Select
+                name="recurrence"
+                value={transaction.recurrence}
+                onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
+                placeholder="Recorrência"
+                disabled={isDisabled}
+              >
+                <option value="every-1-week">a cada 1 semana</option>
+                <option value="every-15-days">a cada 15 dias</option>
+                <option value="monthly">Mensal</option>
+                <option value="yearly">Anual</option>
+              </Select>
+            </HStack>
+
+            <HStack spacing={2}>
               <CheckBoxCard
                 type="deposit"
                 label="Entrada"
@@ -162,10 +192,10 @@ export function ModalTransaction({ dataToEdit, isOpen, onClose, onSave, onSaveEd
           {(!dataToEdit || enableEditing) ? (
             <>
               <Button colorScheme="blue" mr={3} onClick={handleSave}>
-                Save
+                Salvar
               </Button>
 
-              <Button onClick={onClose}>Cancel</Button>
+              <Button onClick={onClose}>Cancelar</Button>
             </>
           ) : (
             <Button w="240px" mx="auto" onClick={() => setEnableEditing(true)}>Editar</Button>

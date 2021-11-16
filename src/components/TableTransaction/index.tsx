@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Table, Thead, Tbody, Tfoot, Tr, Th, Td, Icon, HStack, useDisclosure } from "@chakra-ui/react"
+import { Box, Table, Thead, Tbody, Tfoot, Tr, Th, Td, Icon, HStack, useDisclosure } from "@chakra-ui/react"
 import { FiEdit3, FiTrash } from "react-icons/fi"
 
 import { TableTransactionTh } from "./TableTransactionTh"
@@ -30,6 +30,7 @@ export function TableTransaction({ data, onEdit, onDelete }: TableTransactionPro
     <Table variant="simple" bg="gray.700" borderRadius="xl">
       <Thead>
         <Tr>
+          <TableTransactionTh>Status</TableTransactionTh>
           <TableTransactionTh>Título</TableTransactionTh>
           <TableTransactionTh>Valor</TableTransactionTh>
           <TableTransactionTh>Data</TableTransactionTh>
@@ -43,6 +44,10 @@ export function TableTransaction({ data, onEdit, onDelete }: TableTransactionPro
 
           return (
             <Tr key={transaction.id} _hover={{ bg: "gray.600" }} cursor="pointer">
+              <Td borderColor="gray.600">
+                <Box w={2} h={2} borderRadius="100%" bg="green.600" />
+              </Td>
+
               <Td borderColor="gray.600">
                 {transaction.title}
               </Td>

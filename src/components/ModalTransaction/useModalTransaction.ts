@@ -7,6 +7,8 @@ export interface TransactionStateProps {
   title: string
   amount: string
   date: string
+  status: string
+  recurrence: string
   type: TransactionTypeProps | null
 }
 
@@ -14,6 +16,8 @@ const transactionObjInitial: TransactionStateProps = {
   title: "",
   amount: "0,00",
   date: "",
+  status: "",
+  recurrence: "",
   type: null,
 }
 
@@ -47,6 +51,7 @@ export function useModalTransaction() {
 
     const newTransaction: TransactionModelProps = {
       ...transaction,
+      idUser: "",
       type,
       amount: formatFloat(transaction.amount),
       date: parseToUTCandISO(transaction.date),

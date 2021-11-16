@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useToast } from "@chakra-ui/react"
 import { api } from "../../services/api"
 import { TransactionReqProps, TransactionModelProps } from "./transaction.types"
 import { formatCurrency } from "../../utils/maskUtil"
@@ -15,6 +16,8 @@ interface GetType {
 }
 
 export function useTransactions() {
+  const toast = useToast()
+
   const [transactions, setTransactions] = useState<TransactionProps[]>([])
   const [summary, setSummary] = useState({
     deposit: "R$ 0,00",
@@ -66,10 +69,20 @@ export function useTransactions() {
   }
 
   const create = async (transaction: TransactionModelProps) => {
-    const { data } = await api.post<GetType>("/transactions", transaction)
-    if (!data.transaction) return
+    try {
+      const { data } = await api.post<GetType>("/transactions", transaction)
+      if (!data.transaction) return
 
-    getAll()
+      getAll()
+    } catch (error) {
+      toast({
+        title: "Erro ao criar uma transação!",
+        status: "error",
+        position: "top",
+        duration: 3000,
+        isClosable: true,
+      })
+    }
   }
 
   const edit = async (id: string, transaction: TransactionModelProps) => {
