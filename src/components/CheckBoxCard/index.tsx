@@ -50,7 +50,6 @@ export function CheckBoxCard({ label, type, checkedType, onClick, disabled }: Ch
       backgroundColor={backgroundColor}
       onClick={handleOnClick}
       cursor={!disabled ? "pointer" : "no-drop"}
-      opacity={!disabled ? 1 : 0.7}
     >
       <Text>{label}</Text>
       <Icon as={themes[type].iconSvg} w={6} h={6} color={themes[type].color} />

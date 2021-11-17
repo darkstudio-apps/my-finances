@@ -112,6 +112,7 @@ export function ModalTransaction({ dataToEdit, isOpen, onClose, onSave, onSaveEd
               onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
               ref={initialRef}
               disabled={isDisabled}
+              _disabled={{ cursor: "no-drop" }}
             />
 
             <HStack spacing={2}>
@@ -121,6 +122,7 @@ export function ModalTransaction({ dataToEdit, isOpen, onClose, onSave, onSaveEd
                 value={transaction.amount}
                 onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
                 disabled={isDisabled}
+                _disabled={{ cursor: "no-drop" }}
               />
 
               <Input
@@ -130,6 +132,7 @@ export function ModalTransaction({ dataToEdit, isOpen, onClose, onSave, onSaveEd
                 onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
                 type="date"
                 disabled={isDisabled}
+                _disabled={{ cursor: "no-drop" }}
                 css={
                   css`
                     &[type="date"]::-webkit-calendar-picker-indicator {
@@ -148,10 +151,11 @@ export function ModalTransaction({ dataToEdit, isOpen, onClose, onSave, onSaveEd
                 onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
                 placeholder="Status"
                 disabled={isDisabled}
+                _disabled={{ cursor: "no-drop", opacity: 1 }}
               >
-                <option value="cinza">cinza</option>
-                <option value="laranja">laranja</option>
-                <option value="verde">verde</option>
+                <option value="cinza">Cinza</option>
+                <option value="laranja">Laranja</option>
+                <option value="verde">Verde</option>
               </Select>
 
               <Select
@@ -160,9 +164,10 @@ export function ModalTransaction({ dataToEdit, isOpen, onClose, onSave, onSaveEd
                 onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
                 placeholder="Recorrência"
                 disabled={isDisabled}
+                _disabled={{ cursor: "no-drop", opacity: 1 }}
               >
-                <option value="every-1-week">a cada 1 semana</option>
-                <option value="every-15-days">a cada 15 dias</option>
+                <option value="every-1-week">A cada 1 semana</option>
+                <option value="every-15-days">A cada 15 dias</option>
                 <option value="monthly">Mensal</option>
                 <option value="yearly">Anual</option>
               </Select>

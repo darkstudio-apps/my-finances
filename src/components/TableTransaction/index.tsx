@@ -43,7 +43,12 @@ export function TableTransaction({ data, onEdit, onDelete }: TableTransactionPro
           const isIncome = transaction.type === "deposit"
 
           return (
-            <Tr key={transaction.id} _hover={{ bg: "gray.600" }} cursor="pointer">
+            <Tr
+              key={transaction.id}
+              onClick={() => onEdit && onEdit(transaction)}
+              _hover={{ bg: "gray.600" }}
+              cursor="pointer"
+            >
               <Td borderColor="gray.600">
                 <Box w={2} h={2} borderRadius="100%" bg="green.600" />
               </Td>
