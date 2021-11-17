@@ -64,7 +64,7 @@ export function ModalTransaction({ dataToEdit, isOpen, onClose, onSave, onSaveEd
     }
   }, [dataToEdit])
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const isValid = validateTransaction()
 
     if (!isValid) {
@@ -79,10 +79,10 @@ export function ModalTransaction({ dataToEdit, isOpen, onClose, onSave, onSaveEd
     }
 
     if (!dataToEdit) {
-      const newTransaction = generateTransactionToSave()
+      const newTransaction = await generateTransactionToSave()
       if (newTransaction) onSave(newTransaction)
     } else {
-      const modifiedTransaction = generateTransactionToSave()
+      const modifiedTransaction = await generateTransactionToSave()
       if (modifiedTransaction) onSaveEdit(dataToEdit.id, modifiedTransaction)
     }
 

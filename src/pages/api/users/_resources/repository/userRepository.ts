@@ -10,10 +10,10 @@ async function list() {
   return user
 }
 
-async function get(idUser: string) {
-  const user = await prisma.user.findUnique({
+async function get(email: string) {
+  const user = await prisma.user.findFirst({
     where: {
-      id: idUser,
+      email,
     },
   })
 
@@ -23,6 +23,27 @@ async function get(idUser: string) {
 async function post(user: UserModelProps) {
   const newUser = await prisma.user.create({
     data: user,
+  })
+
+  return newUser
+}
+
+async function upsert(user: UserModelProps) {
+  const { name, email } = user
+
+  const getUser = await prisma.user.findFirst({
+    where: {
+      email,
+    },
+  })
+
+  if (getUser) return getUser
+
+  const newUser = await prisma.user.create({
+    data: {
+      name,
+      email,
+    },
   })
 
   return newUser
@@ -58,6 +79,7 @@ export const userRepository = {
   list,
   get,
   post,
+  upsert,
   put,
   patch,
   remove,

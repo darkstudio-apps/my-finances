@@ -6,8 +6,8 @@ async function list() {
   return users
 }
 
-async function get(id: string) {
-  const user = await userRepository.get(id)
+async function get(email: string) {
+  const user = await userRepository.get(email)
   return user
 }
 
