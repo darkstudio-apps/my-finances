@@ -1,7 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next"
+import authorization from "../_middlewares/authorization"
 import { userController } from "./_resources/controller/userController"
 
-export default async function transactions(req: NextApiRequest, res: NextApiResponse) {
+async function users(req: NextApiRequest, res: NextApiResponse) {
   const { method } = req
 
   switch (method) {
@@ -16,3 +17,5 @@ export default async function transactions(req: NextApiRequest, res: NextApiResp
       res.status(405).end(`Method ${method} Not Allowed`)
   }
 }
+
+export default authorization(users)

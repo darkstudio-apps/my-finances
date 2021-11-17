@@ -1,8 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import { RequestType } from "./_resources/types/userRequests.type"
 import { userController } from "./_resources/controller/userController"
+import authorization from "../_middlewares/authorization"
 
-export default async function users(req: NextApiRequest, res: NextApiResponse) {
+async function users(req: NextApiRequest, res: NextApiResponse) {
   const { method, query, body } = req
 
   const idUser = Array.isArray(query.id) ? query.id[0] : query.id
@@ -32,3 +33,5 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
       res.status(405).end(`Method ${method} Not Allowed`)
   }
 }
+
+export default authorization(users)
