@@ -1,13 +1,11 @@
 
 export interface UserReqProps {
   id: string
-  email: string
   name: string
-  username: string
+  email: string
 }
 
 export interface UserModelProps {
-  email: string
   name: string
-  username: string
+  email: string
 }

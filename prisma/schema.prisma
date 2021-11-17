@@ -20,15 +20,7 @@ model Transaction {
 }
 
 model User {
-  id       String @id @default(dbgenerated()) @map("_id") @db.ObjectId
-  email    String
-  name     String
-  username String
-}
-
-model User {
-  id       String @id @default(dbgenerated()) @map("_id") @db.ObjectId
-  email    String
-  name     String
-  username String
+  id    String @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  email String
+  name  String
 }
