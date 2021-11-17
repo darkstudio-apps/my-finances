@@ -1,8 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import { RequestType } from "./_resources/types/transactionRequests.type"
 import { transactionController } from "./_resources/controller/transactionController"
+import authorization from "../_middlewares/authorization"
 
-export default async function transactions(req: NextApiRequest, res: NextApiResponse) {
+async function transactions(req: NextApiRequest, res: NextApiResponse) {
   const { method, query, body } = req
 
   const idTransaction = Array.isArray(query.id) ? query.id[0] : query.id
@@ -28,7 +29,9 @@ export default async function transactions(req: NextApiRequest, res: NextApiResp
       transactionController.remove(request, res)
       break
     default:
-      res.setHeader("Allow", ["GET", "PUT"])
+      res.setHeader("Allow", ["GET", "PUT", "PATCH", "DELETE"])
       res.status(405).end(`Method ${method} Not Allowed`)
   }
 }
+
+export default authorization(transactions)

@@ -1,3 +1,4 @@
+import { getSession } from "next-auth/client"
 import { useState } from "react"
 import { TransactionModelProps, TransactionTypeProps } from "../../hooks/useTransactions/transaction.types"
 import { parseToUTCandISO } from "../../utils/dateUtil"
@@ -34,24 +35,32 @@ export function useModalTransaction() {
   }
 
   const validateTransaction = () => {
-    const includesValueEmpty = Object.values(transaction).includes("")
-    const amountZero = transaction.amount === "0,00"
+    const { title, date } = transaction
 
-    if (includesValueEmpty || amountZero || transaction.type === null) {
+    const includesValueEmpty = [title, date].includes("")
+    const amountZero = transaction.amount === "0,00"
+    const isTypeNull = transaction.type === null
+
+    if (includesValueEmpty || amountZero || isTypeNull) {
       return false
     }
 
     return true
   }
 
-  const generateTransactionToSave = (): TransactionModelProps | null => {
+  const generateTransactionToSave = async (): Promise<TransactionModelProps | null> => {
     if (transaction.type === null) return null
+
+    const session: any = await getSession()
+
+    const idUser = session?.user?.idUser
+    if (!idUser) return null
 
     const type: TransactionTypeProps = transaction.type
 
     const newTransaction: TransactionModelProps = {
       ...transaction,
-      idUser: "",
+      idUser,
       type,
       amount: formatFloat(transaction.amount),
       date: parseToUTCandISO(transaction.date),

@@ -16,7 +16,7 @@ export interface TransactionModelProps {
   title: string
   amount: number
   date: string
-  status?: string
-  recurrence?: string
+  status: string
+  recurrence: string
   type: TransactionTypeProps
 }

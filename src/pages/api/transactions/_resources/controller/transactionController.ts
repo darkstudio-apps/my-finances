@@ -2,9 +2,26 @@ import { NextApiRequest, NextApiResponse } from "next"
 import { RequestPostType, RequestType } from "../types/transactionRequests.type"
 import { transactionService } from "../services/transactionService"
 
-async function list(req: NextApiRequest, res: NextApiResponse) {
+interface ReqListProps extends NextApiRequest {
+  session?: {
+    user?: {
+      name?: string
+      email?: string
+      image?: string
+      idUser?: string
+    },
+    expires?: string
+  }
+}
+
+async function list(req: ReqListProps, res: NextApiResponse) {
   try {
-    const transactions = await transactionService.list()
+    const idUser = req?.session?.user?.idUser
+    if (!idUser) {
+      return res.status(400).json({ message: "user.id not found" })
+    }
+
+    const transactions = await transactionService.list(idUser)
     return res.status(200).json({ transactions })
   } catch (error) {
     return res.status(400).json({ message: error })

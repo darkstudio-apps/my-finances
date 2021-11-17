@@ -1,6 +1,9 @@
 
-import NextAuth from "next-auth"
+import NextAuth, { User } from "next-auth"
 import Providers from "next-auth/providers"
+import { UserModelProps } from "../../../hooks/useUsers/user.types"
+import { userRepository } from "../users/_resources/repository/userRepository"
+import { userService } from "../users/_resources/services/userService"
 
 export default NextAuth({
   providers: [
@@ -15,5 +18,44 @@ export default NextAuth({
   },
   jwt: {
     secret: process.env.JWT_SECRET,
+  },
+  callbacks: {
+    async session(session) {
+      try {
+        const user = await userService.get(String(session.user?.email))
+
+        if (user) {
+          const idUser = user.id
+
+          return {
+            ...session,
+            user: {
+              ...session.user,
+              idUser,
+            },
+          }
+        }
+
+        return session
+      } catch (error) {
+        return session
+      }
+    },
+    async signIn(user: User) {
+      try {
+        const { name, email } = user
+
+        const userObj: UserModelProps = {
+          name: String(name),
+          email: String(email),
+        }
+
+        await userRepository.upsert(userObj)
+
+        return true
+      } catch (error) {
+        return false
+      }
+    },
   },
 })

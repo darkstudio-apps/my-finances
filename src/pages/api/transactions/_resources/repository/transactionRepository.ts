@@ -3,8 +3,13 @@ import { prisma } from "../../../../../services/prisma"
 
 type PartialTransaction = Partial<TransactionReqProps>
 
-async function list() {
-  const transactions = await prisma.transaction.findMany()
+async function list(idUser: string) {
+  const transactions = await prisma.transaction.findMany({
+    where: {
+      idUser,
+    },
+  })
+
   return transactions
 }
 

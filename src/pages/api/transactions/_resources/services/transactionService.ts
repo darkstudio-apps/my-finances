@@ -1,8 +1,8 @@
 import { TransactionModelProps, TransactionReqProps } from "../../../../../hooks/useTransactions/transaction.types"
 import { transactionRepository } from "../repository/transactionRepository"
 
-async function list() {
-  const transactions = await transactionRepository.list()
+async function list(idUser: string) {
+  const transactions = await transactionRepository.list(idUser)
   return transactions
 }
 
