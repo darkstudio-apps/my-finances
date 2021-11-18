@@ -153,9 +153,10 @@ export function ModalTransaction({ dataToEdit, isOpen, onClose, onSave, onSaveEd
                 disabled={isDisabled}
                 _disabled={{ cursor: "no-drop", opacity: 1 }}
               >
-                <option value="cinza">Cinza</option>
-                <option value="laranja">Laranja</option>
-                <option value="verde">Verde</option>
+                <option value="deposit">À receber</option>
+                <option value="withdraw">À pagar</option>
+                <option value="overdue">Vencido</option>
+                <option value="paid">Pago</option>
               </Select>
 
               <Select

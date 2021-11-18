@@ -11,6 +11,17 @@ interface TableTransactionProps {
   onEdit?: (transaction: TransactionProps) => void
   onDelete?: (idTransaction: string) => void
 }
+const colorStatus : any = {
+  deposit: "orange.600",
+  withdraw: "orange.600",
+  overdue: "red.600",
+  paid: "green.600",
+}
+
+const getColorStatus = (type: string)=>{
+  const color = colorStatus[type]
+  return color ? color : "gray.400"
+}
 
 export function TableTransaction({ data, onEdit, onDelete }: TableTransactionProps) {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -50,7 +61,7 @@ export function TableTransaction({ data, onEdit, onDelete }: TableTransactionPro
               cursor="pointer"
             >
               <Td borderColor="gray.600">
-                <Box w={2} h={2} borderRadius="100%" bg="green.600" />
+                <Box w={2} h={2} borderRadius="100%" bg={getColorStatus(transaction.status)} />
               </Td>
 
               <Td borderColor="gray.600">
