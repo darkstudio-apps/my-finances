@@ -172,7 +172,7 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
                 <option value="paid">Pago</option>
               </Select>
 
-              <Select
+              {/* <Select
                 name="recurrence"
                 value={transaction.recurrence}
                 onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
@@ -184,7 +184,7 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
                 <option value="every-15-days">A cada 15 dias</option>
                 <option value="monthly">Mensal</option>
                 <option value="yearly">Anual</option>
-              </Select>
+              </Select> */}
             </HStack>
 
             <HStack spacing={2}>
