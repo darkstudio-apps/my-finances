@@ -3,7 +3,7 @@ import { useToast } from "@chakra-ui/react"
 import { api } from "../../services/api"
 import { TransactionReqProps, TransactionModelProps } from "./transaction.types"
 import { formatCurrency } from "../../utils/maskUtil"
-import { parseDateBr, parseYearMonthDay } from "../../utils/dateUtil"
+import { getObjYearMonthDay, parseDateBr, parseYearMonthDay } from "../../utils/dateUtil"
 
 export interface TransactionProps extends TransactionReqProps {
   dateDisplay: string
@@ -15,17 +15,22 @@ interface GetType {
   transaction?: TransactionReqProps
 }
 
+const summaryDefault = {
+  deposit: "R$ 0,00",
+  withdraw: "R$ 0,00",
+  total: "R$ 0,00",
+}
+
 export function useTransactions() {
   const toast = useToast()
 
-  const [transactions, setTransactions] = useState<TransactionProps[]>([])
-  const [summary, setSummary] = useState({
-    deposit: "R$ 0,00",
-    withdraw: "R$ 0,00",
-    total: "R$ 0,00",
+  const [filters, setFilters] = useState(() => {
+    const { month, year } = getObjYearMonthDay()
+    return { month, year }
   })
 
-  useEffect(() => { getAll() }, [])
+  const [transactions, setTransactions] = useState<TransactionProps[]>([])
+  const [summary, setSummary] = useState(summaryDefault)
 
   useEffect(() => {
     if (transactions.length > 0) {
@@ -52,11 +57,22 @@ export function useTransactions() {
         withdraw: formatCurrency(withdraw),
         total: formatCurrency(total),
       })
+    } else {
+      setSummary(summaryDefault)
     }
   }, [transactions])
 
+  useEffect(() => { getAll() }, [filters.month, filters.year])
+
+  useEffect(() => { getAll() }, [])
+
   const getAll = async () => {
-    const { data } = await api.get<GetType>("/transactions")
+    const { data } = await api.get<GetType>("/transactions", {
+      params: {
+        month: filters.month,
+        year: filters.year,
+      },
+    })
 
     const mappedTransactions = data.transactions.map(transaction => ({
       ...transaction,
@@ -105,6 +121,8 @@ export function useTransactions() {
 
   return {
     transactions,
+    filters,
+    setFilters,
     summary,
     refrash: getAll,
     create,

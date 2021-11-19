@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { GetServerSideProps } from "next"
 import { getSession } from "next-auth/client"
 import { SimpleGrid, Stack, Button, Select, HStack, useToast, useDisclosure } from "@chakra-ui/react"
@@ -13,18 +13,25 @@ export default function Transactions() {
   const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const { transactions, summary, create, edit, remove } = useTransactions()
+  const { transactions, filters, setFilters, summary, create, edit, remove } = useTransactions()
 
   const [transactionToEdit, setTransactionToEdit] = useState<TransactionProps | null>(null)
 
-  const [filters, setFilters] = useState(() => {
+  useEffect(() => {
     const { month, year } = getObjYearMonthDay()
-    return { month, year }
-  })
+    setFilters({ month, year })
+  }, [])
 
   const handleOpenNewTransaction = () => {
     setTransactionToEdit(null)
     onOpen()
+  }
+
+  const handleChangeFilters = (name: string, value: string) => {
+    setFilters(old => ({
+      ...old,
+      [name]: value,
+    }))
   }
 
   const handleEdit = (transaction: TransactionProps) => {
@@ -74,7 +81,7 @@ export default function Transactions() {
               name="month"
               placeholder="Selecione o mês"
               value={filters.month}
-              onChange={({ target: { name, value } }) => setFilters(old => ({ ...old, [name]: value }))}
+              onChange={({ target: { name, value } }) => handleChangeFilters(name, value)}
             >
               <option value="01">Janeiro</option>
               <option value="02">Fevereiro</option>
@@ -130,7 +137,6 @@ export default function Transactions() {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context)
-  console.log("session: ", session)
 
   if (!session) {
     return {
