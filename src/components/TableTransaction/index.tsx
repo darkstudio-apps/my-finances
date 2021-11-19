@@ -5,6 +5,7 @@ import { FiEdit3, FiTrash } from "react-icons/fi"
 import { TableTransactionTh } from "./TableTransactionTh"
 import { TransactionProps } from "../../hooks/useTransactions"
 import { AlertDialogDelete } from "../AlertDialogDelete"
+import { NoContentTableTransaction } from "./NoContentTableTransaction"
 
 interface TableTransactionProps {
   data: TransactionProps[]
@@ -36,6 +37,10 @@ export function TableTransaction({ data, enableModal, onDelete }: TableTransacti
   const submitDialogDelete = async (idTransaction: string) => {
     onClose()
     onDelete && await onDelete(idTransaction)
+  }
+
+  if (data.length < 1) {
+    return <NoContentTableTransaction />
   }
 
   return (
