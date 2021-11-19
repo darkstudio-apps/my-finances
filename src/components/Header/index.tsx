@@ -1,4 +1,4 @@
-import { Avatar, Box, Flex, Heading, HStack, Text, Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react"
+import { Avatar, Box, Flex, Heading, HStack, Text, Menu, MenuButton, MenuList, MenuItem, Image } from "@chakra-ui/react"
 import { signOut, useSession } from "next-auth/client"
 // import { ActiveLink } from "./ActiveLink"
 
@@ -11,7 +11,10 @@ export function Header() {
 
   return (
     <Flex as="header" align="center" justify="space-between" paddingY={8}>
-      <Heading size="lg" color="gray.200">My Finances</Heading>
+      <HStack spacing={4}>
+        <Image src="./icons/money-with-wings.svg" alt="money" />
+        <Heading size="lg" color="gray.200">My Finances</Heading>
+      </HStack>
 
       <HStack as="nav" spacing={8}>
         {/* <ActiveLink href="/transactions">Transações</ActiveLink> */}
