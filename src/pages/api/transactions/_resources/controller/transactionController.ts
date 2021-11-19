@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import { RequestPostType, RequestType } from "../types/transactionRequests.type"
 import { transactionService } from "../services/transactionService"
+import { TransactionReqProps } from "../../../../../hooks/useTransactions/transaction.types"
 
 interface ReqListProps extends NextApiRequest {
   session?: {
@@ -16,12 +17,13 @@ interface ReqListProps extends NextApiRequest {
 
 async function list(req: ReqListProps, res: NextApiResponse) {
   try {
+    const { month, year } = req.query
     const idUser = req?.session?.user?.idUser
     if (!idUser) {
       return res.status(400).json({ message: "user.id not found" })
     }
 
-    const transactions = await transactionService.list(idUser)
+    const transactions = await transactionService.list(idUser, String(month), String(year))
     return res.status(200).json({ transactions })
   } catch (error) {
     return res.status(400).json({ message: error })
