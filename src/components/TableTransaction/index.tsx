@@ -8,9 +8,10 @@ import { AlertDialogDelete } from "../AlertDialogDelete"
 
 interface TableTransactionProps {
   data: TransactionProps[]
-  onEdit?: (transaction: TransactionProps) => void
+  enableModal?: (transaction: TransactionProps, editMode?: boolean) => void
   onDelete?: (idTransaction: string) => void
 }
+
 const colorStatus: any = {
   deposit: "orange.600",
   withdraw: "orange.600",
@@ -23,7 +24,7 @@ const getColorStatus = (type: string) => {
   return color ? color : "gray.400"
 }
 
-export function TableTransaction({ data, onEdit, onDelete }: TableTransactionProps) {
+export function TableTransaction({ data, enableModal, onDelete }: TableTransactionProps) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [idTransaction, setIdTransaction] = useState("")
 
@@ -45,7 +46,7 @@ export function TableTransaction({ data, onEdit, onDelete }: TableTransactionPro
           <TableTransactionTh>Título</TableTransactionTh>
           <TableTransactionTh>Valor</TableTransactionTh>
           <TableTransactionTh>Data</TableTransactionTh>
-          {(onEdit || onDelete) && <TableTransactionTh>Ações</TableTransactionTh>}
+          {(enableModal || onDelete) && <TableTransactionTh>Ações</TableTransactionTh>}
         </Tr>
       </Thead>
 
@@ -60,31 +61,31 @@ export function TableTransaction({ data, onEdit, onDelete }: TableTransactionPro
               _hover={{ bg: "gray.600" }}
               cursor="pointer"
             >
-              <Td borderColor="gray.600" onClick={() => onEdit && onEdit(transaction)}>
+              <Td borderColor="gray.600" onClick={() => enableModal && enableModal(transaction)}>
                 <Box w={2} h={2} borderRadius="100%" bg={getColorStatus(transaction.status)} />
               </Td>
 
-              <Td borderColor="gray.600" onClick={() => onEdit && onEdit(transaction)}>
+              <Td borderColor="gray.600" onClick={() => enableModal && enableModal(transaction)}>
                 {transaction.title}
               </Td>
 
-              <Td borderColor="gray.600" onClick={() => onEdit && onEdit(transaction)} color={isIncome ? "green.400" : "red.400"}>
+              <Td borderColor="gray.600" onClick={() => enableModal && enableModal(transaction)} color={isIncome ? "green.400" : "red.400"}>
                 {transaction.amountDisplay}
               </Td>
 
-              <Td borderColor="gray.600" onClick={() => onEdit && onEdit(transaction)}>
+              <Td borderColor="gray.600" onClick={() => enableModal && enableModal(transaction)}>
                 {transaction.dateDisplay}
               </Td>
 
-              {(onEdit || onDelete) && (
+              {(enableModal || onDelete) && (
                 <Td borderColor="gray.600">
                   <HStack spacing={4}>
-                    {onEdit && (
+                    {enableModal && (
                       <Icon
                         as={FiEdit3}
                         width={5}
                         height={5}
-                        onClick={() => onEdit(transaction)}
+                        onClick={() => enableModal(transaction, true)}
                         transition="200ms"
                         _hover={{ color: "yellow.500" }}
                       />

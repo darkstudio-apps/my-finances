@@ -16,6 +16,7 @@ export default function Transactions() {
   const { transactions, summary, create, edit, remove } = useTransactions()
 
   const [transactionToEdit, setTransactionToEdit] = useState<TransactionProps | null>(null)
+  const [editMode, setEditMode] = useState(false)
 
   const [filters, setFilters] = useState(() => {
     const { month, year } = getObjYearMonthDay()
@@ -24,11 +25,13 @@ export default function Transactions() {
 
   const handleOpenNewTransaction = () => {
     setTransactionToEdit(null)
+    setEditMode(false)
     onOpen()
   }
 
-  const handleEdit = (transaction: TransactionProps) => {
+  const handleEnableModal = (transaction: TransactionProps, edit_mode: boolean = false) => {
     setTransactionToEdit(transaction)
+    setEditMode(edit_mode)
     onOpen()
   }
 
@@ -114,11 +117,12 @@ export default function Transactions() {
           </Button>
         </HStack>
 
-        <TableTransaction data={transactions} onEdit={handleEdit} onDelete={handleDelete} />
+        <TableTransaction data={transactions} enableModal={handleEnableModal} onDelete={handleDelete} />
       </Stack>
 
       <ModalTransaction
         dataToEdit={transactionToEdit}
+        editMode={editMode}
         isOpen={isOpen}
         onClose={onClose}
         onSave={create}
@@ -130,7 +134,6 @@ export default function Transactions() {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context)
-  console.log("session: ", session)
 
   if (!session) {
     return {

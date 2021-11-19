@@ -23,13 +23,14 @@ import { TransactionProps } from "../../hooks/useTransactions"
 
 interface ModalTransactionProps {
   dataToEdit?: TransactionProps | null
+  editMode: boolean
   isOpen: boolean
   onClose: () => void
   onSave: (transaction: TransactionModelProps) => void
   onSaveEdit: (id: string, transaction: TransactionModelProps) => void
 }
 
-export function ModalTransaction({ dataToEdit, isOpen, onClose, onSave, onSaveEdit }: ModalTransactionProps) {
+export function ModalTransaction({ dataToEdit, editMode, isOpen, onClose, onSave, onSaveEdit }: ModalTransactionProps) {
   const toast = useToast()
   const initialRef = useRef(null)
   const finalRef = useRef(null)
@@ -42,9 +43,6 @@ export function ModalTransaction({ dataToEdit, isOpen, onClose, onSave, onSaveEd
     generateTransactionToSave,
     clearState,
   } = useModalTransaction()
-
-  const [enableEditing, setEnableEditing] = useState(false)
-  const isDisabled = !!dataToEdit && !enableEditing
 
   useEffect(() => {
     if (dataToEdit) {
@@ -63,6 +61,13 @@ export function ModalTransaction({ dataToEdit, isOpen, onClose, onSave, onSaveEd
       setTransaction(null)
     }
   }, [dataToEdit])
+
+  const [enableEditing, setEnableEditing] = useState(false)
+  useEffect(() => {
+    setEnableEditing(editMode)
+  }, [editMode])
+
+  const isDisabled = !!dataToEdit && !editMode
 
   const handleSave = async () => {
     const isValid = validateTransaction()
@@ -100,7 +105,15 @@ export function ModalTransaction({ dataToEdit, isOpen, onClose, onSave, onSaveEd
     >
       <ModalOverlay />
       <ModalContent borderRadius="xl">
-        <ModalHeader>{!dataToEdit ? "Cadastrar uma Transação" : "Editar uma Transação"}</ModalHeader>
+        <ModalHeader>
+          {
+            !dataToEdit
+              ? "Cadastrar Transação"
+              : enableEditing
+                ? "Editar Transação"
+                : "Visualizar Transação"
+          }
+        </ModalHeader>
         <ModalCloseButton />
 
         <ModalBody pb={6}>

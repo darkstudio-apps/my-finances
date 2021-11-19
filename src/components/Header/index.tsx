@@ -21,7 +21,7 @@ export function Header() {
       <HStack spacing={4}>
         <Box>
           <Heading fontSize="xl" fontWeight="semibold" color="gray.200">{session?.user?.name}</Heading>
-          <Text fontSize="xs" color="gray.200">1 pendência</Text>
+          <Text fontSize="xs" color="gray.200">Sem pendências</Text>
         </Box>
 
         <Menu id="menu-avatar" isLazy>
