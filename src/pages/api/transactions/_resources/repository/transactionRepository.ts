@@ -10,13 +10,21 @@ interface ListProps {
 }
 
 async function list({ idUser, dateStartISO, dateEndISO }: ListProps) {
-  const transactions = await prisma.transaction.findMany({
-    where: {
-      idUser,
-    },
-  })
+  try {
+    const transactions = await prisma.transaction.findMany({
+      where: {
+        idUser,
+        date: {
+          gte: dateStartISO,
+          lte: dateEndISO,
+        },
+      },
+    })
 
-  return transactions
+    return transactions
+  } catch (error) {
+    return undefined
+  }
 }
 
 async function get(idTransaction: string) {

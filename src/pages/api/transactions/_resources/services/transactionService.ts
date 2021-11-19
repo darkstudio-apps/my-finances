@@ -5,14 +5,14 @@ import { transactionRepository } from "../repository/transactionRepository"
 async function list(idUser: string, month: string, year: string) {
   const dateNow = getObjYearMonthDay()
 
-  const dateYear = year ? year : dateNow.year
   const dateMonth = month ? month : dateNow.month
+  const dateYear = year ? year : dateNow.year
 
   const dateStart = `${dateYear}-${dateMonth}-01`
   const dateEnd = `${dateYear}-${dateMonth}-31`
 
-  const dateStartISO = parseToUTCandISO(dateStart)
-  const dateEndISO = parseToUTCandISO(dateEnd)
+  const dateStartISO = parseToUTCandISO(dateStart, "start")
+  const dateEndISO = parseToUTCandISO(dateEnd, "end")
 
   const transactions = await transactionRepository.list({ idUser, dateStartISO, dateEndISO })
   return transactions
