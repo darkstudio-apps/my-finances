@@ -11,14 +11,14 @@ interface TableTransactionProps {
   onEdit?: (transaction: TransactionProps) => void
   onDelete?: (idTransaction: string) => void
 }
-const colorStatus : any = {
+const colorStatus: any = {
   deposit: "orange.600",
   withdraw: "orange.600",
   overdue: "red.600",
   paid: "green.600",
 }
 
-const getColorStatus = (type: string)=>{
+const getColorStatus = (type: string) => {
   const color = colorStatus[type]
   return color ? color : "gray.400"
 }
@@ -56,23 +56,23 @@ export function TableTransaction({ data, onEdit, onDelete }: TableTransactionPro
           return (
             <Tr
               key={transaction.id}
-              onClick={() => onEdit && onEdit(transaction)}
+              name="tr-transaction"
               _hover={{ bg: "gray.600" }}
               cursor="pointer"
             >
-              <Td borderColor="gray.600">
+              <Td borderColor="gray.600" onClick={() => onEdit && onEdit(transaction)}>
                 <Box w={2} h={2} borderRadius="100%" bg={getColorStatus(transaction.status)} />
               </Td>
 
-              <Td borderColor="gray.600">
+              <Td borderColor="gray.600" onClick={() => onEdit && onEdit(transaction)}>
                 {transaction.title}
               </Td>
 
-              <Td borderColor="gray.600" color={isIncome ? "green.400" : "red.400"}>
+              <Td borderColor="gray.600" onClick={() => onEdit && onEdit(transaction)} color={isIncome ? "green.400" : "red.400"}>
                 {transaction.amountDisplay}
               </Td>
 
-              <Td borderColor="gray.600">
+              <Td borderColor="gray.600" onClick={() => onEdit && onEdit(transaction)}>
                 {transaction.dateDisplay}
               </Td>
 
