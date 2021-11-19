@@ -113,14 +113,15 @@ export default function Transactions() {
         <TableTransaction data={transactions} enableModal={handleEnableModal} onDelete={remove} />
       </Stack>
 
-      <ModalTransaction
-        dataToEdit={transactionToEdit}
-        editMode={editMode}
-        isOpen={isOpen}
-        onClose={onClose}
-        onSave={create}
-        onSaveEdit={edit}
-      />
+      {isOpen && (
+        <ModalTransaction
+          dataToEdit={transactionToEdit}
+          editMode={editMode}
+          onClose={onClose}
+          onSave={create}
+          onSaveEdit={edit}
+        />
+      )}
     </Stack>
   )
 }

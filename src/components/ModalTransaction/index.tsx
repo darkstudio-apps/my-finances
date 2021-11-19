@@ -24,13 +24,12 @@ import { TransactionProps } from "../../hooks/useTransactions"
 interface ModalTransactionProps {
   dataToEdit?: TransactionProps | null
   editMode: boolean
-  isOpen: boolean
   onClose: () => void
   onSave: (transaction: TransactionModelProps) => Promise<void>
   onSaveEdit: (id: string, transaction: TransactionModelProps) => Promise<void>
 }
 
-export function ModalTransaction({ dataToEdit, editMode, isOpen, onClose, onSave, onSaveEdit }: ModalTransactionProps) {
+export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSaveEdit }: ModalTransactionProps) {
   const toast = useToast()
   const initialRef = useRef(null)
   const finalRef = useRef(null)
@@ -59,6 +58,7 @@ export function ModalTransaction({ dataToEdit, editMode, isOpen, onClose, onSave
       setEnableEditing(false)
     } else {
       setTransaction(null)
+      setEnableEditing(false)
     }
   }, [dataToEdit])
 
@@ -99,7 +99,7 @@ export function ModalTransaction({ dataToEdit, editMode, isOpen, onClose, onSave
     <Modal
       initialFocusRef={initialRef}
       finalFocusRef={finalRef}
-      isOpen={isOpen}
+      isOpen={true}
       onClose={onClose}
       isCentered
     >
