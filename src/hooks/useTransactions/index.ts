@@ -73,10 +73,18 @@ export function useTransactions() {
       const { data } = await api.post<GetType>("/transactions", transaction)
       if (!data.transaction) return
 
+      toast({
+        title: "Transação criada com sucesso!",
+        status: "success",
+        position: "top",
+        duration: 3000,
+        isClosable: true,
+      })
+
       getAll()
     } catch (error) {
       toast({
-        title: "Erro ao criar uma transação!",
+        title: "Erro ao criar a transação!",
         status: "error",
         position: "top",
         duration: 3000,
@@ -86,21 +94,54 @@ export function useTransactions() {
   }
 
   const edit = async (id: string, transaction: TransactionModelProps) => {
-    const { data } = await api.put<GetType>(`/transactions/${id}`, transaction)
-    if (!data.transaction) return
+    try {
+      const { data } = await api.put<GetType>(`/transactions/${id}`, transaction)
+      if (!data.transaction) return
 
-    getAll()
+      toast({
+        title: "Transação editada com sucesso!",
+        status: "success",
+        position: "top",
+        duration: 3000,
+        isClosable: true,
+      })
+
+      getAll()
+    } catch (error) {
+      toast({
+        title: "Erro ao editar a transação!",
+        status: "error",
+        position: "top",
+        duration: 3000,
+        isClosable: true,
+      })
+    }
   }
 
   const remove = async (idTransaction: string) => {
-    const { status } = await api.delete<{ ok?: true }>(`/transactions/${idTransaction}`)
+    try {
+      const { status } = await api.delete<{ ok?: true }>(`/transactions/${idTransaction}`)
 
-    if (status === 200) {
-      getAll()
-      return true
+      if (status === 200) {
+        getAll()
+
+        toast({
+          title: "Transação removida com sucesso!",
+          status: "success",
+          position: "top",
+          duration: 3000,
+          isClosable: true,
+        })
+      }
+    } catch (error) {
+      toast({
+        title: "Erro ao remover a transação!",
+        status: "error",
+        position: "top",
+        duration: 3000,
+        isClosable: true,
+      })
     }
-
-    return undefined
   }
 
   return {

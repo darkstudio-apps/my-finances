@@ -26,8 +26,8 @@ interface ModalTransactionProps {
   editMode: boolean
   isOpen: boolean
   onClose: () => void
-  onSave: (transaction: TransactionModelProps) => void
-  onSaveEdit: (id: string, transaction: TransactionModelProps) => void
+  onSave: (transaction: TransactionModelProps) => Promise<void>
+  onSaveEdit: (id: string, transaction: TransactionModelProps) => Promise<void>
 }
 
 export function ModalTransaction({ dataToEdit, editMode, isOpen, onClose, onSave, onSaveEdit }: ModalTransactionProps) {
@@ -67,7 +67,7 @@ export function ModalTransaction({ dataToEdit, editMode, isOpen, onClose, onSave
     setEnableEditing(editMode)
   }, [editMode])
 
-  const isDisabled = !!dataToEdit && !editMode
+  const isDisabled = !!dataToEdit && !enableEditing
 
   const handleSave = async () => {
     const isValid = validateTransaction()
@@ -85,10 +85,10 @@ export function ModalTransaction({ dataToEdit, editMode, isOpen, onClose, onSave
 
     if (!dataToEdit) {
       const newTransaction = await generateTransactionToSave()
-      if (newTransaction) onSave(newTransaction)
+      if (newTransaction) await onSave(newTransaction)
     } else {
       const modifiedTransaction = await generateTransactionToSave()
-      if (modifiedTransaction) onSaveEdit(dataToEdit.id, modifiedTransaction)
+      if (modifiedTransaction) await onSaveEdit(dataToEdit.id, modifiedTransaction)
     }
 
     onClose()

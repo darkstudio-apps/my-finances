@@ -9,7 +9,7 @@ import { AlertDialogDelete } from "../AlertDialogDelete"
 interface TableTransactionProps {
   data: TransactionProps[]
   enableModal?: (transaction: TransactionProps, editMode?: boolean) => void
-  onDelete?: (idTransaction: string) => void
+  onDelete?: (idTransaction: string) => Promise<void>
 }
 
 const colorStatus: any = {
@@ -33,9 +33,9 @@ export function TableTransaction({ data, enableModal, onDelete }: TableTransacti
     onOpen()
   }
 
-  const submitDialogDelete = (idTransaction: string) => {
+  const submitDialogDelete = async (idTransaction: string) => {
     onClose()
-    onDelete && onDelete(idTransaction)
+    onDelete && await onDelete(idTransaction)
   }
 
   return (
