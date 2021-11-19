@@ -3,7 +3,13 @@ import { prisma } from "../../../../../services/prisma"
 
 type PartialTransaction = Partial<TransactionReqProps>
 
-async function list(idUser: string) {
+interface ListProps {
+  idUser: string
+  dateStartISO: string
+  dateEndISO: string
+}
+
+async function list({ idUser, dateStartISO, dateEndISO }: ListProps) {
   const transactions = await prisma.transaction.findMany({
     where: {
       idUser,
