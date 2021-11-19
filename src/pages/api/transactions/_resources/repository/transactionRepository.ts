@@ -19,6 +19,9 @@ async function list({ idUser, dateStartISO, dateEndISO }: ListProps) {
           lte: dateEndISO,
         },
       },
+      orderBy: {
+        date: "asc",
+      },
     })
 
     return transactions
