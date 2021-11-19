@@ -1,8 +1,20 @@
 import { TransactionModelProps, TransactionReqProps } from "../../../../../hooks/useTransactions/transaction.types"
+import { getObjYearMonthDay, parseToUTCandISO } from "../../../../../utils/dateUtil"
 import { transactionRepository } from "../repository/transactionRepository"
 
-async function list(idUser: string) {
-  const transactions = await transactionRepository.list(idUser)
+async function list(idUser: string, month: string, year: string) {
+  const dateNow = getObjYearMonthDay()
+
+  const dateMonth = month ? month : dateNow.month
+  const dateYear = year ? year : dateNow.year
+
+  const dateStart = `${dateYear}-${dateMonth}-01`
+  const dateEnd = `${dateYear}-${dateMonth}-31`
+
+  const dateStartISO = parseToUTCandISO(dateStart, "start")
+  const dateEndISO = parseToUTCandISO(dateEnd, "end")
+
+  const transactions = await transactionRepository.list({ idUser, dateStartISO, dateEndISO })
   return transactions
 }
 
