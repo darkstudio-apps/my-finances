@@ -1,10 +1,22 @@
-export const parseToUTCandISO = (dateYearMonthDay: string) => {
+export const parseToUTCandISO = (dateYearMonthDay: string, hourOffset?: "start" | "end") => {
   const dateNow = new Date()
   const [year, month, day] = dateYearMonthDay.split("-")
 
   dateNow.setFullYear(Number(year))
   dateNow.setMonth(Number(month) - 1)
   dateNow.setDate(Number(day))
+
+  if (hourOffset === "start") {
+    dateNow.setHours(0)
+    dateNow.setMinutes(0)
+    dateNow.setSeconds(0)
+  }
+
+  if (hourOffset === "end") {
+    dateNow.setHours(23)
+    dateNow.setMinutes(59)
+    dateNow.setSeconds(59)
+  }
 
   return dateNow.toISOString()
 }
