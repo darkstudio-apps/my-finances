@@ -17,16 +17,17 @@ import {
 } from "@chakra-ui/react"
 
 import { CheckBoxCard } from "../CheckBoxCard"
-import { TransactionModelProps, } from "../../hooks/useTransactions/transaction.types"
+import { TransactionModelProps, TransactionReqProps, } from "../../hooks/useTransactions/transaction.types"
 import { TransactionStateProps, useModalTransaction } from "./useModalTransaction"
 import { TransactionProps } from "../../hooks/useTransactions"
+import { UseMutationResult } from "react-query"
 
 interface ModalTransactionProps {
   dataToEdit?: TransactionProps | null
   editMode: boolean
   onClose: () => void
-  onSave: (transaction: TransactionModelProps) => Promise<void>
-  onSaveEdit: (id: string, transaction: TransactionModelProps) => Promise<void>
+  onSave: UseMutationResult<void, unknown, TransactionModelProps, unknown>
+  onSaveEdit: UseMutationResult<void, unknown, { id: string, transaction: TransactionModelProps }, unknown>
 }
 
 export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSaveEdit }: ModalTransactionProps) {
@@ -85,15 +86,20 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
 
     if (!dataToEdit) {
       const newTransaction = await generateTransactionToSave()
-      if (newTransaction) await onSave(newTransaction)
+      if (newTransaction) await onSave.mutateAsync(newTransaction)
     } else {
       const modifiedTransaction = await generateTransactionToSave()
-      if (modifiedTransaction) await onSaveEdit(dataToEdit.id, modifiedTransaction)
+      if (modifiedTransaction) await onSaveEdit.mutateAsync({
+        id: dataToEdit.id,
+        transaction: modifiedTransaction
+      })
     }
 
     onClose()
     clearState()
   }
+
+  console.log('onSave.isLoading: ', onSave.isLoading)
 
   return (
     <Modal
@@ -210,7 +216,12 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
         <ModalFooter>
           {(!dataToEdit || enableEditing) ? (
             <>
-              <Button colorScheme="blue" mr={3} onClick={handleSave}>
+              <Button
+                colorScheme="green"
+                mr={3}
+                onClick={handleSave}
+                isLoading={onSave.isLoading || onSaveEdit.isLoading}
+              >
                 Salvar
               </Button>
 

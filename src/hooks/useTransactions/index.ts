@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react"
+import { useMutation, useQuery, useQueryClient } from "react-query"
 import { useToast } from "@chakra-ui/react"
+
 import { api } from "../../services/api"
 import { TransactionReqProps, TransactionModelProps } from "./transaction.types"
 import { formatCurrency } from "../../utils/maskUtil"
@@ -23,17 +25,39 @@ const summaryDefault = {
 
 export function useTransactions() {
   const toast = useToast()
+  const queryClient = useQueryClient()
 
+  const { data: transactions, isLoading, refetch, isFetching } = useQuery('/transactions', async () => {
+    const { data } = await api.get<GetType>("/transactions", {
+      params: {
+        month: filters.month,
+        year: filters.year,
+      },
+    })
+
+    const mappedTransactions = data.transactions.map(transaction => ({
+      ...transaction,
+      date: parseYearMonthDay(transaction.date),
+      dateDisplay: parseDateBr(transaction.date),
+      amountDisplay: formatCurrency(transaction.amount),
+    }))
+
+    return mappedTransactions
+  }, {
+    refetchInterval: false
+  })
+
+  const [summary, setSummary] = useState(summaryDefault)
   const [filters, setFilters] = useState(() => {
     const { month, year } = getObjYearMonthDay()
     return { month, year }
   })
 
-  const [transactions, setTransactions] = useState<TransactionProps[]>([])
-  const [summary, setSummary] = useState(summaryDefault)
+  useEffect(() => { refetch() }, [])
+  useEffect(() => { refetch() }, [filters.month, filters.year])
 
   useEffect(() => {
-    if (transactions.length > 0) {
+    if (transactions && transactions.length > 0) {
       const deposit = transactions.reduce((acc, transaction) => {
         if (transaction.type === "deposit") {
           return acc + transaction.amount
@@ -62,29 +86,7 @@ export function useTransactions() {
     }
   }, [transactions])
 
-  useEffect(() => { getAll() }, [filters.month, filters.year])
-
-  useEffect(() => { getAll() }, [])
-
-  const getAll = async () => {
-    const { data } = await api.get<GetType>("/transactions", {
-      params: {
-        month: filters.month,
-        year: filters.year,
-      },
-    })
-
-    const mappedTransactions = data.transactions.map(transaction => ({
-      ...transaction,
-      date: parseYearMonthDay(transaction.date),
-      dateDisplay: parseDateBr(transaction.date),
-      amountDisplay: formatCurrency(transaction.amount),
-    }))
-
-    setTransactions(mappedTransactions)
-  }
-
-  const create = async (transaction: TransactionModelProps) => {
+  const create = useMutation(async (transaction: TransactionModelProps) => {
     try {
       const { data } = await api.post<GetType>("/transactions", transaction)
       if (!data.transaction) return
@@ -96,8 +98,6 @@ export function useTransactions() {
         duration: 3000,
         isClosable: true,
       })
-
-      getAll()
     } catch (error) {
       toast({
         title: "Erro ao criar a transação!",
@@ -107,9 +107,14 @@ export function useTransactions() {
         isClosable: true,
       })
     }
-  }
+  }, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('/transactions')
+    },
+  })
 
-  const edit = async (id: string, transaction: TransactionModelProps) => {
+  type EditProps = { id: string, transaction: TransactionModelProps }
+  const edit = useMutation(async ({ id, transaction }: EditProps) => {
     try {
       const { data } = await api.put<GetType>(`/transactions/${id}`, transaction)
       if (!data.transaction) return
@@ -121,8 +126,6 @@ export function useTransactions() {
         duration: 3000,
         isClosable: true,
       })
-
-      getAll()
     } catch (error) {
       toast({
         title: "Erro ao editar a transação!",
@@ -132,15 +135,17 @@ export function useTransactions() {
         isClosable: true,
       })
     }
-  }
+  }, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('/transactions')
+    },
+  })
 
-  const remove = async (idTransaction: string) => {
+  const remove = useMutation(async (idTransaction: string) => {
     try {
       const { status } = await api.delete<{ ok?: true }>(`/transactions/${idTransaction}`)
 
       if (status === 200) {
-        getAll()
-
         toast({
           title: "Transação removida com sucesso!",
           status: "success",
@@ -158,14 +163,22 @@ export function useTransactions() {
         isClosable: true,
       })
     }
-  }
+  }, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('/transactions')
+    },
+  })
 
   return {
-    transactions,
+    transactions: {
+      data: transactions,
+      isLoading,
+      isFetching,
+      refetch,
+    },
     filters,
     setFilters,
     summary,
-    refrash: getAll,
     create,
     edit,
     remove,

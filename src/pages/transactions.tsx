@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { GetServerSideProps } from "next"
 import { getSession } from "next-auth/client"
-import { SimpleGrid, Stack, Button, Select, HStack, useDisclosure } from "@chakra-ui/react"
+import { SimpleGrid, Stack, Button, Select, Spinner, HStack, useDisclosure } from "@chakra-ui/react"
 
 import { CardTransaction } from "../components/CardTransaction"
 import { TableTransaction } from "../components/TableTransaction"
@@ -100,17 +100,28 @@ export default function Transactions() {
             </Select>
           </HStack>
 
-          <Button
-            onClick={handleOpenNewTransaction}
-            borderRadius="md"
-            colorScheme="blue"
-            paddingX={10}
-          >
-            Nova Transação
-          </Button>
+          <HStack spacing={4}>
+            {transactions.isFetching && (
+              <Spinner />
+            )}
+
+            <Button
+              onClick={handleOpenNewTransaction}
+              borderRadius="md"
+              colorScheme="green"
+              paddingX={10}
+            >
+              Nova Transação
+            </Button>
+          </HStack>
         </HStack>
 
-        <TableTransaction data={transactions} enableModal={handleEnableModal} onDelete={remove} />
+        <TableTransaction
+          data={transactions.data}
+          isLoading={transactions.isLoading}
+          enableModal={handleEnableModal}
+          onDelete={remove}
+        />
       </Stack>
 
       {isOpen && (

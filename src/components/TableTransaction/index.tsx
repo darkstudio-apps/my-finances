@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { Box, Table, Thead, Tbody, Tfoot, Tr, Th, Td, Icon, HStack, useDisclosure } from "@chakra-ui/react"
+import { UseMutationResult } from "react-query"
+import { Box, Table, Thead, Tbody, Tfoot, Tr, Th, Td, Icon, HStack, Spinner, useDisclosure } from "@chakra-ui/react"
 import { FiEdit3, FiTrash } from "react-icons/fi"
 
 import { TableTransactionTh } from "./TableTransactionTh"
@@ -8,9 +9,10 @@ import { AlertDialogDelete } from "../AlertDialogDelete"
 import { NoContentTableTransaction } from "./NoContentTableTransaction"
 
 interface TableTransactionProps {
-  data: TransactionProps[]
+  data: TransactionProps[] | undefined
+  isLoading: boolean
   enableModal?: (transaction: TransactionProps, editMode?: boolean) => void
-  onDelete?: (idTransaction: string) => Promise<void>
+  onDelete?: UseMutationResult<void, unknown, string, unknown>
 }
 
 const colorStatus: any = {
@@ -25,7 +27,7 @@ const getColorStatus = (type: string) => {
   return color ? color : "gray.400"
 }
 
-export function TableTransaction({ data, enableModal, onDelete }: TableTransactionProps) {
+export function TableTransaction({ data, isLoading, enableModal, onDelete }: TableTransactionProps) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [idTransaction, setIdTransaction] = useState("")
 
@@ -36,10 +38,12 @@ export function TableTransaction({ data, enableModal, onDelete }: TableTransacti
 
   const submitDialogDelete = async (idTransaction: string) => {
     onClose()
-    onDelete && await onDelete(idTransaction)
+    onDelete && await onDelete.mutateAsync(idTransaction)
   }
 
-  if (data.length < 1) {
+  if (isLoading) return null
+
+  if (!data || data.length < 1) {
     return <NoContentTableTransaction />
   }
 
@@ -124,6 +128,7 @@ export function TableTransaction({ data, enableModal, onDelete }: TableTransacti
               isOpen={isOpen}
               onClose={onClose}
               onSubmit={submitDialogDelete}
+              isLoading={!!onDelete && onDelete.isLoading}
             />
           </Th>
         </Tr>
