@@ -1,12 +1,10 @@
 import { GetServerSideProps } from "next"
-import { getSession, signIn, signOut, useSession } from "next-auth/client"
-import { Flex, Stack, Button } from "@chakra-ui/react"
+import { getSession, signIn } from "next-auth/client"
+import { Heading, Text, Stack, HStack, Button, Image } from "@chakra-ui/react"
 
 export default function SignIn() {
-  const [session, loading] = useSession()
-
   return (
-    <Flex
+    <HStack
       width="100vw"
       height="100vh"
       position="absolute"
@@ -16,34 +14,39 @@ export default function SignIn() {
       backgroundColor="gray.800"
       align="center"
       justify="center"
+      spacing={20}
+      paddingBottom={12}
     >
-      {session ? (
-        <Stack>
-          Signed in as {session?.user?.email} <br />
-          <Button
-            type="submit"
-            mt="6"
-            size="lg"
-            colorScheme="red"
-            isLoading={loading}
-            onClick={() => signOut()}
-          >
-            Sign out
-          </Button>
+      <Stack spacing={10}>
+        <HStack>
+          <Image src="./icons/money-with-wings.svg" alt="money-with-wings" />
+          <Heading>My Finances</Heading>
+        </HStack>
+
+        <Stack spacing={8}>
+          <Heading size="4xl" lineHeight="112%">
+            Organize suas <br />
+            finanças com <br />
+            simplicidade
+          </Heading>
+
+          <Text fontSize="2xl">Acesse <Text as="b" color="green.200">gratuitamente</Text></Text>
         </Stack>
-      ) : (
+
         <Button
-          type="submit"
-          mt="6"
           size="lg"
-          colorScheme="blue"
-          isLoading={loading}
+          maxWidth="280px"
+          borderRadius="full"
+          colorScheme="green"
+          mt="6"
           onClick={() => signIn("google")}
         >
           Entrar com Google
         </Button>
-      )}
-    </Flex>
+      </Stack>
+
+      <Image maxWidth="470px" src="./illustrations/Partnership-bro.svg" alt="Partnership-bro" />
+    </HStack>
   )
 }
 
