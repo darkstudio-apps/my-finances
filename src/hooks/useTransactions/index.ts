@@ -6,21 +6,17 @@ import { api } from "../../services/api"
 import { TransactionReqProps, TransactionModelProps } from "./transaction.types"
 import { formatCurrency } from "../../utils/maskUtil"
 import { getObjYearMonthDay, parseDateBr, parseYearMonthDay } from "../../utils/dateUtil"
+import { getStatusDisplay, summaryDefault } from "./transaction.util"
 
 export interface TransactionProps extends TransactionReqProps {
   dateDisplay: string
   amountDisplay: string
+  statusDisplay: string
 }
 
 interface GetType {
   transactions: TransactionReqProps[]
   transaction?: TransactionReqProps
-}
-
-const summaryDefault = {
-  deposit: "R$ 0,00",
-  withdraw: "R$ 0,00",
-  total: "R$ 0,00",
 }
 
 export function useTransactions() {
@@ -35,12 +31,15 @@ export function useTransactions() {
       },
     })
 
-    const mappedTransactions = data.transactions.map(transaction => ({
-      ...transaction,
-      date: parseYearMonthDay(transaction.date),
-      dateDisplay: parseDateBr(transaction.date),
-      amountDisplay: formatCurrency(transaction.amount),
-    }))
+    const mappedTransactions: TransactionProps[] = data.transactions.map(transaction => {
+      return {
+        ...transaction,
+        date: parseYearMonthDay(transaction.date),
+        dateDisplay: parseDateBr(transaction.date),
+        amountDisplay: formatCurrency(transaction.amount),
+        statusDisplay: transaction.status ? getStatusDisplay(transaction.status) : ""
+      }
+    })
 
     return mappedTransactions
   }, {

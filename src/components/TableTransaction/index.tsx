@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { UseMutationResult } from "react-query"
-import { Box, Table, Thead, Tbody, Tfoot, Tr, Th, Td, Icon, HStack, Spinner, useDisclosure } from "@chakra-ui/react"
+import { Box, Text, Table, Thead, Tbody, Tfoot, Tr, Th, Td, Icon, HStack, useDisclosure } from "@chakra-ui/react"
 import { FiEdit3, FiTrash } from "react-icons/fi"
 
 import { TableTransactionTh } from "./TableTransactionTh"
@@ -71,7 +71,10 @@ export function TableTransaction({ data, isLoading, enableModal, onDelete }: Tab
               cursor="pointer"
             >
               <Td borderColor="gray.600" onClick={() => enableModal && enableModal(transaction)}>
-                <Box w={2} h={2} borderRadius="100%" bg={getColorStatus(transaction.status)} />
+                <HStack spacing={4}>
+                  <Box w={2} maxW={2} h={2} borderRadius="100%" bg={getColorStatus(transaction.status)} />
+                  <Text>{transaction.statusDisplay}</Text>
+                </HStack>
               </Td>
 
               <Td borderColor="gray.600" onClick={() => enableModal && enableModal(transaction)}>
@@ -79,7 +82,7 @@ export function TableTransaction({ data, isLoading, enableModal, onDelete }: Tab
               </Td>
 
               <Td borderColor="gray.600" onClick={() => enableModal && enableModal(transaction)} color={isIncome ? "green.400" : "red.400"}>
-                {transaction.amountDisplay}
+                {isIncome ? transaction.amountDisplay : `- ${transaction.amountDisplay}`}
               </Td>
 
               <Td borderColor="gray.600" onClick={() => enableModal && enableModal(transaction)}>
