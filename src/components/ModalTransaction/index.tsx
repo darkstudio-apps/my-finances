@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react"
+import { UseMutationResult } from "react-query"
 import { css } from "@emotion/react"
 import {
   Modal,
@@ -17,10 +18,9 @@ import {
 } from "@chakra-ui/react"
 
 import { CheckBoxCard } from "../CheckBoxCard"
-import { TransactionModelProps, TransactionReqProps, } from "../../hooks/useTransactions/transaction.types"
+import { TransactionModelProps } from "../../hooks/useTransactions/transaction.types"
 import { TransactionStateProps, useModalTransaction } from "./useModalTransaction"
 import { TransactionProps } from "../../hooks/useTransactions"
-import { UseMutationResult } from "react-query"
 
 interface ModalTransactionProps {
   dataToEdit?: TransactionProps | null
@@ -98,8 +98,6 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
     onClose()
     clearState()
   }
-
-  console.log('onSave.isLoading: ', onSave.isLoading)
 
   return (
     <Modal
@@ -190,6 +188,7 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
                 <option value="every-15-days">A cada 15 dias</option>
                 <option value="monthly">Mensal</option>
                 <option value="yearly">Anual</option>
+                <option value="parcelas">Parcelas</option>
               </Select> */}
             </HStack>
 

@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import { RequestPostType, RequestType } from "../types/transactionRequests.type"
 import { transactionService } from "../services/transactionService"
-import { TransactionReqProps } from "../../../../../hooks/useTransactions/transaction.types"
 
 interface ReqListProps extends NextApiRequest {
   session?: {
@@ -28,11 +27,11 @@ async function list(req: ReqListProps, res: NextApiResponse) {
     }
 
     const transactions = await transactionService.list(idUser, month, year)
+
     return res.status(200).json({ transactions })
   } catch (error) {
     return res.status(400).json({ message: "error:catch" })
   }
-
 }
 
 async function get(req: RequestType, res: NextApiResponse) {
@@ -45,7 +44,6 @@ async function get(req: RequestType, res: NextApiResponse) {
   } catch (error) {
     return res.status(400).json({ message: error })
   }
-
 }
 
 async function post(req: RequestPostType, res: NextApiResponse) {
@@ -58,7 +56,6 @@ async function post(req: RequestPostType, res: NextApiResponse) {
   } catch (error) {
     return res.status(400).json({ message: error })
   }
-
 }
 
 async function put(req: RequestType, res: NextApiResponse) {
@@ -71,7 +68,6 @@ async function put(req: RequestType, res: NextApiResponse) {
   } catch (error) {
     return res.status(400).json({ message: error })
   }
-
 }
 
 function patch(req: RequestType, res: NextApiResponse) {
@@ -82,9 +78,8 @@ function patch(req: RequestType, res: NextApiResponse) {
 
     return res.status(200).json({ transaction })
   } catch (error) {
-
+    return res.status(400).json({ message: error })
   }
-
 }
 
 async function remove(req: RequestType, res: NextApiResponse) {
@@ -97,7 +92,6 @@ async function remove(req: RequestType, res: NextApiResponse) {
   } catch (error) {
     return res.status(400).json({ message: error })
   }
-
 }
 
 export const transactionController = {
