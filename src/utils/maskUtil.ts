@@ -23,6 +23,7 @@ export const formatReal = (amount: string | number) => {
 
   if (tmp.length > 6) tmp = tmp.replace(/([0-9]{3}),([0-9]{2}$)/g, ".$1,$2")
   if (tmp.length > 10) tmp = tmp.replace(/([0-9]{3})\.([0-9]{3}),([0-9]{2}$)/g, ".$1.$2,$3")
+  if (tmp.length > 14) tmp = tmp.replace(/([0-9]{3})\.([0-9]{3})\.([0-9]{3}),([0-9]{2}$)/g, ".$1.$2.$3,$4")
 
   if (tmp === "0" || tmp === "NaN") return "0,00"
 
