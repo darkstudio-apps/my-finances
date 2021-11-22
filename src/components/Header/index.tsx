@@ -1,4 +1,4 @@
-import { Avatar, Box, Flex, Heading, HStack, Text, Menu, MenuButton, MenuList, MenuItem, Image } from "@chakra-ui/react"
+import { Avatar, Tag, Box, Flex, Heading, HStack, Text, Menu, MenuButton, MenuList, MenuItem, Image } from "@chakra-ui/react"
 import { signOut, useSession } from "next-auth/client"
 // import { ActiveLink } from "./ActiveLink"
 
@@ -14,6 +14,7 @@ export function Header() {
       <HStack spacing={4}>
         <Image src="./icons/money-with-wings.svg" alt="money" />
         <Heading size="lg" color="gray.200">My Finances</Heading>
+        <Tag size="sm">v0.1 Beta</Tag>
       </HStack>
 
       <HStack as="nav" spacing={8}>
