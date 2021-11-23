@@ -24,24 +24,34 @@ export function useTransactions() {
   const queryClient = useQueryClient()
 
   const { data: transactions, isLoading, refetch, isFetching } = useQuery('/transactions', async () => {
-    const { data } = await api.get<GetType>("/transactions", {
-      params: {
-        month: filters.month,
-        year: filters.year,
-      },
-    })
+    try {
+      const { data } = await api.get<GetType>("/transactions", {
+        params: {
+          month: filters.month,
+          year: filters.year,
+        },
+      })
 
-    const mappedTransactions: TransactionProps[] = data.transactions.map(transaction => {
-      return {
-        ...transaction,
-        date: parseYearMonthDay(transaction.date),
-        dateDisplay: parseDateBr(transaction.date),
-        amountDisplay: formatCurrency(transaction.amount),
-        statusDisplay: transaction.status ? getStatusDisplay(transaction.status) : ""
-      }
-    })
+      const mappedTransactions: TransactionProps[] = data.transactions.map(transaction => {
+        return {
+          ...transaction,
+          date: parseYearMonthDay(transaction.date),
+          dateDisplay: parseDateBr(transaction.date),
+          amountDisplay: formatCurrency(transaction.amount),
+          statusDisplay: transaction.status ? getStatusDisplay(transaction.status) : ""
+        }
+      })
 
-    return mappedTransactions
+      return mappedTransactions
+    } catch (error) {
+      toast({
+        title: "Erro ao listar as transações!",
+        status: "error",
+        position: "top",
+        duration: 3000,
+        isClosable: true,
+      })
+    }
   }, {
     refetchInterval: false
   })
