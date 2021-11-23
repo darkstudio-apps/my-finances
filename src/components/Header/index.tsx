@@ -9,14 +9,18 @@ export function Header() {
     signOut()
   }
 
-  console.log("process.env.NODE_ENV: ", process.env.NODE_ENV)
+  console.log("process.env.VERCEL_ENV: ", process.env.VERCEL_ENV)
+  console.log("process.env.NEXT_PUBLIC_VERCEL_ENV: ", process.env.NEXT_PUBLIC_VERCEL_ENV)
+  console.log("process.env: ", process.env)
 
   return (
     <Flex as="header" align="center" justify="space-between" paddingY={8}>
       <HStack spacing={4}>
         <Image src="./icons/money-with-wings.svg" alt="money" />
         <Heading size="lg" color="gray.200">My Finances</Heading>
-        <Tag size="sm">v0.1 Beta</Tag>
+        <Tag size="sm">
+          {process.env.NEXT_PUBLIC_VERCEL_ENV === "preview" ? "Homolog | v0.1 Beta" : "v0.1 Beta"}
+        </Tag>
       </HStack>
 
       <HStack as="nav" spacing={8}>
