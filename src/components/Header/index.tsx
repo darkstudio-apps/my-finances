@@ -9,6 +9,8 @@ export function Header() {
     signOut()
   }
 
+  console.log("process.env.NODE_ENV: ", process.env.NODE_ENV)
+
   return (
     <Flex as="header" align="center" justify="space-between" paddingY={8}>
       <HStack spacing={4}>
