@@ -28,6 +28,33 @@ export function useModalTransaction() {
   const handleChangeTransaction = (prop: string, value: string) => {
     if (prop === "amount") value = formatReal(value)
 
+    if (prop === "status") {
+      const type = value === "deposit" || value === "withdraw"
+        ? value
+        : transaction.type
+
+      return setTransaction({
+        ...transaction,
+        status: value,
+        type,
+      })
+    }
+
+    if (prop === "type") {
+      if (transaction.status === "deposit" || transaction.status === "withdraw") {
+
+        const type = value === "deposit" || value === "withdraw"
+          ? value
+          : null
+
+        return setTransaction({
+          ...transaction,
+          status: value,
+          type,
+        })
+      }
+    }
+
     setTransaction({
       ...transaction,
       [prop]: value,
