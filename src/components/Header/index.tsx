@@ -2,6 +2,8 @@ import { Avatar, Tag, Box, Flex, Heading, HStack, Text, Menu, MenuButton, MenuLi
 import { signOut, useSession } from "next-auth/client"
 // import { ActiveLink } from "./ActiveLink"
 
+const VERCEL_ENV = process.env.NEXT_PUBLIC_VERCEL_ENV
+
 export function Header() {
   const [session] = useSession()
 
@@ -9,17 +11,19 @@ export function Header() {
     signOut()
   }
 
-  console.log("process.env.VERCEL_ENV: ", process.env.VERCEL_ENV)
-  console.log("process.env.NEXT_PUBLIC_VERCEL_ENV: ", process.env.NEXT_PUBLIC_VERCEL_ENV)
-  console.log("process.env: ", process.env)
-
   return (
     <Flex as="header" align="center" justify="space-between" paddingY={8}>
       <HStack spacing={4}>
         <Image src="./icons/money-with-wings.svg" alt="money" />
         <Heading size="lg" color="gray.200">My Finances</Heading>
         <Tag size="sm">
-          {process.env.NEXT_PUBLIC_VERCEL_ENV === "preview" ? "Homolog | v0.1 Beta" : "v0.1 Beta"}
+          {
+            VERCEL_ENV === "production"
+              ? "v0.1 Beta"
+              : VERCEL_ENV === "preview"
+                ? "Homolog | v0.1 Beta"
+                : "Develop | v0.1 Beta"
+          }
         </Tag>
       </HStack>
 

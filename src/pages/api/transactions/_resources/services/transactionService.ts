@@ -1,6 +1,7 @@
 import { TransactionModelProps, TransactionReqProps } from "../../../../../hooks/useTransactions/transaction.types"
 import { getObjYearMonthDay, parseToUTCandISO } from "../../../../../utils/dateUtil"
 import { transactionRepository } from "../repository/transactionRepository"
+import { TransactionModelCreateProps } from "../types/transactionRequests.type"
 
 async function list(idUser: string, month: string, year: string) {
   const dateNow = getObjYearMonthDay()
@@ -15,6 +16,9 @@ async function list(idUser: string, month: string, year: string) {
   const dateEndISO = parseToUTCandISO(dateEnd, "end")
 
   const transactions = await transactionRepository.list({ idUser, dateStartISO, dateEndISO })
+
+  // map -> editar as transactions
+
   return transactions
 }
 
@@ -24,7 +28,12 @@ async function get(id: string) {
 }
 
 async function post(transaction: TransactionModelProps) {
-  const createdTransaction = await transactionRepository.post(transaction)
+  const mappedTransaction: TransactionModelCreateProps = {
+    ...transaction,
+    idRecurrence: "1onre0819mf0983n",
+  }
+
+  const createdTransaction = await transactionRepository.post(mappedTransaction)
   return createdTransaction
 }
 
