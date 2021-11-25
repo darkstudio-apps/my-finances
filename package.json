@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "update-schema": "npx prisma generate",
+    "pull-schema": "npx prisma db pull && yarn generate-schema",
+    "generate-schema": "npx prisma generate",
     "build": "next build",
     "start": "next start",
     "prepare": "husky install",
