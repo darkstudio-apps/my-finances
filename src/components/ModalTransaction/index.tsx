@@ -18,8 +18,8 @@ import {
 } from "@chakra-ui/react"
 
 import { CheckBoxCard } from "../CheckBoxCard"
-import { TransactionModelProps } from "../../hooks/useTransactions/transaction.types"
-import { TransactionStateProps, useModalTransaction } from "./useModalTransaction"
+import { TransactionModelProps, TransactionStateProps } from "../../hooks/useTransactions/transaction.types"
+import { useModalTransaction } from "./useModalTransaction"
 import { TransactionProps } from "../../hooks/useTransactions"
 
 interface ModalTransactionProps {
@@ -51,7 +51,8 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
         amount: dataToEdit.amountDisplay,
         date: dataToEdit.date,
         status: dataToEdit.status,
-        recurrence: dataToEdit.recurrence,
+        typeRecurrence: dataToEdit.typeRecurrence,
+        installments: dataToEdit.installments,
         type: dataToEdit.type,
       }
 
@@ -176,9 +177,9 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
                 <option value="paid">Pago</option>
               </Select>
 
-              {/* <Select
-                name="recurrence"
-                value={transaction.recurrence}
+              <Select
+                name="typeRecurrence"
+                value={transaction.typeRecurrence}
                 onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
                 placeholder="Recorrência"
                 disabled={isDisabled}
@@ -188,8 +189,21 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
                 <option value="every-15-days">A cada 15 dias</option>
                 <option value="monthly">Mensal</option>
                 <option value="yearly">Anual</option>
-                <option value="parcelas">Parcelas</option>
-              </Select> */}
+                <option value="installments">Parcelas</option>
+              </Select>
+
+              {transaction.typeRecurrence === "installments" && (
+                <Input
+                  maxWidth="100px"
+                  name="installments"
+                  placeholder="Parcelas"
+                  value={transaction.installments}
+                  onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
+                  disabled={isDisabled}
+                  type="number"
+                  _disabled={{ cursor: "no-drop" }}
+                />
+              )}
             </HStack>
 
             <HStack spacing={2}>

@@ -1,5 +1,15 @@
 export type TransactionTypeProps = "deposit" | "withdraw"
 
+export interface TransactionStateProps {
+  title: string
+  amount: string
+  date: string
+  status: string
+  typeRecurrence: string
+  installments: string
+  type: TransactionTypeProps | null
+}
+
 export interface TransactionReqProps {
   id: string
   idUser: string
@@ -7,7 +17,9 @@ export interface TransactionReqProps {
   amount: number
   date: string
   status: string
-  recurrence: string
+  idRecurrence: string
+  typeRecurrence: string
+  installments: string
   type: TransactionTypeProps
 }
 
@@ -17,6 +29,7 @@ export interface TransactionModelProps {
   amount: number
   date: string
   status: string
-  recurrence: string
+  typeRecurrence: string
+  installments: string
   type: TransactionTypeProps
 }

@@ -1,7 +1,5 @@
-import { TransactionModelProps, TransactionReqProps } from "../../../../../hooks/useTransactions/transaction.types"
 import { prisma } from "../../../../../services/prisma"
-
-type PartialTransaction = Partial<TransactionReqProps>
+import { PartialTransactionReq, TransactionModelCreateProps } from "../types/transactionRequests.type"
 
 interface ListProps {
   idUser: string
@@ -40,7 +38,7 @@ async function get(idTransaction: string) {
   return transaction
 }
 
-async function post(transaction: TransactionModelProps) {
+async function post(transaction: TransactionModelCreateProps) {
   const newTransaction = await prisma.transaction.create({
     data: transaction,
   })
@@ -48,7 +46,7 @@ async function post(transaction: TransactionModelProps) {
   return newTransaction
 }
 
-async function put(idTransaction: string, transaction: PartialTransaction) {
+async function put(idTransaction: string, transaction: PartialTransactionReq) {
   const editedTransaction = await prisma.transaction.update({
     where: { id: idTransaction },
     data: transaction,
@@ -57,7 +55,7 @@ async function put(idTransaction: string, transaction: PartialTransaction) {
   return editedTransaction
 }
 
-function patch(idTransaction: string, transaction: PartialTransaction) {
+function patch(idTransaction: string, transaction: PartialTransactionReq) {
   const obj = {
     ...transaction,
     id: idTransaction,

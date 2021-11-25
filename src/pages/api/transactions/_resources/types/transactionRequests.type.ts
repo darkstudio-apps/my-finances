@@ -11,3 +11,9 @@ export interface RequestType {
 export interface RequestPostType extends NextApiRequest {
   body: TransactionModelProps
 }
+
+export type PartialTransactionReq = Partial<TransactionReqProps>
+
+export interface TransactionModelCreateProps extends TransactionModelProps {
+  idRecurrence: string
+}
