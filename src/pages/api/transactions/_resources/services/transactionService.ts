@@ -35,9 +35,9 @@ async function post(transaction: TransactionModelProps) {
     return createdTransaction
   }
   else {
-    const objTransactions = generateTransactionsRecurrence(transaction)
+    const transactions = generateTransactionsRecurrence(transaction)
 
-    const createdTransactions = await transactionRepository.postMany(objTransactions)
+    const createdTransactions = await transactionRepository.postMany(transactions)
     return createdTransactions
   }
 }
