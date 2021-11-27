@@ -1,5 +1,12 @@
 export type TransactionTypeProps = "deposit" | "withdraw"
 
+export type TransactionTypeRecurrenceProps = "every_1_week"
+  | "every_15_days"
+  | "monthly"
+  | "yearly"
+  | "installments"
+  | ""
+
 export interface TransactionStateProps {
   title: string
   amount: string
