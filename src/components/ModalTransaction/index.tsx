@@ -185,8 +185,8 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
                 disabled={isDisabled}
                 _disabled={{ cursor: "no-drop", opacity: 1 }}
               >
-                <option value="every-1-week">A cada 1 semana</option>
-                <option value="every-15-days">A cada 15 dias</option>
+                <option value="every_1_week">A cada 1 semana</option>
+                <option value="every_15_days">A cada 15 dias</option>
                 <option value="monthly">Mensal</option>
                 <option value="yearly">Anual</option>
                 <option value="installments">Parcelas</option>

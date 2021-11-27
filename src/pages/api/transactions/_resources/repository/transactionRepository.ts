@@ -46,6 +46,14 @@ async function post(transaction: TransactionModelCreateProps) {
   return newTransaction
 }
 
+async function postMany(transactions: TransactionModelCreateProps[]) {
+  const newTransactions = await prisma.transaction.createMany({
+    data: transactions,
+  })
+
+  return newTransactions
+}
+
 async function put(idTransaction: string, transaction: PartialTransactionReq) {
   const editedTransaction = await prisma.transaction.update({
     where: { id: idTransaction },
@@ -76,6 +84,7 @@ export const transactionRepository = {
   list,
   get,
   post,
+  postMany,
   put,
   patch,
   remove,

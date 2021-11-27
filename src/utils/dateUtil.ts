@@ -1,3 +1,25 @@
+import { addDays, addMonths, addYears, isBefore } from "date-fns"
+
+export const dateAddDays = (date: string, daysAdd: number) => {
+  const dateFuture = addDays(new Date(date), daysAdd)
+  return dateFuture.toISOString()
+}
+
+export const dateAddMonths = (date: string, monthsAdd: number) => {
+  const dateFuture = addMonths(new Date(date), monthsAdd)
+  return dateFuture.toISOString()
+}
+
+export const dateAddYears = (date: string, yearsAdd: number) => {
+  const dateFuture = addYears(new Date(date), yearsAdd)
+  return dateFuture.toISOString()
+}
+
+export const dateIsBefore = (currentDate: string, futureDate: string) => {
+  const _isBefore = isBefore(new Date(currentDate), new Date(futureDate))
+  return _isBefore
+}
+
 export const parseToUTCandISO = (dateYearMonthDay: string, hourOffset?: "start" | "end") => {
   const dateNow = new Date()
   const [year, month, day] = dateYearMonthDay.split("-")
