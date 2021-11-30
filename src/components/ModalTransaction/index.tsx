@@ -58,7 +58,8 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
 
       setTransaction(transitionToEdit)
       setEnableEditing(false)
-    } else {
+    }
+    else {
       setTransaction(null)
       setEnableEditing(false)
     }
@@ -88,7 +89,8 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
     if (!dataToEdit) {
       const newTransaction = await generateTransactionToSave()
       if (newTransaction) await onSave.mutateAsync(newTransaction)
-    } else {
+    }
+    else {
       const modifiedTransaction = await generateTransactionToSave()
       if (modifiedTransaction) await onSaveEdit.mutateAsync({
         id: dataToEdit.id,

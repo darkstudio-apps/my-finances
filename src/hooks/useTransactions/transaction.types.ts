@@ -1,11 +1,11 @@
 export type TransactionTypeProps = "deposit" | "withdraw"
 
-export type TransactionTypeRecurrenceProps = "every_1_week"
+export type TransactionTypeRecurrenceProps = ""
+  | "every_1_week"
   | "every_15_days"
   | "monthly"
   | "yearly"
   | "installments"
-  | ""
 
 export interface TransactionStateProps {
   title: string
@@ -17,6 +17,18 @@ export interface TransactionStateProps {
   type: TransactionTypeProps | null
 }
 
+export interface TransactionModelProps {
+  idUser: string
+  title: string
+  amount: number
+  date: string
+  status: string
+  typeRecurrence: string
+  isRecurrence: boolean
+  installments: string
+  type: TransactionTypeProps
+}
+
 export interface TransactionReqProps {
   id: string
   idUser: string
@@ -26,17 +38,7 @@ export interface TransactionReqProps {
   status: string
   idRecurrence: string
   typeRecurrence: string
-  installments: string
-  type: TransactionTypeProps
-}
-
-export interface TransactionModelProps {
-  idUser: string
-  title: string
-  amount: number
-  date: string
-  status: string
-  typeRecurrence: string
+  isRecurrence: boolean
   installments: string
   type: TransactionTypeProps
 }

@@ -26,7 +26,7 @@ async function get(id: string) {
 }
 
 async function post(transaction: TransactionModelProps) {
-  const isNotRecurrence = transaction.typeRecurrence === ""
+  const isNotRecurrence = !transaction.isRecurrence
 
   if (isNotRecurrence) {
     const objTransaction = generateTransaction(transaction)
