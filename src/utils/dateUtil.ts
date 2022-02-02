@@ -1,4 +1,4 @@
-import { addDays, addMonths, addYears, isBefore } from "date-fns"
+import { addDays, addMonths, addYears, isBefore, endOfMonth } from "date-fns"
 
 export const dateAddDays = (date: string, daysAdd: number) => {
   const dateFuture = addDays(new Date(date), daysAdd)
@@ -20,27 +20,36 @@ export const dateIsBefore = (currentDate: string, futureDate: string) => {
   return _isBefore
 }
 
-export const parseToUTCandISO = (dateYearMonthDay: string, hourOffset?: "start" | "end") => {
-  const dateNow = new Date()
-  const [year, month, day] = dateYearMonthDay.split("-")
+export const parseToUTCandISO = (dateYearMonthDay: string, hourOffset?: "start" | "end"): string => {
+  const [yearSplit, monthSplit, daySplit] = dateYearMonthDay.split("-")
 
-  dateNow.setFullYear(Number(year))
-  dateNow.setMonth(Number(month) - 1)
-  dateNow.setDate(Number(day))
+  const year = Number(yearSplit)
+  const month = Number(monthSplit) - 1
+  const day = Number(daySplit)
 
-  if (hourOffset === "start") {
-    dateNow.setHours(0)
-    dateNow.setMinutes(0)
-    dateNow.setSeconds(0)
-  }
+  const hours = hourOffset === "start" ? 0 : 23
+  const minutes = hourOffset === "start" ? 0 : 59
+  const seconds = hourOffset === "start" ? 0 : 59
 
-  if (hourOffset === "end") {
-    dateNow.setHours(23)
-    dateNow.setMinutes(59)
-    dateNow.setSeconds(59)
-  }
+  return new Date(Date.UTC(year, month, day, hours, minutes, seconds)).toISOString()
+}
 
-  return dateNow.toISOString()
+export const endOfMonthInYearMonthDay = (dateYearMonthDay: string) => {
+  // TODO: usar a função getObjYearMonthDay
+  const [yearSplit, monthSplit, daySplit] = dateYearMonthDay.split("-")
+
+  const yearParam = Number(yearSplit)
+  const monthParam = Number(monthSplit) - 1
+  const dayParam = Number(daySplit)
+
+  const dateParam = new Date(yearParam, monthParam, dayParam)
+  const dayEndOfMonth = endOfMonth(dateParam)
+
+  const year = dayEndOfMonth.getFullYear()
+  const month = dayEndOfMonth.getMonth() + 1
+  const day = dayEndOfMonth.getDate()
+
+  return `${year}-${month}-${day}`
 }
 
 export const parseYearMonthDay = (dateUTC: string) => {
@@ -53,8 +62,13 @@ export const parseDateBr = (dateUTC: string) => {
   return `${day}/${month}/${year}`
 }
 
-export const getObjYearMonthDay = (dateString?: string) => {
-  const date = dateString ? new Date(dateString) : new Date()
+// TODO: Rever essa implementação
+
+export const getObjYearMonthDay = (dateUTC?: string) => {
+  // Quando a data e gerada (new Date()) ela n esta sendo levado em consideração o UTC
+  const date = dateUTC ?
+    new Date(dateUTC)
+    : new Date() // Se da a data n for em UTC, isso tem que ser levado em consideração
 
   let year = String(date.getFullYear())
 
