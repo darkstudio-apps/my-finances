@@ -16,11 +16,11 @@ interface ReqListProps extends NextApiRequest {
 
 async function list(req: ReqListProps, res: NextApiResponse) {
   try {
-    // TODO: queryMonth e queryYear podem ser undefined
-    const { month: queryMonth, year: queryYear } = req.query
     const idUser = req?.session?.user?.idUser
 
-    // TODO: month e year podem ser undefined
+    const queryMonth = req.query.month as string | string[] | undefined
+    const queryYear = req.query.year as string | string[] | undefined
+
     const month = Array.isArray(queryMonth) ? queryMonth[0] : queryMonth
     const year = Array.isArray(queryYear) ? queryYear[0] : queryYear
 
