@@ -7,7 +7,7 @@ import { CardTransaction } from "../components/CardTransaction"
 import { TableTransaction } from "../components/TableTransaction"
 import { ModalTransaction } from "../components/ModalTransaction"
 import { TransactionProps, useTransactions } from "../hooks/useTransactions"
-import { getObjYearMonthDay } from "../utils/dateUtil"
+import { dateNowYearMonthDay, getObjYearMonthDay } from "../utils/dateUtil"
 
 export default function Transactions() {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -18,7 +18,8 @@ export default function Transactions() {
   const [editMode, setEditMode] = useState(false)
 
   useEffect(() => {
-    const { month, year } = getObjYearMonthDay()
+    const dateYearMonthDay = dateNowYearMonthDay()
+    const { month, year } = getObjYearMonthDay(dateYearMonthDay)
     setFilters({ month, year })
   }, [])
 

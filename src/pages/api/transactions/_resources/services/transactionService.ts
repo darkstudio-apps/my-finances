@@ -1,10 +1,11 @@
 import { TransactionModelProps, TransactionReqProps } from "../../../../../hooks/useTransactions/transaction.types"
-import { endOfMonthInYearMonthDay, getObjYearMonthDay, parseToUTCandISO } from "../../../../../utils/dateUtil"
+import { dateNowYearMonthDay, endOfMonthInYearMonthDay, getObjYearMonthDay, parseToUTCandISO } from "../../../../../utils/dateUtil"
 import { transactionRepository } from "../repository/transactionRepository"
 import { generateTransaction, generateTransactionsRecurrence } from "./transaction.util"
 
 async function list(idUser: string, month?: string, year?: string) {
-  const dateNow = getObjYearMonthDay()
+  const dateYearMonthDay = dateNowYearMonthDay()
+  const dateNow = getObjYearMonthDay(dateYearMonthDay)
 
   const dateMonth = month ? month : dateNow.month
   const dateYear = year ? year : dateNow.year
