@@ -85,7 +85,7 @@ export function useModalTransaction() {
       type,
       isRecurrence,
       amount: formatFloat(transaction.amount),
-      date: parseToUTCandISO(transaction.date),
+      date: parseToUTCandISO(transaction.date, "start"),
     }
 
     return newTransaction
