@@ -1,5 +1,6 @@
 export type TransactionTypeProps = "deposit" | "withdraw"
 
+// TODO: Usar Enum
 export type TransactionTypeRecurrenceProps = ""
   | "every_1_week"
   | "every_15_days"
