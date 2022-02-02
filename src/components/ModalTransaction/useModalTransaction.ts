@@ -77,12 +77,15 @@ export function useModalTransaction() {
 
     const type: TransactionTypeProps = transaction.type
 
+    const isRecurrence = transaction.typeRecurrence !== ""
+
     const newTransaction: TransactionModelProps = {
       ...transaction,
       idUser,
       type,
+      isRecurrence,
       amount: formatFloat(transaction.amount),
-      date: parseToUTCandISO(transaction.date),
+      date: parseToUTCandISO(transaction.date, "start"),
     }
 
     return newTransaction

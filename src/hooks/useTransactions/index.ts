@@ -5,7 +5,7 @@ import { useToast } from "@chakra-ui/react"
 import { api } from "../../services/api"
 import { TransactionReqProps, TransactionModelProps } from "./transaction.types"
 import { formatCurrency } from "../../utils/maskUtil"
-import { getObjYearMonthDay, parseDateBr, parseYearMonthDay } from "../../utils/dateUtil"
+import { dateNowYearMonthDay, getObjYearMonthDay, parseDateBrUTC, parseYearMonthDayUTC } from "../../utils/dateUtil"
 import { getStatusDisplay, summaryDefault } from "./transaction.util"
 
 export interface TransactionProps extends TransactionReqProps {
@@ -33,10 +33,12 @@ export function useTransactions() {
       })
 
       const mappedTransactions: TransactionProps[] = data.transactions.map(transaction => {
+        const dateUTC = transaction.date
+
         return {
           ...transaction,
-          date: parseYearMonthDay(transaction.date),
-          dateDisplay: parseDateBr(transaction.date),
+          date: parseYearMonthDayUTC(dateUTC),
+          dateDisplay: parseDateBrUTC(dateUTC),
           amountDisplay: formatCurrency(transaction.amount),
           statusDisplay: transaction.status ? getStatusDisplay(transaction.status) : ""
         }
@@ -58,7 +60,8 @@ export function useTransactions() {
 
   const [summary, setSummary] = useState(summaryDefault)
   const [filters, setFilters] = useState(() => {
-    const { month, year } = getObjYearMonthDay()
+    const dateYearMonthDay = dateNowYearMonthDay()
+    const { month, year } = getObjYearMonthDay(dateYearMonthDay)
     return { month, year }
   })
 
