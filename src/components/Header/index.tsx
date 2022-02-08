@@ -13,9 +13,9 @@ export function Header() {
 
   return (
     <Flex as="header" align="center" justify="space-between" paddingY={8}>
-      <HStack spacing={4}>
-        <Image src="./icons/money-with-wings.svg" alt="money" />
-        <Heading size="lg" color="gray.200">My Finances</Heading>
+      <HStack spacing={4} >
+        <Image maxWidth={["30px","30px", "36px", "36x"]} src="./icons/money-with-wings.svg" alt="money" />
+        <Heading fontSize={["md", "xl", "xl", "3xl"]}  color="gray.200">My Finances</Heading>
         <Tag size="sm">
           {
             VERCEL_ENV === "production"
@@ -34,8 +34,8 @@ export function Header() {
 
       <HStack spacing={4}>
         <Box>
-          <Heading fontSize="xl" fontWeight="semibold" color="gray.200">{session?.user?.name}</Heading>
-          <Text fontSize="xs" color="gray.200">Sem pendências</Text>
+          <Heading display={["none","none","block", "block"]}  fontSize="xl" fontWeight="semibold" color="gray.200">{session?.user?.name}</Heading>
+          <Text display={["none","none","block", "block"]}  fontSize="xs" color="gray.200">Sem pendências</Text>
         </Box>
 
         <Menu id="menu-avatar" isLazy>

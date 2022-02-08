@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { GetServerSideProps } from "next"
 import { getSession } from "next-auth/client"
-import { SimpleGrid, Stack, Button, Select, Spinner, HStack, useDisclosure } from "@chakra-ui/react"
+import { SimpleGrid, Stack, Button, Select, Spinner, HStack, useDisclosure, Flex } from "@chakra-ui/react"
 
 import { CardTransaction } from "../components/CardTransaction"
 import { TableTransaction } from "../components/TableTransaction"
@@ -44,7 +44,7 @@ export default function Transactions() {
 
   return (
     <Stack paddingY={10} spacing={10}>
-      <SimpleGrid columns={3} spacing={10}>
+      <SimpleGrid columns={[1, 1, 3]} spacing={10}>
         <CardTransaction
           description="Entradas"
           title={summary.deposit}
@@ -63,6 +63,7 @@ export default function Transactions() {
           icon="dollarSign"
         />
       </SimpleGrid>
+
 
       <Stack spacing={4} >
         <HStack align="center" justify="space-between" spacing={4}>
