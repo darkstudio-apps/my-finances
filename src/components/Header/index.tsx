@@ -19,10 +19,10 @@ export function Header() {
         <Tag size="sm">
           {
             VERCEL_ENV === "production"
-              ? "v0.2 Beta"
+              ? "v0.2.1 Beta"
               : VERCEL_ENV === "preview"
-                ? "Homolog | v0.2 Beta"
-                : "Develop | v0.2 Beta"
+                ? "Homolog | v0.2.1 Beta"
+                : "Develop | v0.2.1 Beta"
           }
         </Tag>
       </HStack>
