@@ -1,4 +1,4 @@
-import { Avatar, Tag, Box, Flex, Heading, HStack, Text, Menu, MenuButton, MenuList, MenuItem, Image } from "@chakra-ui/react"
+import { Avatar, Tag, Box, Flex, Heading, HStack, Text, Menu, MenuButton, MenuList, MenuItem, Image, Stack } from "@chakra-ui/react"
 import { signOut, useSession } from "next-auth/client"
 // import { ActiveLink } from "./ActiveLink"
 
@@ -13,9 +13,10 @@ export function Header() {
 
   return (
     <Flex as="header" align="center" justify="space-between" paddingY={8}>
-      <HStack spacing={4} >
-        <Image maxWidth={["30px","30px", "36px", "36x"]} src="./icons/money-with-wings.svg" alt="money" />
-        <Heading fontSize={["md", "xl", "xl", "3xl"]}  color="gray.200">My Finances</Heading>
+      <Stack direction={["column", "column", "row", "row"]} spacing={4} >
+          <Image width={["30px","30px", "36px", "36x"]} src="./icons/money-with-wings.svg" alt="money" />
+          <Heading fontSize={["md", "xl", "xl", "3xl"]}  color="gray.200">My Finances</Heading>
+
         <Tag size="sm">
           {
             VERCEL_ENV === "production"
@@ -25,7 +26,7 @@ export function Header() {
                 : "Develop | v0.2 Beta"
           }
         </Tag>
-      </HStack>
+      </Stack>
 
       <HStack as="nav" spacing={8}>
         {/* <ActiveLink href="/transactions">Transações</ActiveLink> */}
