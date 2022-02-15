@@ -1,16 +1,17 @@
 import { TransactionModelProps, TransactionReqProps } from "../../../../../hooks/useTransactions/transaction.types"
-import { getObjYearMonthDay, parseToUTCandISO } from "../../../../../utils/dateUtil"
+import { dateNowYearMonthDay, endOfMonthInYearMonthDay, getObjYearMonthDay, parseToUTCandISO } from "../../../../../utils/dateUtil"
 import { transactionRepository } from "../repository/transactionRepository"
 import { generateTransaction, generateTransactionsRecurrence } from "./transaction.util"
 
-async function list(idUser: string, month: string, year: string) {
-  const dateNow = getObjYearMonthDay()
+async function list(idUser: string, month?: string, year?: string) {
+  const dateYearMonthDay = dateNowYearMonthDay()
+  const dateNow = getObjYearMonthDay(dateYearMonthDay)
 
   const dateMonth = month ? month : dateNow.month
   const dateYear = year ? year : dateNow.year
 
   const dateStart = `${dateYear}-${dateMonth}-01`
-  const dateEnd = `${dateYear}-${dateMonth}-31`
+  const dateEnd = endOfMonthInYearMonthDay(dateStart)
 
   const dateStartISO = parseToUTCandISO(dateStart, "start")
   const dateEndISO = parseToUTCandISO(dateEnd, "end")
@@ -26,7 +27,7 @@ async function get(id: string) {
 }
 
 async function post(transaction: TransactionModelProps) {
-  const isNotRecurrence = transaction.typeRecurrence === ""
+  const isNotRecurrence = !transaction.isRecurrence
 
   if (isNotRecurrence) {
     const objTransaction = generateTransaction(transaction)

@@ -1,23 +1,5 @@
 export type TransactionTypeProps = "deposit" | "withdraw"
 
-// TODO: Usar Enum
-export type TransactionTypeRecurrenceProps = ""
-  | "every_1_week"
-  | "every_15_days"
-  | "monthly"
-  | "yearly"
-  | "installments"
-
-export interface TransactionStateProps {
-  title: string
-  amount: string
-  date: string
-  status: string
-  typeRecurrence: string
-  installments: string
-  type: TransactionTypeProps | null
-}
-
 export interface TransactionModelProps {
   idUser: string
   title: string

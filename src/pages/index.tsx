@@ -17,14 +17,14 @@ export default function SignIn() {
       spacing={20}
       paddingBottom={12}
     >
-      <Stack spacing={10}>
+      <Stack width={["80%", "initial"]} spacing={10}>
         <HStack>
           <Image src="./icons/money-with-wings.svg" alt="money-with-wings" />
-          <Heading>My Finances</Heading>
+          <Heading fontSize={["xl", "3xl"]}>My Finances</Heading>
         </HStack>
 
         <Stack spacing={8}>
-          <Heading size="4xl" lineHeight="112%">
+          <Heading fontSize={["5xl", "7xl"]} lineHeight="112%">
             Organize suas <br />
             finanças com <br />
             simplicidade
@@ -35,7 +35,7 @@ export default function SignIn() {
 
         <Button
           size="lg"
-          maxWidth="280px"
+          maxWidth={["initial", "280px"]}
           borderRadius="full"
           colorScheme="green"
           mt="6"
@@ -45,7 +45,12 @@ export default function SignIn() {
         </Button>
       </Stack>
 
-      <Image maxWidth="470px" src="./illustrations/Partnership-bro.svg" alt="Partnership-bro" />
+      <Image
+        maxWidth="470px"
+        src="./illustrations/Partnership-bro.svg"
+        alt="Partnership-bro"
+        display={["none", "none", "none", "block"]}
+      />
     </HStack>
   )
 }

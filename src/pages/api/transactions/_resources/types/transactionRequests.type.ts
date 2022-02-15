@@ -1,5 +1,5 @@
 import { NextApiRequest } from "next"
-import { TransactionModelProps, TransactionReqProps } from "../../../../../hooks/useTransactions/transaction.types"
+import { TransactionModelProps, TransactionReqProps } from "./transaction.type"
 
 export interface RequestType {
   query: {

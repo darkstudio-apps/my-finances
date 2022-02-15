@@ -9,12 +9,13 @@ datasource db {
 }
 
 model Transaction {
-  id             String @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  id             String  @id @default(dbgenerated()) @map("_id") @db.ObjectId
   amount         Float
   date           String
   idUser         String
   idRecurrence   String
   typeRecurrence String
+  isRecurrence   Boolean
   installments   String
   status         String
   title          String
