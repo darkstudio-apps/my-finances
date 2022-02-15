@@ -39,11 +39,31 @@ export const parseToUTCandISO = (dateYearMonthDay: string, hourOffset?: "start" 
   const monthNumber = Number(month) - 1
   const dayNumber = Number(day)
 
-  const hours = hourOffset === "end" ? 23 : 0
-  const minutes = hourOffset === "end" ? 59 : 0
-  const seconds = hourOffset === "end" ? 59 : 0
+  let hours, minutes, seconds
 
-  return new Date(Date.UTC(yearNumber, monthNumber, dayNumber, hours, minutes, seconds)).toISOString()
+  if (hourOffset === "start") {
+    hours = 0
+    minutes = 0
+    seconds = 0
+  }
+  else if (hourOffset === "end") {
+    hours = 23
+    minutes = 59
+    seconds = 59
+  }
+  else {
+    const newDate = new Date()
+
+    hours = newDate.getHours()
+    minutes = newDate.getMinutes()
+    seconds = newDate.getSeconds()
+  }
+
+  const dateMillisecondsUTC = Date.UTC(yearNumber, monthNumber, dayNumber, hours, minutes, seconds)
+
+  const dateISOStringUTC = new Date(dateMillisecondsUTC).toISOString()
+
+  return dateISOStringUTC
 }
 
 export const endOfMonthInYearMonthDay = (dateYearMonthDay: string) => {

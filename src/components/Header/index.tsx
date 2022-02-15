@@ -3,6 +3,7 @@ import { signOut, useSession } from "next-auth/client"
 // import { ActiveLink } from "./ActiveLink"
 
 const VERCEL_ENV = process.env.NEXT_PUBLIC_VERCEL_ENV
+const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION
 
 export function Header() {
   const [session] = useSession()
@@ -19,10 +20,10 @@ export function Header() {
         <Tag size="sm">
           {
             VERCEL_ENV === "production"
-              ? "v0.2.1 Beta"
+              ? `v${APP_VERSION} Beta`
               : VERCEL_ENV === "preview"
-                ? "Homolog | v0.2.1 Beta"
-                : "Develop | v0.2.1 Beta"
+                ? `Homolog | v${APP_VERSION} Beta`
+                : `Develop | v${APP_VERSION} Beta`
           }
         </Tag>
       </HStack>
