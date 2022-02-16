@@ -1,5 +1,5 @@
-import { UserModelProps, UserReqProps } from "../../../../../hooks/useUsers/user.types"
 import { userRepository } from "../repository/userRepository"
+import { UserModelProps, UserReqProps } from "../../../../../hooks/useUsers/user.types"
 
 async function list() {
   const users = await userRepository.list()

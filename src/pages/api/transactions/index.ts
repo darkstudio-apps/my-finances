@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next"
+import { transactionController } from "../_modules/transactions/controller/transactionController"
 import authorization from "../_middlewares/authorization"
-import { transactionController } from "./_resources/controller/transactionController"
 
 async function transactions(req: NextApiRequest, res: NextApiResponse) {
   const { method } = req

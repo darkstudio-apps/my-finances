@@ -1,7 +1,8 @@
-import { TransactionModelProps, TransactionTypeRecurrenceProps } from "../../../../../hooks/useTransactions/transaction.types"
 import { dateAddDays, dateAddMonths, dateAddYears, dateIsBefore } from "../../../../../utils/dateUtil"
 import { uuid } from "../../../../../utils/generateID"
+
 import { TransactionModelCreateProps } from "../types/transactionRequests.type"
+import { TransactionModelProps, TransactionTypeRecurrenceProps } from "../../../../../hooks/useTransactions/transaction.types"
 
 export const generateTransaction = (transaction: TransactionModelProps): TransactionModelCreateProps => {
   const idRecurrence = uuid()

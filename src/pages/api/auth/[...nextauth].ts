@@ -1,9 +1,11 @@
 
 import NextAuth, { User } from "next-auth"
 import Providers from "next-auth/providers"
+
+import { userService } from "../_modules/users/services/userService"
+import { userRepository } from "../_modules/users/repository/userRepository"
+
 import { UserModelProps } from "../../../hooks/useUsers/user.types"
-import { userRepository } from "../users/_resources/repository/userRepository"
-import { userService } from "../users/_resources/services/userService"
 
 export default NextAuth({
   providers: [
@@ -50,6 +52,7 @@ export default NextAuth({
           email: String(email),
         }
 
+        // TODO: Criar esse metodo no userServices e não acessar o repository direto
         await userRepository.upsert(userObj)
 
         return true

@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next"
-import { RequestPostType, RequestType } from "../types/userRequests.type"
 import { userService } from "../services/userService"
+import { RequestPostType, RequestType } from "../types/userRequests.type"
 
 async function list(req: NextApiRequest, res: NextApiResponse) {
   try {

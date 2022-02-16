@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next"
+import { userController } from "../_modules/users/controller/userController"
 import authorization from "../_middlewares/authorization"
-import { userController } from "./_resources/controller/userController"
 
 async function users(req: NextApiRequest, res: NextApiResponse) {
   const { method } = req

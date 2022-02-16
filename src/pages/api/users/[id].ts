@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next"
-import { RequestType } from "./_resources/types/userRequests.type"
-import { userController } from "./_resources/controller/userController"
+
+import { userController } from "../_modules/users/controller/userController"
+import { RequestType } from "../_modules/users/types/userRequests.type"
+
 import authorization from "../_middlewares/authorization"
 
 async function users(req: NextApiRequest, res: NextApiResponse) {

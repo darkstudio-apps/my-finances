@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next"
-import { RequestPostType, RequestType } from "../types/transactionRequests.type"
 import { transactionService } from "../services/transactionService"
+import { RequestPostType, RequestType } from "../types/transactionRequests.type"
 
 interface ReqListProps extends NextApiRequest {
   session?: {
