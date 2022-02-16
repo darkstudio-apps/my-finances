@@ -43,8 +43,8 @@ export default function Transactions() {
   }
 
   return (
-    <Stack paddingY={10} spacing={10}>
-      <SimpleGrid columns={[1, 1, 3]} spacing={10}>
+    <Stack paddingY={[6, 10]} spacing={[6, 10]}>
+      <SimpleGrid columns={[1, 1, 3]} spacing={[6, 10]}>
         <CardTransaction
           description="Entradas"
           title={summary.deposit}
@@ -64,11 +64,11 @@ export default function Transactions() {
         />
       </SimpleGrid>
 
-
-      <Stack spacing={4} >
+      <Stack spacing={4}>
         <HStack align="center" justify="space-between" spacing={4}>
           <HStack spacing={4}>
             <Select
+              fontSize={["13px", "15px", "15px", "15px"]}
               name="month"
               placeholder="Selecione o mês"
               value={filters.month}
@@ -89,6 +89,7 @@ export default function Transactions() {
             </Select>
 
             <Select
+              fontSize={["13px", "15px", "15px", "15px"]}
               name="year"
               placeholder="Selecione o ano"
               value={filters.year}
@@ -108,6 +109,8 @@ export default function Transactions() {
             )}
 
             <Button
+              width={["110px", "120px", "160px", "180px"]}
+              fontSize={["11px", "15px", "15px", "15px"]}
               onClick={handleOpenNewTransaction}
               borderRadius="md"
               colorScheme="green"
