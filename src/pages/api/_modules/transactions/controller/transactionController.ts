@@ -18,15 +18,15 @@ async function list(req: ReqListProps, res: NextApiResponse) {
   try {
     const idUser = req?.session?.user?.idUser
 
+    if (!idUser) {
+      return res.status(400).json({ message: "userId not found" })
+    }
+
     const queryMonth = req.query.month as string | string[] | undefined
     const queryYear = req.query.year as string | string[] | undefined
 
     const month = Array.isArray(queryMonth) ? queryMonth[0] : queryMonth
     const year = Array.isArray(queryYear) ? queryYear[0] : queryYear
-
-    if (!idUser) {
-      return res.status(400).json({ message: "user.id not found" })
-    }
 
     const transactions = await transactionService.list(idUser, month, year)
 

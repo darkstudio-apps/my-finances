@@ -1,7 +1,7 @@
 import { transactionRepository } from "../repository/transactionRepository"
 
+import { generateTransaction, generateTransactionsRecurrence } from "./transactionService.util"
 import { dateNowYearMonthDay, endOfMonthInYearMonthDay, getObjYearMonthDay, parseToUTCandISO } from "../../../../../utils/dateUtil"
-import { generateTransaction, generateTransactionsRecurrence } from "./transaction.util"
 
 import { TransactionModelProps, TransactionReqProps } from "../../../../../hooks/useTransactions/transaction.types"
 
