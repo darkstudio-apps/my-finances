@@ -1,7 +1,7 @@
 import { transactionRepository } from "../repository/transactionRepository"
 
 import { generateTransaction, generateTransactionsRecurrence } from "./transactionService.util"
-import { dateNowYearMonthDay, endOfMonthInYearMonthDay, getObjYearMonthDay, parseToUTCandISO } from "../../../../../utils/dateUtil"
+import { dateNowYearMonthDay, endOfMonthInYearMonthDay, generateDecimalNumberInString, getObjYearMonthDay, parseToUTCandISO } from "../../../../../utils/dateUtil"
 
 import { TransactionModelProps, TransactionReqProps } from "../../../../../hooks/useTransactions/transaction.types"
 
@@ -9,7 +9,8 @@ async function list(idUser: string, month?: string, year?: string) {
   const dateYearMonthDay = dateNowYearMonthDay()
   const dateNow = getObjYearMonthDay(dateYearMonthDay)
 
-  const dateMonth = month ? month : dateNow.month
+  const dateMonthNumber = Number(month ? month : dateNow.month)
+  const dateMonth = generateDecimalNumberInString(dateMonthNumber)
   const dateYear = year ? year : dateNow.year
 
   const dateStart = `${dateYear}-${dateMonth}-01`
