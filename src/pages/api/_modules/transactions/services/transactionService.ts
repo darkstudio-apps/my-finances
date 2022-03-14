@@ -20,7 +20,16 @@ async function list(idUser: string, month?: string, year?: string) {
 
   const transactions = await transactionRepository.list({ idUser, dateStartISO, dateEndISO })
 
-  return transactions
+  const transactionsData = {
+    search: {
+      dateStart,
+      dateEnd,
+    },
+    length: transactions?.length || 0,
+    data: transactions,
+  }
+
+  return transactionsData
 }
 
 async function get(id: string) {

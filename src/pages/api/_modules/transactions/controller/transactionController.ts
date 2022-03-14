@@ -28,9 +28,9 @@ async function list(req: ReqListProps, res: NextApiResponse) {
     const month = Array.isArray(queryMonth) ? queryMonth[0] : queryMonth
     const year = Array.isArray(queryYear) ? queryYear[0] : queryYear
 
-    const transactions = await transactionService.list(idUser, month, year)
+    const transactionsData = await transactionService.list(idUser, month, year)
 
-    return res.status(200).json({ transactions })
+    return res.status(200).json(transactionsData)
   } catch (error) {
     return res.status(400).json({ message: "error:catch" })
   }
