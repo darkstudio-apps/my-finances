@@ -34,13 +34,14 @@ export function useTransactions() {
 
       const mappedTransactions: TransactionProps[] = data.transactions.map(transaction => {
         const dateUTC = transaction.date
+        const statusDisplay = transaction.status ? getStatusDisplay(transaction.status) : ""
 
         return {
           ...transaction,
           date: parseYearMonthDayUTC(dateUTC),
           dateDisplay: parseDateBrUTC(dateUTC),
           amountDisplay: formatCurrency(transaction.amount),
-          statusDisplay: transaction.status ? getStatusDisplay(transaction.status) : ""
+          statusDisplay,
         }
       })
 
@@ -59,6 +60,7 @@ export function useTransactions() {
   })
 
   const [summary, setSummary] = useState(summaryDefault)
+
   const [filters, setFilters] = useState(() => {
     const dateYearMonthDay = dateNowYearMonthDay()
     const { month, year } = getObjYearMonthDay(dateYearMonthDay)
@@ -66,6 +68,7 @@ export function useTransactions() {
   })
 
   useEffect(() => { refetch() }, [])
+
   useEffect(() => { refetch() }, [filters.month, filters.year])
 
   useEffect(() => {
