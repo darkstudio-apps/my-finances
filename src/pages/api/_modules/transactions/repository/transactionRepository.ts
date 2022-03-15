@@ -29,6 +29,7 @@ async function list({ idUser, dateStartISO, dateEndISO }: ListProps) {
 }
 
 async function get(idTransaction: string) {
+  // TODO: não permitir que um user acesse uma transaction que não é dele
   const transaction = await prisma.transaction.findUnique({
     where: {
       id: idTransaction,

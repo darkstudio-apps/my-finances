@@ -1,8 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import { transactionController } from "../_modules/transactions/controller/transactionController"
-import authorization from "../_middlewares/authorization"
 
-async function transactions(req: NextApiRequest, res: NextApiResponse) {
+export default async function transactions(req: NextApiRequest, res: NextApiResponse) {
   const { method } = req
 
   switch (method) {
@@ -17,5 +16,3 @@ async function transactions(req: NextApiRequest, res: NextApiResponse) {
       res.status(405).end(`Method ${method} Not Allowed`)
   }
 }
-
-export default authorization(transactions)

@@ -1,11 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next"
-
 import { RequestType } from "../_modules/transactions/types/transactionRequests.type"
 import { transactionController } from "../_modules/transactions/controller/transactionController"
 
-import authorization from "../_middlewares/authorization"
-
-async function transactions(req: NextApiRequest, res: NextApiResponse) {
+export default async function transactions(req: NextApiRequest, res: NextApiResponse) {
   const { method, query, body } = req
 
   const idTransaction = Array.isArray(query.id) ? query.id[0] : query.id
@@ -35,5 +32,3 @@ async function transactions(req: NextApiRequest, res: NextApiResponse) {
       res.status(405).end(`Method ${method} Not Allowed`)
   }
 }
-
-export default authorization(transactions)
