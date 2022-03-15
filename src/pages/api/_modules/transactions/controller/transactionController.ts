@@ -43,6 +43,8 @@ async function get(req: RequestType, res: NextApiResponse) {
 
     const transaction = await transactionService.get(id)
 
+    // TODO: retornar um obj no formato de data que está implementado no list
+
     return res.status(200).json({ transaction })
   } catch (error) {
     return res.status(400).json({ message: error })
@@ -54,6 +56,8 @@ async function post(req: RequestPostType, res: NextApiResponse) {
     const { body } = req
 
     const transaction = await transactionService.post(body)
+
+    // TODO: retornar um obj no formato de data que está implementado no list
 
     return res.status(200).json({ transaction })
   } catch (error) {
@@ -67,6 +71,8 @@ async function put(req: RequestType, res: NextApiResponse) {
 
     const transaction = await transactionService.put(query.id, body)
 
+    // TODO: retornar um obj no formato de data que está implementado no list
+
     return res.status(200).json({ transaction })
   } catch (error) {
     return res.status(400).json({ message: error })
@@ -79,6 +85,8 @@ function patch(req: RequestType, res: NextApiResponse) {
 
     const transaction = transactionService.put(query.id, body)
 
+    // TODO: retornar um obj no formato de data que está implementado no list
+
     return res.status(200).json({ transaction })
   } catch (error) {
     return res.status(400).json({ message: error })
@@ -90,8 +98,9 @@ async function remove(req: RequestType, res: NextApiResponse) {
     const { id } = req.query
     await transactionService.remove(id)
 
-    return res.status(200).json({ message: "Success" })
+    // TODO: retornar um obj no formato de data que está implementado no list
 
+    return res.status(200).json({ message: "Success" })
   } catch (error) {
     return res.status(400).json({ message: error })
   }
