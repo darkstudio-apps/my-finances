@@ -1,5 +1,5 @@
 import { NextApiResponse } from "next"
-import { getSession } from "next-auth/client"
+import { getSession } from "next-auth/react"
 
 const authorization = (apiRoute: any) => async (req: any, res: NextApiResponse) => {
   const session = await getSession({ req })

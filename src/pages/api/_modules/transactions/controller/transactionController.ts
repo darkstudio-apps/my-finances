@@ -1,25 +1,26 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import { transactionService } from "../services/transactionService"
 import { RequestPostType, RequestType } from "../types/transactionRequests.type"
+import { getSession } from "next-auth/react"
 
-interface ReqListProps extends NextApiRequest {
-  session?: {
-    user?: {
-      name?: string
-      email?: string
-      image?: string
-      idUser?: string
-    },
-    expires?: string
+interface SessionProps {
+  user?: {
+    name?: string
+    email?: string
+    image?: string
+    idUser?: string
   }
+  expires?: string
 }
 
-async function list(req: ReqListProps, res: NextApiResponse) {
+async function list(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const idUser = req?.session?.user?.idUser
+    const session: SessionProps = await getSession({ req }) as any
+
+    const idUser = session?.user?.idUser
 
     if (!idUser) {
-      return res.status(400).json({ message: "userId not found" })
+      return res.status(400).json({ message: "Id user not found" })
     }
 
     const queryMonth = req.query.month as string | string[] | undefined

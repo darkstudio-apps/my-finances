@@ -1,6 +1,6 @@
 
-import NextAuth, { User } from "next-auth"
-import Providers from "next-auth/providers"
+import NextAuth from "next-auth"
+import Google from "next-auth/providers/google"
 
 import { userService } from "../_modules/users/services/userService"
 import { userRepository } from "../_modules/users/repository/userRepository"
@@ -9,22 +9,27 @@ import { UserModelProps } from "../../../hooks/useUsers/user.types"
 
 export default NextAuth({
   providers: [
-    Providers.Google({
-      clientId: process.env.GOOGLE_ID,
-      clientSecret: process.env.GOOGLE_SECRET,
-      authorizationUrl: "https://accounts.google.com/o/oauth2/v2/auth?prompt=consent&access_type=offline&response_type=code",
+    Google({
+      clientId: process.env.GOOGLE_ID || "",
+      clientSecret: process.env.GOOGLE_SECRET || "",
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
     }),
   ],
-  session: {
-    jwt: true,
-  },
-  jwt: {
-    secret: process.env.JWT_SECRET,
-  },
+  secret: process.env.JWT_SECRET,
   callbacks: {
-    async session(session) {
+    async session({ session }) {
       try {
-        const user = await userService.get(String(session.user?.email))
+        const userEmail = session.user?.email
+
+        if (typeof userEmail !== "string") throw new Error("User email not found")
+
+        const user = await userService.get(userEmail)
 
         if (user) {
           const idUser = user.id
@@ -43,7 +48,7 @@ export default NextAuth({
         return session
       }
     },
-    async signIn(user: User) {
+    async signIn({ user }) {
       try {
         const { name, email } = user
 

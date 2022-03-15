@@ -1,5 +1,5 @@
 import { Avatar, Tag, Box, Flex, Heading, HStack, Text, Menu, MenuButton, MenuList, MenuItem, Image } from "@chakra-ui/react"
-import { signOut, useSession } from "next-auth/client"
+import { signOut, useSession } from "next-auth/react"
 // import { ActiveLink } from "./ActiveLink"
 import packageJson from "../../../package.json"
 
@@ -7,7 +7,7 @@ const VERCEL_ENV = process.env.NEXT_PUBLIC_VERCEL_ENV
 const APP_VERSION = packageJson.version
 
 export function Header() {
-  const [session] = useSession()
+  const { data: session } = useSession()
 
   const handleSignOut = () => {
     signOut()
