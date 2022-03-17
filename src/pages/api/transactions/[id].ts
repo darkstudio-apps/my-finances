@@ -1,34 +1,54 @@
 import { NextApiRequest, NextApiResponse } from "next"
-import { RequestType } from "../_modules/transactions/types/transactionRequests.type"
+import { ITransactionRequest, ITransactionRequestSession } from "../_modules/transactions/types/transactionRequests.type"
 import { transactionController } from "../_modules/transactions/controller/transactionController"
+import { getSession } from "next-auth/react"
 
 export default async function transactions(req: NextApiRequest, res: NextApiResponse) {
-  const { method, query, body } = req
+  try {
+    const session: ITransactionRequestSession = await getSession({ req }) as any
 
-  const idTransaction = Array.isArray(query.id) ? query.id[0] : query.id
+    const idUser = session?.user?.idUser
 
-  const request: RequestType = {
-    query: {
-      id: idTransaction,
-    },
-    body,
-  }
+    if (!idUser) throw new Error("id user not found")
 
-  switch (method) {
-    case "GET":
-      transactionController.get(request, res)
-      break
-    case "PUT":
-      transactionController.put(request, res)
-      break
-    case "PATCH":
-      transactionController.patch(request, res)
-      break
-    case "DELETE":
-      transactionController.remove(request, res)
-      break
-    default:
-      res.setHeader("Allow", ["GET", "PUT", "PATCH", "DELETE"])
-      res.status(405).end(`Method ${method} Not Allowed`)
+    const { method, query, body } = req
+
+    const id = Array.isArray(query.id) ? query.id[0] : query.id
+    const actionQuery = Array.isArray(query.action) ? query.action[0] : query.action
+
+    let action: undefined | "current" | "next" | "all" = undefined
+
+    if (actionQuery === "current" || actionQuery === "next" || actionQuery === "all") {
+      action = actionQuery
+    }
+
+    const request: ITransactionRequest = {
+      query: {
+        idUser,
+        id,
+        action,
+      },
+      body,
+    }
+
+    switch (method) {
+      case "GET":
+        transactionController.get(request, res)
+        break
+      case "PUT":
+        transactionController.put(request, res)
+        break
+      case "PATCH":
+        transactionController.patch(request, res)
+        break
+      case "DELETE":
+        transactionController.remove(request, res)
+        break
+      default:
+        res.setHeader("Allow", ["GET", "PUT", "PATCH", "DELETE"])
+        res.status(405).end(`Method ${method} Not Allowed`)
+    }
+  } catch (error) {
+    res.status(500).json({ error })
   }
 }
