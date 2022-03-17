@@ -1,19 +1,31 @@
-import { NextApiRequest } from "next"
-import { TransactionModelProps, TransactionReqProps } from "./transaction.type"
+import { ITransactionForRegister, ITransaction } from "./transaction.type"
 
-export interface RequestType {
-  query: {
-    id: string
+export interface ITransactionRequestSession {
+  user?: {
+    name?: string
+    email?: string
+    image?: string
+    idUser?: string
   }
-  body: Partial<TransactionReqProps>
+  expires?: string
 }
 
-export interface RequestPostType extends NextApiRequest {
-  body: TransactionModelProps
+export type ITransactionRequestActionParam = "current" | "next" | "all"
+
+export interface ITransactionRequest {
+  query: {
+    idUser: string
+    id: string
+    action?: ITransactionRequestActionParam
+  }
+  body: Partial<ITransaction>
 }
 
-export type PartialTransactionReq = Partial<TransactionReqProps>
-
-export interface TransactionModelCreateProps extends TransactionModelProps {
-  idRecurrence: string
+export interface ITransactionRequestRoot {
+  query: {
+    idUser: string
+    month?: string
+    year?: string
+  }
+  body: ITransactionForRegister
 }

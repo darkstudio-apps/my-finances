@@ -1,33 +1,10 @@
-import { NextApiRequest, NextApiResponse } from "next"
+import { NextApiResponse } from "next"
 import { transactionService } from "../services/transactionService"
-import { RequestPostType, RequestType } from "../types/transactionRequests.type"
-import { getSession } from "next-auth/react"
+import { ITransactionRequest, ITransactionRequestRoot } from "../types/transactionRequests.type"
 
-interface SessionProps {
-  user?: {
-    name?: string
-    email?: string
-    image?: string
-    idUser?: string
-  }
-  expires?: string
-}
-
-async function list(req: NextApiRequest, res: NextApiResponse) {
+async function list(req: ITransactionRequestRoot, res: NextApiResponse) {
   try {
-    const session: SessionProps = await getSession({ req }) as any
-
-    const idUser = session?.user?.idUser
-
-    if (!idUser) {
-      return res.status(400).json({ message: "Id user not found" })
-    }
-
-    const queryMonth = req.query.month as string | string[] | undefined
-    const queryYear = req.query.year as string | string[] | undefined
-
-    const month = Array.isArray(queryMonth) ? queryMonth[0] : queryMonth
-    const year = Array.isArray(queryYear) ? queryYear[0] : queryYear
+    const { idUser, month, year } = req.query
 
     const transactionsData = await transactionService.list(idUser, month, year)
 
@@ -37,7 +14,7 @@ async function list(req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
-async function get(req: RequestType, res: NextApiResponse) {
+async function get(req: ITransactionRequest, res: NextApiResponse) {
   try {
     const { id } = req.query
 
@@ -51,7 +28,7 @@ async function get(req: RequestType, res: NextApiResponse) {
   }
 }
 
-async function post(req: RequestPostType, res: NextApiResponse) {
+async function post(req: ITransactionRequestRoot, res: NextApiResponse) {
   try {
     const { body } = req
 
@@ -65,7 +42,7 @@ async function post(req: RequestPostType, res: NextApiResponse) {
   }
 }
 
-async function put(req: RequestType, res: NextApiResponse) {
+async function put(req: ITransactionRequest, res: NextApiResponse) {
   try {
     const { query, body } = req
 
@@ -79,7 +56,7 @@ async function put(req: RequestType, res: NextApiResponse) {
   }
 }
 
-function patch(req: RequestType, res: NextApiResponse) {
+function patch(req: ITransactionRequest, res: NextApiResponse) {
   try {
     const { query, body } = req
 
@@ -93,12 +70,12 @@ function patch(req: RequestType, res: NextApiResponse) {
   }
 }
 
-async function remove(req: RequestType, res: NextApiResponse) {
+async function remove(req: ITransactionRequest, res: NextApiResponse) {
   try {
-    const { id } = req.query
-    await transactionService.remove(id)
+    const { idUser, id, action } = req.query
 
     // TODO: retornar um obj no formato de data que está implementado no list
+    await transactionService.remove({ idUser, id, action })
 
     return res.status(200).json({ message: "Success" })
   } catch (error) {

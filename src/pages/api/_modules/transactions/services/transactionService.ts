@@ -3,7 +3,8 @@ import { transactionRepository } from "../repository/transactionRepository"
 import { generateTransaction, generateTransactionsRecurrence } from "./transactionService.util"
 import { dateNowYearMonthDay, endOfMonthInYearMonthDay, generateDecimalNumberInString, getObjYearMonthDay, parseToUTCandISO } from "../../../../../utils/dateUtil"
 
-import { TransactionModelProps, TransactionReqProps } from "../../../../../hooks/useTransactions/transaction.types"
+import { ITransactionRequestActionParam } from "../types/transactionRequests.type"
+import { ITransactionForRegister, ITransactionPartial } from "../types/transaction.type"
 
 async function list(idUser: string, month?: string, year?: string) {
   const dateYearMonthDay = dateNowYearMonthDay()
@@ -38,7 +39,7 @@ async function get(id: string) {
   return transaction
 }
 
-async function post(transaction: TransactionModelProps) {
+async function post(transaction: ITransactionForRegister) {
   const isNotRecurrence = !transaction.isRecurrence
 
   if (isNotRecurrence) {
@@ -55,19 +56,51 @@ async function post(transaction: TransactionModelProps) {
   }
 }
 
-async function put(id: string, transaction: Partial<TransactionReqProps>) {
+async function put(id: string, transaction: ITransactionPartial) {
   const editedTransaction = await transactionRepository.put(id, transaction)
   return editedTransaction
 }
 
-function patch(id: string, transaction: Partial<TransactionReqProps>) {
-  const editedTransaction = transactionRepository.put(id, transaction)
+async function patch(id: string, transaction: ITransactionPartial) {
+  const editedTransaction = await transactionRepository.put(id, transaction)
   return editedTransaction
 }
 
-function remove(id: string) {
-  const ok = transactionRepository.remove(id)
-  return ok
+interface IRemove {
+  idUser: string
+  id: string
+  action?: ITransactionRequestActionParam
+}
+
+async function remove({ idUser, id, action }: IRemove) {
+  const transaction = await get(id)
+  // /(?:)/
+
+  if (!transaction) throw new Error("transaction not found")
+
+  if (action === "all") {
+    // TODO: buscar todas as recorrencias pelo idRecurrence
+    // transactionRepository.list
+
+    // TODO: fazer um map no array de transactions criar um array de strings com os ids das transactions a serem excluidas
+
+    // TODO: excluir as transactions
+    // transactionRepository.removeMany
+  }
+
+  if (action === "current") {
+    // TODO: buscar todas as recorrencias pelo idRecurrence que são maiores que a data da transaction atual
+
+    // TODO: fazer um map no array de transactions criar um array de strings com os ids das transactions a serem excluidas
+
+    // TODO: excluir as transactions
+    // transactionRepository.removeMany
+  }
+
+  // const responde = await transactionRepository.remove(id)
+  // return responde
+
+  return false
 }
 
 export const transactionService = {

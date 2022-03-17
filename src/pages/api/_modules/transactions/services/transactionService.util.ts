@@ -1,13 +1,11 @@
 import { dateAddDays, dateAddMonths, dateAddYears, dateIsBefore } from "../../../../../utils/dateUtil"
 import { uuid } from "../../../../../utils/generateID"
+import { ITransactionForCreate, ITransactionForRegister, ITransactionTypeRecurrenceProp } from "../types/transaction.type"
 
-import { TransactionModelCreateProps } from "../types/transactionRequests.type"
-import { TransactionModelProps, TransactionTypeRecurrenceProps } from "../../../../../hooks/useTransactions/transaction.types"
-
-export const generateTransaction = (transaction: TransactionModelProps): TransactionModelCreateProps => {
+export const generateTransaction = (transaction: ITransactionForRegister): ITransactionForCreate => {
   const idRecurrence = uuid()
 
-  const mappedTransaction: TransactionModelCreateProps = {
+  const mappedTransaction: ITransactionForCreate = {
     ...transaction,
     idRecurrence,
   }
@@ -17,7 +15,7 @@ export const generateTransaction = (transaction: TransactionModelProps): Transac
 
 // --------------- generateTransactionsRecurrence ---------------
 
-const generateDatesByDays = (transaction: TransactionModelProps, days: number) => {
+const generateDatesByDays = (transaction: ITransactionForRegister, days: number) => {
   const { date } = transaction
   const dateYearFuture = dateAddYears(date, 1)
 
@@ -36,7 +34,7 @@ const generateDatesByDays = (transaction: TransactionModelProps, days: number) =
   return datesFuture
 }
 
-const generateDatesByMonths = (transaction: TransactionModelProps, installments: number) => {
+const generateDatesByMonths = (transaction: ITransactionForRegister, installments: number) => {
   const { date } = transaction
 
   const datesFuture = [...Array(installments)].map((_, idx) => {
@@ -50,7 +48,7 @@ const generateDatesByMonths = (transaction: TransactionModelProps, installments:
   return datesFuture
 }
 
-const generateDatesByYears = (transaction: TransactionModelProps, installments: number) => {
+const generateDatesByYears = (transaction: ITransactionForRegister, installments: number) => {
   const { date } = transaction
 
   const datesFuture = [...Array(installments)].map((_, idx) => {
@@ -65,32 +63,32 @@ const generateDatesByYears = (transaction: TransactionModelProps, installments: 
 }
 
 const generateDatesRecurrence = {
-  every_1_week: (transaction: TransactionModelProps): string[] => {
+  every_1_week: (transaction: ITransactionForRegister): string[] => {
     return generateDatesByDays(transaction, 7)
   },
 
-  every_15_days: (transaction: TransactionModelProps): string[] => {
+  every_15_days: (transaction: ITransactionForRegister): string[] => {
     return generateDatesByDays(transaction, 15)
   },
 
-  monthly: (transaction: TransactionModelProps): string[] => {
+  monthly: (transaction: ITransactionForRegister): string[] => {
     return generateDatesByMonths(transaction, 12)
   },
 
-  yearly: (transaction: TransactionModelProps): string[] => {
+  yearly: (transaction: ITransactionForRegister): string[] => {
     return generateDatesByYears(transaction, 2)
   },
 
-  installments: (transaction: TransactionModelProps): string[] => {
+  installments: (transaction: ITransactionForRegister): string[] => {
     const installments = parseInt(transaction.installments)
     return generateDatesByMonths(transaction, installments)
   },
 }
 
-export const generateTransactionsRecurrence = (transaction: TransactionModelProps): TransactionModelCreateProps[] => {
+export const generateTransactionsRecurrence = (transaction: ITransactionForRegister): ITransactionForCreate[] => {
   const idRecurrence = uuid()
 
-  const typeRecurrence = transaction.typeRecurrence as TransactionTypeRecurrenceProps
+  const typeRecurrence = transaction.typeRecurrence as ITransactionTypeRecurrenceProp
   if (typeRecurrence === "") return []
 
   const datesRecurrence = generateDatesRecurrence[typeRecurrence](transaction)

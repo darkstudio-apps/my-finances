@@ -1,5 +1,5 @@
 import { prisma } from "../../../../../services/prisma"
-import { PartialTransactionReq, TransactionModelCreateProps } from "../types/transactionRequests.type"
+import { ITransactionForCreate, ITransactionPartial } from "../types/transaction.type"
 
 interface ListProps {
   idUser: string
@@ -39,7 +39,7 @@ async function get(idTransaction: string) {
   return transaction
 }
 
-async function post(transaction: TransactionModelCreateProps) {
+async function post(transaction: ITransactionForCreate) {
   const newTransaction = await prisma.transaction.create({
     data: transaction,
   })
@@ -47,7 +47,7 @@ async function post(transaction: TransactionModelCreateProps) {
   return newTransaction
 }
 
-async function postMany(transactions: TransactionModelCreateProps[]) {
+async function postMany(transactions: ITransactionForCreate[]) {
   const newTransactions = await prisma.transaction.createMany({
     data: transactions,
   })
@@ -55,7 +55,7 @@ async function postMany(transactions: TransactionModelCreateProps[]) {
   return newTransactions
 }
 
-async function put(idTransaction: string, transaction: PartialTransactionReq) {
+async function put(idTransaction: string, transaction: ITransactionPartial) {
   const editedTransaction = await prisma.transaction.update({
     where: { id: idTransaction },
     data: transaction,
@@ -64,7 +64,7 @@ async function put(idTransaction: string, transaction: PartialTransactionReq) {
   return editedTransaction
 }
 
-function patch(idTransaction: string, transaction: PartialTransactionReq) {
+function patch(idTransaction: string, transaction: ITransactionPartial) {
   const obj = {
     ...transaction,
     id: idTransaction,
@@ -81,6 +81,16 @@ async function remove(idTransaction: string): Promise<boolean> {
   return !!transaction
 }
 
+async function removeMany(idTransactions: string[]): Promise<boolean> {
+  const transaction = await prisma.transaction.deleteMany({
+    where: {
+      id: { in: idTransactions },
+    },
+  })
+
+  return !!transaction
+}
+
 export const transactionRepository = {
   list,
   get,
@@ -89,4 +99,5 @@ export const transactionRepository = {
   put,
   patch,
   remove,
+  removeMany,
 }
