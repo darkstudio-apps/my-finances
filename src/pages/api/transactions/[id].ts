@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next"
-import { ITransactionRequest, ITransactionRequestSession } from "../_modules/transactions/types/transactionRequests.type"
+import { ITransactionRequest, ITransactionRequestSession } from "../_modules/transactions/types/transactionRequest.type"
 import { transactionController } from "../_modules/transactions/controller/transactionController"
 import { getSession } from "next-auth/react"
 

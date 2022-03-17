@@ -3,7 +3,7 @@ import { transactionRepository } from "../repository/transactionRepository"
 import { generateTransaction, generateTransactionsRecurrence } from "./transactionService.util"
 import { dateNowYearMonthDay, endOfMonthInYearMonthDay, generateDecimalNumberInString, getObjYearMonthDay, parseToUTCandISO } from "../../../../../utils/dateUtil"
 
-import { ITransactionRequestActionParam } from "../types/transactionRequests.type"
+import { ITransactionRequestActionParam } from "../types/transactionRequest.type"
 import { ITransactionForRegister, ITransactionPartial } from "../types/transaction.type"
 
 async function list(idUser: string, month?: string, year?: string) {
@@ -22,6 +22,7 @@ async function list(idUser: string, month?: string, year?: string) {
 
   const transactions = await transactionRepository.list({ idUser, dateStartISO, dateEndISO })
 
+  // TODO: criar a tipagem desse retorno no arquivo - transactionResponse
   const transactionsData = {
     search: {
       dateStart,
@@ -36,6 +37,9 @@ async function list(idUser: string, month?: string, year?: string) {
 
 async function get(id: string) {
   const transaction = await transactionRepository.get(id)
+
+  // TODO: retornar um obj com a tipagem de transactionResponse
+
   return transaction
 }
 
@@ -54,15 +58,24 @@ async function post(transaction: ITransactionForRegister) {
     const createdTransactions = await transactionRepository.postMany(transactions)
     return createdTransactions
   }
+
+  // TODO: retornar um obj com a tipagem de transactionResponse
+  // TODO: ter um unico retorno
 }
 
 async function put(id: string, transaction: ITransactionPartial) {
   const editedTransaction = await transactionRepository.put(id, transaction)
+
+  // TODO: retornar um obj com a tipagem de transactionResponse
+
   return editedTransaction
 }
 
 async function patch(id: string, transaction: ITransactionPartial) {
   const editedTransaction = await transactionRepository.put(id, transaction)
+
+  // TODO: retornar um obj com a tipagem de transactionResponse
+
   return editedTransaction
 }
 
@@ -99,6 +112,8 @@ async function remove({ idUser, id, action }: IRemove) {
 
   // const responde = await transactionRepository.remove(id)
   // return responde
+
+  // TODO: retornar um obj com a tipagem de transactionResponse
 
   return false
 }

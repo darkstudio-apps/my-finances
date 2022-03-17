@@ -1,6 +1,6 @@
 import { NextApiResponse } from "next"
 import { transactionService } from "../services/transactionService"
-import { ITransactionRequest, ITransactionRequestRoot } from "../types/transactionRequests.type"
+import { ITransactionRequest, ITransactionRequestRoot } from "../types/transactionRequest.type"
 
 async function list(req: ITransactionRequestRoot, res: NextApiResponse) {
   try {
@@ -18,9 +18,8 @@ async function get(req: ITransactionRequest, res: NextApiResponse) {
   try {
     const { id } = req.query
 
-    const transaction = await transactionService.get(id)
-
     // TODO: retornar um obj no formato de data que está implementado no list
+    const transaction = await transactionService.get(id)
 
     return res.status(200).json({ transaction })
   } catch (error) {
@@ -32,9 +31,8 @@ async function post(req: ITransactionRequestRoot, res: NextApiResponse) {
   try {
     const { body } = req
 
-    const transaction = await transactionService.post(body)
-
     // TODO: retornar um obj no formato de data que está implementado no list
+    const transaction = await transactionService.post(body)
 
     return res.status(200).json({ transaction })
   } catch (error) {
@@ -46,9 +44,8 @@ async function put(req: ITransactionRequest, res: NextApiResponse) {
   try {
     const { query, body } = req
 
-    const transaction = await transactionService.put(query.id, body)
-
     // TODO: retornar um obj no formato de data que está implementado no list
+    const transaction = await transactionService.put(query.id, body)
 
     return res.status(200).json({ transaction })
   } catch (error) {
@@ -60,9 +57,8 @@ function patch(req: ITransactionRequest, res: NextApiResponse) {
   try {
     const { query, body } = req
 
-    const transaction = transactionService.put(query.id, body)
-
     // TODO: retornar um obj no formato de data que está implementado no list
+    const transaction = transactionService.put(query.id, body)
 
     return res.status(200).json({ transaction })
   } catch (error) {

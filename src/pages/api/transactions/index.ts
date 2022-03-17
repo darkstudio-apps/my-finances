@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import { getSession } from "next-auth/react"
 import { transactionController } from "../_modules/transactions/controller/transactionController"
-import { ITransactionRequestRoot, ITransactionRequestSession } from "../_modules/transactions/types/transactionRequests.type"
+import { ITransactionRequestRoot, ITransactionRequestSession } from "../_modules/transactions/types/transactionRequest.type"
 
 export default async function transactions(req: NextApiRequest, res: NextApiResponse) {
   try {
