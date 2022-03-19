@@ -1,13 +1,15 @@
 import { prisma } from "../../../../../services/prisma"
-import { ITransactionForCreate, ITransactionPartial } from "../types/transaction.type"
+import { ITransaction, ITransactionForCreate, ITransactionPartial } from "../types/transaction.type"
+import { ITransactionGetAllResponse } from "../types/transactionResponse.type"
 
 interface ListProps {
   idUser: string
-  dateStartISO: string
-  dateEndISO: string
+  dateStartISO?: string
+  dateEndISO?: string
+  idRecurrence?: string
 }
 
-async function list({ idUser, dateStartISO, dateEndISO }: ListProps) {
+async function list({ idUser, dateStartISO, dateEndISO, idRecurrence }: ListProps): Promise<ITransactionGetAllResponse> {
   try {
     const transactions = await prisma.transaction.findMany({
       where: {
@@ -16,6 +18,7 @@ async function list({ idUser, dateStartISO, dateEndISO }: ListProps) {
           gte: dateStartISO,
           lte: dateEndISO,
         },
+        idRecurrence,
       },
       orderBy: {
         date: "asc",
@@ -37,18 +40,19 @@ async function list({ idUser, dateStartISO, dateEndISO }: ListProps) {
   }
 }
 
-async function get(idTransaction: string) {
+async function get(idTransaction: string): Promise<ITransaction | null> {
   // TODO: não permitir que um user acesse uma transaction que não é dele
   const transaction = await prisma.transaction.findUnique({
     where: {
       id: idTransaction,
     },
-  })
+  }) as ITransaction | null
 
   return transaction
 }
 
 async function post(transaction: ITransactionForCreate) {
+  // TODO: não permitir que um user cadastre uma transaction que não é dele
   const newTransaction = await prisma.transaction.create({
     data: transaction,
   })
@@ -57,6 +61,7 @@ async function post(transaction: ITransactionForCreate) {
 }
 
 async function postMany(transactions: ITransactionForCreate[]) {
+  // TODO: não permitir que um user cadastre uma transaction que não é dele
   const newTransactions = await prisma.transaction.createMany({
     data: transactions,
   })
@@ -65,6 +70,7 @@ async function postMany(transactions: ITransactionForCreate[]) {
 }
 
 async function put(idTransaction: string, transaction: ITransactionPartial) {
+  // TODO: não permitir que um user edite uma transaction que não é dele
   const editedTransaction = await prisma.transaction.update({
     where: { id: idTransaction },
     data: transaction,
@@ -73,16 +79,18 @@ async function put(idTransaction: string, transaction: ITransactionPartial) {
   return editedTransaction
 }
 
-function patch(idTransaction: string, transaction: ITransactionPartial) {
-  const obj = {
-    ...transaction,
-    id: idTransaction,
-  }
+async function patch(idTransaction: string, transaction: ITransactionPartial) {
+  // TODO: não permitir que um user edite uma transaction que não é dele
+  const editedTransaction = await prisma.transaction.update({
+    where: { id: idTransaction },
+    data: transaction,
+  })
 
-  return obj
+  return editedTransaction
 }
 
 async function remove(idTransaction: string): Promise<boolean> {
+  // TODO: não permitir que um user edite uma transaction que não é dele
   const transaction = await prisma.transaction.delete({
     where: { id: idTransaction },
   })
@@ -91,11 +99,14 @@ async function remove(idTransaction: string): Promise<boolean> {
 }
 
 async function removeMany(idTransactions: string[]): Promise<boolean> {
+  // TODO: não permitir que um user edite uma transaction que não é dele
   const transaction = await prisma.transaction.deleteMany({
     where: {
       id: { in: idTransactions },
     },
   })
+
+  // TODO: retornar um obj com a tipagem de transactionResponse
 
   return !!transaction
 }

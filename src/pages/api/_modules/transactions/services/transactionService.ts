@@ -4,7 +4,7 @@ import { generateTransaction, generateTransactionsRecurrence } from "./transacti
 import { dateNowYearMonthDay, endOfMonthInYearMonthDay, generateDecimalNumberInString, getObjYearMonthDay, parseToUTCandISO } from "../../../../../utils/dateUtil"
 
 import { ITransactionRequestActionParam } from "../types/transactionRequest.type"
-import { ITransactionForRegister, ITransactionPartial } from "../types/transaction.type"
+import { ITransaction, ITransactionForRegister, ITransactionPartial } from "../types/transaction.type"
 
 async function list(idUser: string, month?: string, year?: string) {
   const dateYearMonthDay = dateNowYearMonthDay()
@@ -20,17 +20,7 @@ async function list(idUser: string, month?: string, year?: string) {
   const dateStartISO = parseToUTCandISO(dateStart, "start")
   const dateEndISO = parseToUTCandISO(dateEnd, "end")
 
-  const transactions = await transactionRepository.list({ idUser, dateStartISO, dateEndISO })
-
-  // TODO: criar a tipagem desse retorno no arquivo - transactionResponse
-  const transactionsData = {
-    search: {
-      dateStart,
-      dateEnd,
-    },
-    length: transactions?.length || 0,
-    data: transactions,
-  }
+  const transactionsData = await transactionRepository.list({ idUser, dateStartISO, dateEndISO })
 
   return transactionsData
 }
@@ -85,37 +75,43 @@ interface IRemove {
   action?: ITransactionRequestActionParam
 }
 
-async function remove({ idUser, id, action }: IRemove) {
+const generateFiltersListRemove = (transaction: ITransaction, action?: ITransactionRequestActionParam) => {
+  const { id, idUser, idRecurrence, date } = transaction
+
+  const dateStartISO = date
+
+  if (action === "all") return { idUser, idRecurrence }
+
+  if (action === "next") return { idUser, idRecurrence, dateStartISO }
+
+  return { idUser, id }
+}
+
+async function remove({ id, action }: IRemove): Promise<boolean> {
   const transaction = await get(id)
-  // /(?:)/
 
   if (!transaction) throw new Error("transaction not found")
 
-  if (action === "all") {
-    // TODO: buscar todas as recorrencias pelo idRecurrence
-    // transactionRepository.list
-
-    // TODO: fazer um map no array de transactions criar um array de strings com os ids das transactions a serem excluidas
-
-    // TODO: excluir as transactions
-    // transactionRepository.removeMany
+  if (!action || action === "current") {
+    await transactionRepository.remove(id)
+    return true
   }
 
-  if (action === "current") {
-    // TODO: buscar todas as recorrencias pelo idRecurrence que são maiores que a data da transaction atual
+  const filtersList = generateFiltersListRemove(transaction, action)
+  const { data: transactions } = await transactionRepository.list(filtersList)
 
-    // TODO: fazer um map no array de transactions criar um array de strings com os ids das transactions a serem excluidas
+  // TODO: quando não tiver dados, retornar um obj diferente ou um erro?
+  // {
+  //   success: false,
+  //   message: "transactions not found",
+  // }
+  if (!transactions) return false
 
-    // TODO: excluir as transactions
-    // transactionRepository.removeMany
-  }
+  const idTransactions = transactions.map(transaction => transaction.id)
 
-  // const responde = await transactionRepository.remove(id)
-  // return responde
+  const respondeMany = await transactionRepository.removeMany(idTransactions)
 
-  // TODO: retornar um obj com a tipagem de transactionResponse
-
-  return false
+  return !!respondeMany
 }
 
 export const transactionService = {
