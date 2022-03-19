@@ -4,6 +4,7 @@ import { ITransactionRequest, ITransactionRequestRoot } from "../types/transacti
 
 async function list(req: ITransactionRequestRoot, res: NextApiResponse) {
   try {
+    // TODO: receber o idRecurrence e usar ele para fazer a busca tbm
     const { idUser, month, year } = req.query
 
     const transactionsData = await transactionService.list(idUser, month, year)

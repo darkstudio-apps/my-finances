@@ -17,3 +17,8 @@ content-type: application/json
   "idUser": "619c4a2502f154d3817c5314",
   "isRecurrence": false
 }
+
+// TODO: [ ] Editar uma transação que é uma recorrência.
+// TODO: [ ] Editar uma transação que não é uma recorrência, pra ser uma recorrência.
+// TODO: [ ] Editar uma transação que é uma recorrência, pra não ser mais uma recorrência.
+// TODO: [ ] Editar a data de uma transação que é uma recorrência, e refletir para as próximas transações levando em consideração o mês.
