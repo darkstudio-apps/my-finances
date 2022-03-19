@@ -20,11 +20,20 @@ async function list({ idUser, dateStartISO, dateEndISO }: ListProps) {
       orderBy: {
         date: "asc",
       },
-    })
+    }) as ITransaction[] | undefined
 
-    return transactions
+    const transactionsData: ITransactionGetAllResponse = {
+      search: {
+        dateStart: dateStartISO || "",
+        dateEnd: dateEndISO || "",
+      },
+      length: transactions?.length || 0,
+      data: transactions || [],
+    }
+
+    return transactionsData
   } catch (error) {
-    return undefined
+    throw error
   }
 }
 
