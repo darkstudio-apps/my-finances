@@ -43,12 +43,13 @@ async function post(req: ITransactionRequestRoot, res: NextApiResponse) {
 
 async function put(req: ITransactionRequest, res: NextApiResponse) {
   try {
-    const { query, body } = req
+    const { idUser, id, action } = req.query
+    const transaction = req.body
 
     // TODO: retornar um obj no formato de data que está implementado no list
-    const transaction = await transactionService.put(query.id, body)
+    const transactionData = await transactionService.put({ idUser, id, action, transaction })
 
-    return res.status(200).json({ transaction })
+    return res.status(200).json({ transaction: transactionData })
   } catch (error) {
     return res.status(400).json({ message: error })
   }
@@ -56,12 +57,13 @@ async function put(req: ITransactionRequest, res: NextApiResponse) {
 
 function patch(req: ITransactionRequest, res: NextApiResponse) {
   try {
-    const { query, body } = req
+    const { idUser, id, action } = req.query
+    const transaction = req.body
 
     // TODO: retornar um obj no formato de data que está implementado no list
-    const transaction = transactionService.put(query.id, body)
+    const transactionData = transactionService.put({ idUser, id, action, transaction })
 
-    return res.status(200).json({ transaction })
+    return res.status(200).json({ transaction: transactionData })
   } catch (error) {
     return res.status(400).json({ message: error })
   }

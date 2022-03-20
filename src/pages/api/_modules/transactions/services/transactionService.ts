@@ -4,7 +4,7 @@ import { generateTransaction, generateTransactionsRecurrence } from "./transacti
 import { dateNowYearMonthDay, endOfMonthInYearMonthDay, generateDecimalNumberInString, getObjYearMonthDay, parseToUTCandISO } from "../../../../../utils/dateUtil"
 
 import { ITransactionRequestActionParam } from "../types/transactionRequest.type"
-import { ITransaction, ITransactionForRegister, ITransactionPartial } from "../types/transaction.type"
+import { ITransaction, ITransactionForRegister, ITransactionPartial, ITransactionTypeRecurrenceProp } from "../types/transaction.type"
 
 async function list(idUser: string, month?: string, year?: string) {
   const dateYearMonthDay = dateNowYearMonthDay()
@@ -34,16 +34,14 @@ async function get(id: string) {
 }
 
 async function post(transaction: ITransactionForRegister) {
-  const isNotRecurrence = !transaction.isRecurrence
+  const objTransaction = generateTransaction(transaction)
 
-  if (isNotRecurrence) {
-    const objTransaction = generateTransaction(transaction)
-
+  if (!objTransaction.isRecurrence) {
     const createdTransaction = await transactionRepository.post(objTransaction)
     return createdTransaction
   }
   else {
-    const transactions = generateTransactionsRecurrence(transaction)
+    const transactions = generateTransactionsRecurrence(objTransaction)
 
     const createdTransactions = await transactionRepository.postMany(transactions)
     return createdTransactions
@@ -53,7 +51,45 @@ async function post(transaction: ITransactionForRegister) {
   // TODO: ter um unico retorno
 }
 
-async function put(id: string, transaction: ITransactionPartial) {
+// TODO: [ ] Editar uma transação que é uma recorrência, pra não ser mais uma recorrência.
+
+interface IPut {
+  idUser: string
+  id: string
+  transaction: ITransactionPartial
+  action?: ITransactionRequestActionParam
+}
+
+async function put({ idUser, id, transaction, action }: IPut) {
+  const currentTransaction = await transactionRepository.get(id)
+
+  if (currentTransaction?.typeRecurrence === "" && transaction.typeRecurrence !== "") {
+    const typeRecurrence = transaction.typeRecurrence || currentTransaction.typeRecurrence
+
+    const transactionToPost: ITransactionForRegister = {
+      idUser: transaction.idUser || currentTransaction.idUser,
+      title: transaction.title || currentTransaction.title,
+      amount: transaction.amount || currentTransaction.amount,
+      date: transaction.date || currentTransaction.date,
+      status: transaction.status || currentTransaction.status,
+      typeRecurrence: typeRecurrence as ITransactionTypeRecurrenceProp,
+      installments: transaction.installments || currentTransaction.installments,
+      type: transaction.type || currentTransaction.type,
+    }
+
+    post(transactionToPost)
+    remove({ idUser, id })
+
+    return true
+  }
+
+  if (transaction.isRecurrence && action && action !== "current") {
+    // TODO: [ ] Editar uma transação que é uma recorrência.
+    // TODO: [ ] Editar a data de uma transação que é uma recorrência, e refletir para as próximas transações levando em consideração o mês.
+
+    console.log("isRecurrence")
+  }
+
   const editedTransaction = await transactionRepository.put(id, transaction)
 
   // TODO: retornar um obj com a tipagem de transactionResponse

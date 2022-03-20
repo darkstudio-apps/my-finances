@@ -8,3 +8,8 @@ export interface ITransactionGetAllResponse {
   length: number
   data: ITransaction[]
 }
+
+export interface ITransactionErrorResponse {
+  status: number
+  message: string
+}
