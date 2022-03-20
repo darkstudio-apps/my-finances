@@ -3,10 +3,12 @@ import { uuid } from "../../../../../utils/generateID"
 import { ITransactionForCreate, ITransactionForRegister, ITransactionTypeRecurrenceProp } from "../types/transaction.type"
 
 export const generateTransaction = (transaction: ITransactionForRegister): ITransactionForCreate => {
+  const isRecurrence = transaction.typeRecurrence !== ""
   const idRecurrence = uuid()
 
   const mappedTransaction: ITransactionForCreate = {
     ...transaction,
+    isRecurrence,
     idRecurrence,
   }
 
@@ -85,9 +87,7 @@ const generateDatesRecurrence = {
   },
 }
 
-export const generateTransactionsRecurrence = (transaction: ITransactionForRegister): ITransactionForCreate[] => {
-  const idRecurrence = uuid()
-
+export const generateTransactionsRecurrence = (transaction: ITransactionForCreate): ITransactionForCreate[] => {
   const typeRecurrence = transaction.typeRecurrence as ITransactionTypeRecurrenceProp
   if (typeRecurrence === "") return []
 
@@ -102,7 +102,6 @@ export const generateTransactionsRecurrence = (transaction: ITransactionForRegis
       ...transaction,
       date: dateFuture,
       status,
-      idRecurrence,
     }
   })
 

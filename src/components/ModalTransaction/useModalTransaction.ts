@@ -77,6 +77,7 @@ export function useModalTransaction() {
 
     const type: TransactionTypeProps = transaction.type
 
+    // TODO: essa prop agora é gerada no backend
     const isRecurrence = transaction.typeRecurrence !== ""
 
     const newTransaction: TransactionModelProps = {

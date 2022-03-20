@@ -15,12 +15,12 @@ export interface ITransactionForRegister {
   date: string
   status: string
   typeRecurrence: ITransactionTypeRecurrenceProp
-  isRecurrence: boolean
   installments: string
   type: ITransactionTypeProp
 }
 
 export interface ITransactionForCreate extends ITransactionForRegister {
+  isRecurrence: boolean
   idRecurrence: string
 }
 
