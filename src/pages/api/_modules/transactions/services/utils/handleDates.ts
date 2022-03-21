@@ -1,21 +1,5 @@
-import { dateAddDays, dateAddMonths, dateAddYears, dateIsBefore } from "../../../../../utils/dateUtil"
-import { uuid } from "../../../../../utils/generateID"
-import { ITransactionForCreate, ITransactionForRegister, ITransactionTypeRecurrenceProp } from "../types/transaction.type"
-
-export const generateTransaction = (transaction: ITransactionForRegister): ITransactionForCreate => {
-  const isRecurrence = transaction.typeRecurrence !== ""
-  const idRecurrence = uuid()
-
-  const mappedTransaction: ITransactionForCreate = {
-    ...transaction,
-    isRecurrence,
-    idRecurrence,
-  }
-
-  return mappedTransaction
-}
-
-// --------------- generateTransactionsRecurrence ---------------
+import { dateAddDays, dateAddMonths, dateAddYears, dateIsBefore } from "../../../../../../utils/dateUtil"
+import { ITransactionForRegister } from "../../types/transaction.type"
 
 const generateDatesByDays = (transaction: ITransactionForRegister, days: number) => {
   const { date } = transaction
@@ -64,7 +48,7 @@ const generateDatesByYears = (transaction: ITransactionForRegister, installments
   return datesFuture
 }
 
-const generateDatesRecurrence = {
+export const generateDatesRecurrence = {
   every_1_week: (transaction: ITransactionForRegister): string[] => {
     return generateDatesByDays(transaction, 7)
   },
@@ -85,25 +69,4 @@ const generateDatesRecurrence = {
     const installments = parseInt(transaction.installments)
     return generateDatesByMonths(transaction, installments)
   },
-}
-
-export const generateTransactionsRecurrence = (transaction: ITransactionForCreate): ITransactionForCreate[] => {
-  const typeRecurrence = transaction.typeRecurrence as ITransactionTypeRecurrenceProp
-  if (typeRecurrence === "") return []
-
-  const datesRecurrence = generateDatesRecurrence[typeRecurrence](transaction)
-
-  const transactionsRecurrence = datesRecurrence.map((dateFuture, idx) => {
-    const isValidStatus = transaction.status === "deposit" || transaction.status === "withdraw"
-
-    const status = (isValidStatus || idx === 0) ? transaction.status : ""
-
-    return {
-      ...transaction,
-      date: dateFuture,
-      status,
-    }
-  })
-
-  return transactionsRecurrence
 }

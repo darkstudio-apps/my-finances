@@ -1,10 +1,10 @@
 import { transactionRepository } from "../repository/transactionRepository"
 
-import { generateTransaction, generateTransactionsRecurrence } from "./transactionService.util"
+import { generateTransaction, generateTransactionsRecurrence, generateTransactionToPost } from "./utils"
 import { dateNowYearMonthDay, endOfMonthInYearMonthDay, generateDecimalNumberInString, getObjYearMonthDay, parseToUTCandISO } from "../../../../../utils/dateUtil"
 
+import { ITransaction, ITransactionForRegister, ITransactionPartial } from "../types/transaction.type"
 import { ITransactionRequestActionParam } from "../types/transactionRequest.type"
-import { ITransaction, ITransactionForRegister, ITransactionPartial, ITransactionTypeRecurrenceProp } from "../types/transaction.type"
 
 async function list(idUser: string, month?: string, year?: string) {
   const dateYearMonthDay = dateNowYearMonthDay()
@@ -64,18 +64,7 @@ async function put({ idUser, id, transaction, action }: IPut) {
   const currentTransaction = await transactionRepository.get(id)
 
   if (currentTransaction?.typeRecurrence === "" && transaction.typeRecurrence !== "") {
-    const typeRecurrence = transaction.typeRecurrence || currentTransaction.typeRecurrence
-
-    const transactionToPost: ITransactionForRegister = {
-      idUser: transaction.idUser || currentTransaction.idUser,
-      title: transaction.title || currentTransaction.title,
-      amount: transaction.amount || currentTransaction.amount,
-      date: transaction.date || currentTransaction.date,
-      status: transaction.status || currentTransaction.status,
-      typeRecurrence: typeRecurrence as ITransactionTypeRecurrenceProp,
-      installments: transaction.installments || currentTransaction.installments,
-      type: transaction.type || currentTransaction.type,
-    }
+    const transactionToPost = generateTransactionToPost(currentTransaction, transaction)
 
     post(transactionToPost)
     remove({ idUser, id })
