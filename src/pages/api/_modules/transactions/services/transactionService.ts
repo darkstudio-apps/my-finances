@@ -63,6 +63,8 @@ interface IPut {
 async function put({ idUser, id, transaction, action }: IPut) {
   const currentTransaction = await transactionRepository.get(id)
 
+  if (!currentTransaction) throw new Error("transaction not found")
+
   if (currentTransaction?.typeRecurrence === "" && transaction.typeRecurrence !== "") {
     const transactionToPost = generateTransactionToPost(currentTransaction, transaction)
 
@@ -72,11 +74,24 @@ async function put({ idUser, id, transaction, action }: IPut) {
     return true
   }
 
-  if (transaction.isRecurrence && action && action !== "current") {
-    // TODO: [ ] Editar uma transação que é uma recorrência.
-    // TODO: [ ] Editar a data de uma transação que é uma recorrência, e refletir para as próximas transações levando em consideração o mês.
+  // TODO: quando mudar o typeRecurrence ou o installments
 
-    console.log("isRecurrence")
+  // TODO: [ ] Editar a data de uma transação que é uma recorrência, e refletir para as próximas transações levando em consideração o mês.
+  // const currentTransactions = await transactionRepository.list({ idUser, idRecurrence })
+
+  if (transaction.isRecurrence && action && action !== "current") {
+    const idRecurrence = transaction.idRecurrence || ""
+
+    const transactionMapped: ITransactionPartial = {
+      title: transaction.title || currentTransaction.title,
+      amount: transaction.amount || currentTransaction.amount,
+      status: transaction.status || currentTransaction.status,
+      type: transaction.type || currentTransaction.type,
+    }
+
+    const editedTransactions = await transactionRepository.putMany(idRecurrence, transactionMapped)
+
+    return editedTransactions
   }
 
   const editedTransaction = await transactionRepository.put(id, transaction)

@@ -79,6 +79,20 @@ async function put(idTransaction: string, transaction: ITransactionPartial) {
   return editedTransaction
 }
 
+async function putMany(idRecurrence: string, transaction: ITransactionPartial) {
+  // TODO: não permitir que um user edite uma transaction que não é dele
+  try {
+    const editedTransactions = await prisma.transaction.updateMany({
+      where: { idRecurrence },
+      data: transaction,
+    })
+
+    return editedTransactions
+  } catch (error) {
+    return undefined
+  }
+}
+
 async function patch(idTransaction: string, transaction: ITransactionPartial) {
   // TODO: não permitir que um user edite uma transaction que não é dele
   const editedTransaction = await prisma.transaction.update({
@@ -117,6 +131,7 @@ export const transactionRepository = {
   post,
   postMany,
   put,
+  putMany,
   patch,
   remove,
   removeMany,
