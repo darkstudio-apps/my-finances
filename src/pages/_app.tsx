@@ -1,5 +1,5 @@
 import { AppProps } from "next/app"
-import { Provider } from "next-auth/client"
+import { SessionProvider } from "next-auth/react"
 import Head from "next/head"
 import { QueryClientProvider } from "react-query"
 import { Box, ChakraProvider, Divider } from "@chakra-ui/react"
@@ -12,7 +12,7 @@ import "../styles/scrollbar.css"
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
-    <Provider session={session}>
+    <SessionProvider session={session}>
       <QueryClientProvider client={queryClient}>
         <Head>
           <title>My Finances</title>
@@ -26,7 +26,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
           </Box>
         </ChakraProvider>
       </QueryClientProvider>
-    </Provider>
+    </SessionProvider>
   )
 }
 

@@ -15,7 +15,13 @@ export interface TransactionProps extends TransactionReqProps {
 }
 
 interface GetType {
-  transactions: TransactionReqProps[]
+  search: {
+    dateStart: number // aaaa-mm-dd
+    dateEnd: number // aaaa-mm-dd
+  },
+  length: number
+  data: TransactionReqProps[]
+
   transaction?: TransactionReqProps
 }
 
@@ -25,22 +31,23 @@ export function useTransactions() {
 
   const { data: transactions, isLoading, refetch, isFetching } = useQuery('/transactions', async () => {
     try {
-      const { data } = await api.get<GetType>("/transactions", {
+      const { data: transactions } = await api.get<GetType>("/transactions", {
         params: {
           month: filters.month,
           year: filters.year,
         },
       })
 
-      const mappedTransactions: TransactionProps[] = data.transactions.map(transaction => {
+      const mappedTransactions: TransactionProps[] = transactions.data.map(transaction => {
         const dateUTC = transaction.date
+        const statusDisplay = transaction.status ? getStatusDisplay(transaction.status) : ""
 
         return {
           ...transaction,
           date: parseYearMonthDayUTC(dateUTC),
           dateDisplay: parseDateBrUTC(dateUTC),
           amountDisplay: formatCurrency(transaction.amount),
-          statusDisplay: transaction.status ? getStatusDisplay(transaction.status) : ""
+          statusDisplay,
         }
       })
 
@@ -59,6 +66,7 @@ export function useTransactions() {
   })
 
   const [summary, setSummary] = useState(summaryDefault)
+
   const [filters, setFilters] = useState(() => {
     const dateYearMonthDay = dateNowYearMonthDay()
     const { month, year } = getObjYearMonthDay(dateYearMonthDay)
@@ -66,6 +74,7 @@ export function useTransactions() {
   })
 
   useEffect(() => { refetch() }, [])
+
   useEffect(() => { refetch() }, [filters.month, filters.year])
 
   useEffect(() => {

@@ -1,45 +1,25 @@
-import { NextApiRequest, NextApiResponse } from "next"
+import { NextApiResponse } from "next"
 import { transactionService } from "../services/transactionService"
-import { RequestPostType, RequestType } from "../types/transactionRequests.type"
+import { ITransactionRequest, ITransactionRequestRoot } from "../types/transactionRequest.type"
 
-interface ReqListProps extends NextApiRequest {
-  session?: {
-    user?: {
-      name?: string
-      email?: string
-      image?: string
-      idUser?: string
-    },
-    expires?: string
-  }
-}
-
-async function list(req: ReqListProps, res: NextApiResponse) {
+async function list(req: ITransactionRequestRoot, res: NextApiResponse) {
   try {
-    const idUser = req?.session?.user?.idUser
+    // TODO: receber o idRecurrence e usar ele para fazer a busca tbm
+    const { idUser, month, year } = req.query
 
-    const queryMonth = req.query.month as string | string[] | undefined
-    const queryYear = req.query.year as string | string[] | undefined
+    const transactionsData = await transactionService.list(idUser, month, year)
 
-    const month = Array.isArray(queryMonth) ? queryMonth[0] : queryMonth
-    const year = Array.isArray(queryYear) ? queryYear[0] : queryYear
-
-    if (!idUser) {
-      return res.status(400).json({ message: "user.id not found" })
-    }
-
-    const transactions = await transactionService.list(idUser, month, year)
-
-    return res.status(200).json({ transactions })
+    return res.status(200).json(transactionsData)
   } catch (error) {
     return res.status(400).json({ message: "error:catch" })
   }
 }
 
-async function get(req: RequestType, res: NextApiResponse) {
+async function get(req: ITransactionRequest, res: NextApiResponse) {
   try {
     const { id } = req.query
 
+    // TODO: retornar um obj no formato de data que está implementado no list
     const transaction = await transactionService.get(id)
 
     return res.status(200).json({ transaction })
@@ -48,10 +28,11 @@ async function get(req: RequestType, res: NextApiResponse) {
   }
 }
 
-async function post(req: RequestPostType, res: NextApiResponse) {
+async function post(req: ITransactionRequestRoot, res: NextApiResponse) {
   try {
     const { body } = req
 
+    // TODO: retornar um obj no formato de data que está implementado no list
     const transaction = await transactionService.post(body)
 
     return res.status(200).json({ transaction })
@@ -60,37 +41,42 @@ async function post(req: RequestPostType, res: NextApiResponse) {
   }
 }
 
-async function put(req: RequestType, res: NextApiResponse) {
+async function put(req: ITransactionRequest, res: NextApiResponse) {
   try {
-    const { query, body } = req
+    const { idUser, id, action } = req.query
+    const transaction = req.body
 
-    const transaction = await transactionService.put(query.id, body)
+    // TODO: retornar um obj no formato de data que está implementado no list
+    const transactionData = await transactionService.put({ idUser, id, action, transaction })
 
-    return res.status(200).json({ transaction })
+    return res.status(200).json({ transaction: transactionData })
   } catch (error) {
     return res.status(400).json({ message: error })
   }
 }
 
-function patch(req: RequestType, res: NextApiResponse) {
+function patch(req: ITransactionRequest, res: NextApiResponse) {
   try {
-    const { query, body } = req
+    const { idUser, id, action } = req.query
+    const transaction = req.body
 
-    const transaction = transactionService.put(query.id, body)
+    // TODO: retornar um obj no formato de data que está implementado no list
+    const transactionData = transactionService.put({ idUser, id, action, transaction })
 
-    return res.status(200).json({ transaction })
+    return res.status(200).json({ transaction: transactionData })
   } catch (error) {
     return res.status(400).json({ message: error })
   }
 }
 
-async function remove(req: RequestType, res: NextApiResponse) {
+async function remove(req: ITransactionRequest, res: NextApiResponse) {
   try {
-    const { id } = req.query
-    await transactionService.remove(id)
+    const { idUser, id, action } = req.query
+
+    // TODO: retornar um obj no formato de data que está implementado no list
+    await transactionService.remove({ idUser, id, action })
 
     return res.status(200).json({ message: "Success" })
-
   } catch (error) {
     return res.status(400).json({ message: error })
   }

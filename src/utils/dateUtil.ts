@@ -1,6 +1,6 @@
 import { addDays, addMonths, addYears, isBefore, endOfMonth } from "date-fns"
 
-const generateDecimalNumberInString = (number: number) => (number < 10) ? `0${number}` : String(number)
+export const generateDecimalNumberInString = (number: number): string => String(number).padStart(2, "0")
 
 export const dateAddDays = (date: string, daysAdd: number) => {
   const dateFuture = addDays(new Date(date), daysAdd)

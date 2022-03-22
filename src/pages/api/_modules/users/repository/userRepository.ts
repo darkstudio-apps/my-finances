@@ -5,6 +5,9 @@ type PartialUser = Partial<UserReqProps>
 
 const prisma = new PrismaClient()
 
+// TODO: um usuario nunca pode conseguir listar os outros usuarios
+// O mesmo para as outras ações, o user só pode editar ele mesmo
+
 async function list() {
   const user = await prisma.user.findMany()
   return user
