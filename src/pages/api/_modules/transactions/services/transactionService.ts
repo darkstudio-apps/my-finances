@@ -65,33 +65,50 @@ async function put({ idUser, id, transaction, action }: IPut) {
 
   if (!currentTransaction) throw new Error("transaction not found")
 
+  // 1 - editar uma transaction que não é uma recorrência para ser uma recorrência
+
   if (currentTransaction?.typeRecurrence === "" && transaction.typeRecurrence !== "") {
     const transactionToPost = generateTransactionToPost(currentTransaction, transaction)
 
-    post(transactionToPost)
-    remove({ idUser, id })
+    await post(transactionToPost)
+    await remove({ idUser, id })
 
     return true
   }
 
-  // TODO: quando mudar o typeRecurrence ou o installments
+  if (action) {
+    // 2 - editado apenas o dia em relação a data de uma transaction que é uma recorrência
 
-  // TODO: [ ] Editar a data de uma transação que é uma recorrência, e refletir para as próximas transações levando em consideração o mês.
-  // const currentTransactions = await transactionRepository.list({ idUser, idRecurrence })
+    // TODO: Editar a data de uma transação que é uma recorrência, e refletir para as próximas transações levando em consideração o mês.
 
-  if (transaction.isRecurrence && action && action !== "current") {
-    const idRecurrence = transaction.idRecurrence || ""
+    // const [dayTransaction, monthTransaction, yearTransaction] = transaction.date?.split("")
 
-    const transactionMapped: ITransactionPartial = {
-      title: transaction.title || currentTransaction.title,
-      amount: transaction.amount || currentTransaction.amount,
-      status: transaction.status || currentTransaction.status,
-      type: transaction.type || currentTransaction.type,
+    // const onlyTheDayIsChanged =
+
+    // const currentTransactions = await transactionRepository.list({ idUser, idRecurrence })
+
+    // 3 - editar o mês da data de uma transaction que é uma recorrência
+
+    // 4 - editar o tipo de recorrência de um transaction
+
+    // TODO: quando mudar o typeRecurrence ou o installments
+
+    // 5 - editar os dados basicos de uma transaction que é uma recorrência
+
+    if (transaction.isRecurrence && action !== "current") {
+      const idRecurrence = transaction.idRecurrence || ""
+
+      const transactionMapped: ITransactionPartial = {
+        title: transaction.title || currentTransaction.title,
+        amount: transaction.amount || currentTransaction.amount,
+        status: transaction.status || currentTransaction.status,
+        type: transaction.type || currentTransaction.type,
+      }
+
+      const editedTransactions = await transactionRepository.putMany(idRecurrence, transactionMapped)
+
+      return editedTransactions
     }
-
-    const editedTransactions = await transactionRepository.putMany(idRecurrence, transactionMapped)
-
-    return editedTransactions
   }
 
   const editedTransaction = await transactionRepository.put(id, transaction)
