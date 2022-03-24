@@ -111,7 +111,9 @@ export const getObjYearMonthDay = (dateYearMonthDay: string) => {
   return { year, month, day }
 }
 
-export const getObjYearMonthDayUTC = (dateUTC: string) => {
+export const getObjYearMonthDayUTC = (dateUTC?: string) => {
+  if (!dateUTC) return { year: "", month: "", day: "" }
+
   const date = new Date(dateUTC)
 
   let year = String(date.getUTCFullYear())

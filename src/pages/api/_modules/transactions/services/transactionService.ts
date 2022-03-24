@@ -1,7 +1,7 @@
 import { transactionRepository } from "../repository/transactionRepository"
 
-import { generateTransaction, generateTransactionsRecurrence, generateTransactionToPost } from "./utils"
-import { dateNowYearMonthDay, endOfMonthInYearMonthDay, generateDecimalNumberInString, getObjYearMonthDay, parseToUTCandISO } from "../../../../../utils/dateUtil"
+import { generateTransaction, generateTransactionsRecurrence, implementationRulesPut } from "./utils"
+import { dateNowYearMonthDay, endOfMonthInYearMonthDay, generateDecimalNumberInString, getObjYearMonthDay, getObjYearMonthDayUTC, parseToUTCandISO } from "../../../../../utils/dateUtil"
 
 import { ITransaction, ITransactionForRegister, ITransactionPartial } from "../types/transaction.type"
 import { ITransactionRequestActionParam } from "../types/transactionRequest.type"
@@ -51,71 +51,77 @@ async function post(transaction: ITransactionForRegister) {
   // TODO: ter um unico retorno
 }
 
-// TODO: [ ] Editar uma transação que é uma recorrência, pra não ser mais uma recorrência.
-
 interface IPut {
   idUser: string
   id: string
+  // TODO: modificar a tipagem para obrigar o envio de todos os dados, algumas regras dependem de certos dados
   transaction: ITransactionPartial
   action?: ITransactionRequestActionParam
 }
+
+type IEditRule = "edit_transaction"
+  | "when_to_change_to_be_a_recurrence"
+  | "when_to_change_only_the_day_of_a_date"
+  | "when_to_change_typeRecurrence"
+  | "when_to_change_basic_data"
 
 async function put({ idUser, id, transaction, action }: IPut) {
   const currentTransaction = await transactionRepository.get(id)
 
   if (!currentTransaction) throw new Error("transaction not found")
 
-  // 1 - editar uma transaction que não é uma recorrência para ser uma recorrência
+  const {
+    day: dayTransaction,
+    month: monthTransaction,
+    year: yearTransaction,
+  } = getObjYearMonthDayUTC(transaction.date)
 
-  if (currentTransaction?.typeRecurrence === "" && transaction.typeRecurrence !== "") {
-    const transactionToPost = generateTransactionToPost(currentTransaction, transaction)
+  const {
+    day: dayCurrentTransaction,
+    month: monthCurrentTransaction,
+    year: yearCurrentTransaction,
+  } = getObjYearMonthDayUTC(currentTransaction.date)
 
-    await post(transactionToPost)
-    await remove({ idUser, id })
+  const isSameDay = dayTransaction === dayCurrentTransaction
+  const isSameMonth = monthTransaction === monthCurrentTransaction
+  const isSameYear = yearTransaction === yearCurrentTransaction
 
-    return true
+  let editRule: IEditRule = "edit_transaction"
+
+  // 1 - quando editar uma transaction que não é uma recorrência para ser uma recorrência
+  if (currentTransaction.typeRecurrence === "" && transaction.typeRecurrence !== "") {
+    editRule = "when_to_change_to_be_a_recurrence"
+  }
+  // 2 - quando mudar apenas o dia em relação a data de uma transaction que é uma recorrência
+  else if (!isSameDay && isSameMonth && isSameYear) {
+    editRule = "when_to_change_only_the_day_of_a_date"
+  }
+  // 3 - quando mudar o mês ou ano da data de uma transaction que é uma recorrência
+  else if (isSameMonth && isSameYear) {
+    editRule = "when_to_change_only_the_day_of_a_date"
+  }
+  // 4 - quando mudar o tipo de recorrência de um transaction
+  else if (transaction.isRecurrence && action && action !== "current") {
+    editRule = "when_to_change_typeRecurrence"
+  }
+  // 5 - quando mudar só os dados basicos de uma transaction que é uma recorrência
+  else if (transaction.isRecurrence && action && action !== "current") {
+    editRule = "when_to_change_basic_data"
   }
 
-  if (action) {
-    // 2 - editado apenas o dia em relação a data de uma transaction que é uma recorrência
+  const execImplementationRulePut = implementationRulesPut[editRule]
 
-    // TODO: Editar a data de uma transação que é uma recorrência, e refletir para as próximas transações levando em consideração o mês.
-
-    // const [dayTransaction, monthTransaction, yearTransaction] = transaction.date?.split("")
-
-    // const onlyTheDayIsChanged =
-
-    // const currentTransactions = await transactionRepository.list({ idUser, idRecurrence })
-
-    // 3 - editar o mês da data de uma transaction que é uma recorrência
-
-    // 4 - editar o tipo de recorrência de um transaction
-
-    // TODO: quando mudar o typeRecurrence ou o installments
-
-    // 5 - editar os dados basicos de uma transaction que é uma recorrência
-
-    if (transaction.isRecurrence && action !== "current") {
-      const idRecurrence = transaction.idRecurrence || ""
-
-      const transactionMapped: ITransactionPartial = {
-        title: transaction.title || currentTransaction.title,
-        amount: transaction.amount || currentTransaction.amount,
-        status: transaction.status || currentTransaction.status,
-        type: transaction.type || currentTransaction.type,
-      }
-
-      const editedTransactions = await transactionRepository.putMany(idRecurrence, transactionMapped)
-
-      return editedTransactions
-    }
-  }
-
-  const editedTransaction = await transactionRepository.put(id, transaction)
+  const response = execImplementationRulePut({
+    idUser,
+    id,
+    currentTransaction,
+    transaction,
+    action,
+  })
 
   // TODO: retornar um obj com a tipagem de transactionResponse
 
-  return editedTransaction
+  return response
 }
 
 async function patch(id: string, transaction: ITransactionPartial) {
