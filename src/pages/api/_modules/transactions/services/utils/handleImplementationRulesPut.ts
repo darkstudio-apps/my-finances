@@ -13,12 +13,16 @@ interface IImplementationRulesPut {
 }
 
 export const implementationRulesPut = {
-  async edit_transaction({ idUser, id, currentTransaction, transaction }: IImplementationRulesPut) {
+  async edit_transaction({ id, transaction }: IImplementationRulesPut) {
+    console.log("🔎 - edit_transaction")
+
     const editedTransaction = await transactionRepository.put(id, transaction)
     return editedTransaction
   },
 
   async when_to_change_to_be_a_recurrence({ idUser, id, currentTransaction, transaction }: IImplementationRulesPut) {
+    console.log("🔎 - when_to_change_to_be_a_recurrence")
+
     const transactionToPost = generateTransactionToPost(currentTransaction, transaction)
 
     await transactionService.post(transactionToPost)
@@ -27,15 +31,27 @@ export const implementationRulesPut = {
     return true
   },
 
-  when_to_change_only_the_day_of_a_date({ idUser, id, currentTransaction, transaction }: IImplementationRulesPut) {
-
-  },
-
   when_to_change_typeRecurrence({ idUser, id, currentTransaction, transaction }: IImplementationRulesPut) {
+    console.log("🔎 - when_to_change_typeRecurrence")
 
+    return false
   },
 
-  async when_to_change_basic_data({ idUser, id, currentTransaction, transaction, action }: IImplementationRulesPut) {
+  when_to_change_only_the_day_of_a_date({ idUser, id, currentTransaction, transaction }: IImplementationRulesPut) {
+    console.log("🔎 - when_to_change_only_the_day_of_a_date")
+
+    return false
+  },
+
+  when_to_change_only_the_month_or_year_of_a_date({ idUser, id, currentTransaction, transaction }: IImplementationRulesPut) {
+    console.log("🔎 - when_to_change_only_the_month_or_year_of_a_date")
+
+    return false
+  },
+
+  async when_to_change_basic_data({ currentTransaction, transaction }: IImplementationRulesPut) {
+    console.log("🔎 - when_to_change_basic_data")
+
     const idRecurrence = transaction.idRecurrence || currentTransaction.idRecurrence
 
     const transactionMapped: ITransactionPartial = {

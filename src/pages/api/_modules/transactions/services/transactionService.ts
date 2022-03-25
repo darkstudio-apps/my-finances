@@ -62,6 +62,7 @@ interface IPut {
 type IEditRule = "edit_transaction"
   | "when_to_change_to_be_a_recurrence"
   | "when_to_change_only_the_day_of_a_date"
+  | "when_to_change_only_the_month_or_year_of_a_date"
   | "when_to_change_typeRecurrence"
   | "when_to_change_basic_data"
 
@@ -88,23 +89,23 @@ async function put({ idUser, id, transaction, action }: IPut) {
 
   let editRule: IEditRule = "edit_transaction"
 
-  // 1 - quando editar uma transaction que não é uma recorrência para ser uma recorrência
+  // quando editar uma transaction que não é uma recorrência para ser uma recorrência
   if (currentTransaction.typeRecurrence === "" && transaction.typeRecurrence !== "") {
     editRule = "when_to_change_to_be_a_recurrence"
   }
-  // 2 - quando mudar apenas o dia em relação a data de uma transaction que é uma recorrência
+  // quando mudar o tipo de recorrência de um transaction
+  else if (transaction.isRecurrence && transaction.typeRecurrence !== currentTransaction.typeRecurrence) {
+    editRule = "when_to_change_typeRecurrence"
+  }
+  // quando mudar apenas o dia em relação a data de uma transaction que é uma recorrência
   else if (!isSameDay && isSameMonth && isSameYear) {
     editRule = "when_to_change_only_the_day_of_a_date"
   }
-  // 3 - quando mudar o mês ou ano da data de uma transaction que é uma recorrência
-  else if (isSameMonth && isSameYear) {
-    editRule = "when_to_change_only_the_day_of_a_date"
+  // quando mudar o mês ou ano da data de uma transaction que é uma recorrência
+  else if (!isSameMonth || !isSameYear) {
+    editRule = "when_to_change_only_the_month_or_year_of_a_date"
   }
-  // 4 - quando mudar o tipo de recorrência de um transaction
-  else if (transaction.isRecurrence && action && action !== "current") {
-    editRule = "when_to_change_typeRecurrence"
-  }
-  // 5 - quando mudar só os dados basicos de uma transaction que é uma recorrência
+  // quando mudar só os dados basicos de uma transaction que é uma recorrência
   else if (transaction.isRecurrence && action && action !== "current") {
     editRule = "when_to_change_basic_data"
   }
