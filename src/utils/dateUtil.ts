@@ -66,6 +66,12 @@ export const parseToUTCandISO = (dateYearMonthDay: string, hourOffset?: "start" 
   return dateISOStringUTC
 }
 
+type IParseObjToUTCandISO = { day: string, month: string, year: string }
+export const parseObjToUTCandISO = ({ day, month, year }: IParseObjToUTCandISO, hourOffset?: "start" | "end") => {
+  const dateUTCandISO = parseToUTCandISO(`${year}-${month}-${day}`, hourOffset)
+  return dateUTCandISO
+}
+
 export const endOfMonthInYearMonthDay = (dateYearMonthDay: string) => {
   const { year: yearSplit, month: monthSplit, day: daySplit } = getObjYearMonthDay(dateYearMonthDay)
 

@@ -59,6 +59,7 @@ interface IPut {
   action?: ITransactionRequestActionParam
 }
 
+// TODO: mover essa tipagem para um arquivo de tipagem e forçar o objeto de regras a ter esses metodos implementados
 type IEditRule = "edit_transaction"
   | "when_to_change_to_be_a_recurrence"
   | "when_to_change_only_the_day_of_a_date"
@@ -100,6 +101,7 @@ async function put({ idUser, id, transaction, action }: IPut) {
   // quando mudar apenas o dia em relação a data de uma transaction que é uma recorrência
   else if (!isSameDay && isSameMonth && isSameYear) {
     editRule = "when_to_change_only_the_day_of_a_date"
+    throw new Error("when_to_change_only_the_day_of_a_date not implemented")
   }
   // quando mudar o mês ou ano da data de uma transaction que é uma recorrência
   else if (!isSameMonth || !isSameYear) {
