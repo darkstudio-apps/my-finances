@@ -2,14 +2,14 @@ import { prisma } from "../../../../../services/prisma"
 import { ITransaction, ITransactionForCreate, ITransactionPartial } from "../types/transaction.type"
 import { ITransactionGetAllResponse } from "../types/transactionResponse.type"
 
-interface ListProps {
+interface IList {
   idUser: string
   dateStartISO?: string
   dateEndISO?: string
   idRecurrence?: string
 }
 
-async function list({ idUser, dateStartISO, dateEndISO, idRecurrence }: ListProps): Promise<ITransactionGetAllResponse> {
+async function list({ idUser, dateStartISO, dateEndISO, idRecurrence }: IList): Promise<ITransactionGetAllResponse> {
   try {
     const transactions = await prisma.transaction.findMany({
       where: {
@@ -79,11 +79,22 @@ async function put(idTransaction: string, transaction: ITransactionPartial) {
   return editedTransaction
 }
 
-async function putMany(idRecurrence: string, transaction: ITransactionPartial) {
-  // TODO: não permitir que um user edite uma transaction que não é dele
+interface IPutMany {
+  idUser: string
+  idRecurrence: string
+  dateStartISO?: string
+}
+
+async function putMany(transaction: ITransactionPartial, { idUser, idRecurrence, dateStartISO }: IPutMany) {
   try {
     const editedTransactions = await prisma.transaction.updateMany({
-      where: { idRecurrence },
+      where: {
+        idUser,
+        date: {
+          gte: dateStartISO,
+        },
+        idRecurrence,
+      },
       data: transaction,
     })
 
