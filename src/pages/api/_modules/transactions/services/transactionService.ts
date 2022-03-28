@@ -88,13 +88,14 @@ async function put({ idUser, id, transaction, action }: IPut) {
   const isSameMonth = monthTransaction === monthCurrentTransaction
   const isSameYear = yearTransaction === yearCurrentTransaction
 
+  // quando editar uma transaction
   let editRule: IEditRule = "edit_transaction"
 
   // quando editar uma transaction que não é uma recorrência para ser uma recorrência
   if (currentTransaction.typeRecurrence === "" && transaction.typeRecurrence !== "") {
     editRule = "when_to_change_to_be_a_recurrence"
   }
-  // quando mudar o tipo de recorrência de um transaction
+  // quando mudar o tipo de recorrência de uma transaction
   else if (transaction.isRecurrence && transaction.typeRecurrence !== currentTransaction.typeRecurrence) {
     editRule = "when_to_change_typeRecurrence"
   }
@@ -114,7 +115,7 @@ async function put({ idUser, id, transaction, action }: IPut) {
 
   const execImplementationRulePut = implementationRulesPut[editRule]
 
-  const response = execImplementationRulePut({
+  const response = await execImplementationRulePut({
     idUser,
     id,
     currentTransaction,

@@ -51,8 +51,8 @@ export const implementationRulesPut = {
     const transactionToPost = generateTransactionToPost(currentTransaction, transaction)
 
     // TODO: caso uma das operações falhe, é necessário desfazer as outras
-    await transactionService.post(transactionToPost)
     await transactionService.remove({ idUser, id })
+    await transactionService.post(transactionToPost)
 
     return true
   },
@@ -92,7 +92,7 @@ export const implementationRulesPut = {
     })
 
     try {
-      const responsePromise = transactionsToPut.map(async mappedTransaction => {
+      const responsePromise = transactionsToPut.map(mappedTransaction => {
         const { id, ...restTransaction } = mappedTransaction
         const idTransaction = String(id)
 
@@ -110,13 +110,35 @@ export const implementationRulesPut = {
     }
   },
 
-  when_to_change_only_the_month_or_year_of_a_date({ idUser, id, currentTransaction, transaction }: IImplementationRulesPut) {
+  async when_to_change_only_the_month_or_year_of_a_date({ idUser, id, currentTransaction, transaction, action }: IImplementationRulesPut) {
+    console.log("🔎 - when_to_change_only_the_month_or_year_of_a_date")
 
+    const transactionToPost = generateTransactionToPost(currentTransaction, transaction)
+
+    // TODO: caso uma das operações falhe, é necessário desfazer as outras
+    await transactionService.remove({
+      idUser,
+      id,
+      action,
+    })
+    await transactionService.post(transactionToPost)
+
+    return true
   },
 
-  when_to_change_typeRecurrence({ idUser, id, currentTransaction, transaction }: IImplementationRulesPut) {
+  async when_to_change_typeRecurrence({ idUser, id, currentTransaction, transaction, action }: IImplementationRulesPut) {
     console.log("🔎 - when_to_change_typeRecurrence")
 
-    return false
+    const transactionToPost = generateTransactionToPost(currentTransaction, transaction)
+
+    // TODO: caso uma das operações falhe, é necessário desfazer as outras
+    await transactionService.remove({
+      idUser,
+      id,
+      action,
+    })
+    await transactionService.post(transactionToPost)
+
+    return true
   },
 }
