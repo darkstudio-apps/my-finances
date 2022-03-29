@@ -62,9 +62,11 @@ interface IPut {
 // TODO: mover essa tipagem para um arquivo de tipagem e forçar o objeto de regras a ter esses metodos implementados
 type IEditRule = "edit_transaction"
   | "when_to_change_to_be_a_recurrence"
+  | "when_to_change_to_not_be_a_recurrence"
   | "when_to_change_only_the_day_of_a_date"
   | "when_to_change_only_the_month_or_year_of_a_date"
   | "when_to_change_typeRecurrence"
+  | "when_to_change_the_installments"
   | "when_to_change_basic_data"
 
 async function put({ idUser, id, transaction, action }: IPut) {
@@ -95,18 +97,26 @@ async function put({ idUser, id, transaction, action }: IPut) {
   if (currentTransaction.typeRecurrence === "" && transaction.typeRecurrence !== "") {
     editRule = "when_to_change_to_be_a_recurrence"
   }
+  // quando editar uma transaction que é uma recorrência para não ser uma recorrência
+  else if (transaction.typeRecurrence === "" && currentTransaction.typeRecurrence !== "") {
+    editRule = "when_to_change_to_not_be_a_recurrence"
+  }
   // quando mudar o tipo de recorrência de uma transaction
   else if (transaction.isRecurrence && transaction.typeRecurrence !== currentTransaction.typeRecurrence) {
     editRule = "when_to_change_typeRecurrence"
+  }
+  // quando mudar o mês ou ano da data de uma transaction que é uma recorrência
+  else if (!isSameMonth || !isSameYear) {
+    editRule = "when_to_change_only_the_month_or_year_of_a_date"
+  }
+  // quando mudar o numero de parcelas
+  else if (transaction.installments !== currentTransaction.installments) {
+    editRule = "when_to_change_the_installments"
   }
   // quando mudar apenas o dia em relação a data de uma transaction que é uma recorrência
   else if (!isSameDay && isSameMonth && isSameYear) {
     editRule = "when_to_change_only_the_day_of_a_date"
     throw new Error("when_to_change_only_the_day_of_a_date not implemented")
-  }
-  // quando mudar o mês ou ano da data de uma transaction que é uma recorrência
-  else if (!isSameMonth || !isSameYear) {
-    editRule = "when_to_change_only_the_month_or_year_of_a_date"
   }
   // quando mudar só os dados basicos de uma transaction que é uma recorrência
   else if (transaction.isRecurrence && action && action !== "current") {

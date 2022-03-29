@@ -57,6 +57,9 @@ export const implementationRulesPut = {
     return true
   },
 
+  async when_to_change_to_not_be_a_recurrence({ idUser, id, transaction, action }: IImplementationRulesPut) {
+  },
+
   async when_to_change_only_the_day_of_a_date({ idUser, id, transaction, action }: IImplementationRulesPut) {
     console.log("🔎 - when_to_change_only_the_day_of_a_date")
 
@@ -140,5 +143,10 @@ export const implementationRulesPut = {
     await transactionService.post(transactionToPost)
 
     return true
+  },
+
+  async when_to_change_the_installments({ idUser, id, currentTransaction, transaction, action }: IImplementationRulesPut) {
+    // Não editar o campo de data
+
   },
 }
