@@ -35,14 +35,14 @@ export function Header() {
       </HStack>
 
       <HStack spacing={4}>
-        <Box>
+        <Box display={["none", "block"]}>
           <Heading fontSize="xl" fontWeight="semibold" color="gray.200">{session?.user?.name}</Heading>
           <Text fontSize="xs" color="gray.200">Sem pendências</Text>
         </Box>
 
         <Menu id="menu-avatar" isLazy>
           <MenuButton>
-            <Avatar name={session?.user?.name || ""} src={session?.user?.image || ""} />
+            <Avatar width={["40px", "48px"]} height={["40px", "48px"]} name={session?.user?.name || ""} src={session?.user?.image || ""} />
           </MenuButton>
 
           <MenuList>
