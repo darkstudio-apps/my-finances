@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { GetServerSideProps } from "next"
-import { getSession } from "next-auth/client"
-import { SimpleGrid, Stack, Button, Select, Spinner, HStack, useDisclosure, Flex } from "@chakra-ui/react"
+import { getSession } from "next-auth/react"
+import { SimpleGrid, Stack, Button, Select, Spinner, HStack, useDisclosure } from "@chakra-ui/react"
 
 import { CardTransaction } from "../components/CardTransaction"
 import { TableTransaction } from "../components/TableTransaction"

@@ -1,37 +1,33 @@
-import { Avatar, Tag, Box, Flex, Heading, HStack, Text, Menu, MenuButton, MenuList, MenuItem, Image, Stack } from "@chakra-ui/react"
-import { signOut, useSession } from "next-auth/client"
+import { Avatar, Tag, Box, Flex, Heading, HStack, Text, Menu, MenuButton, MenuList, MenuItem, Image } from "@chakra-ui/react"
+import { signOut, useSession } from "next-auth/react"
 // import { ActiveLink } from "./ActiveLink"
+import packageJson from "../../../package.json"
 
 const VERCEL_ENV = process.env.NEXT_PUBLIC_VERCEL_ENV
+const APP_VERSION = packageJson.version
 
 export function Header() {
-  const [session] = useSession()
+  const { data: session } = useSession()
 
   const handleSignOut = () => {
     signOut()
   }
 
   return (
-    <Flex as="header" align="center" justify="space-between" paddingY={[6, 8]} >
-      <Stack direction="row" align="center" spacing={4}>
-        <Image width={["32px", "36px"]} src="./icons/money-with-wings.svg" alt="money" />
-
-        <Stack align="center" direction={["column", "column", "row", "row"]} spacing={4}>
-          <Heading fontSize={["2xl", "3xl"]} color="gray.200">
-            My Finances
-          </Heading>
-
-          <Tag display={["none", "none", "inline"]} size="sm" lineHeight="1.5">
-            {
-              VERCEL_ENV === "production"
-                ? "v0.2 Beta"
-                : VERCEL_ENV === "preview"
-                  ? "Homolog | v0.2 Beta"
-                  : "Develop | v0.2 Beta"
-            }
-          </Tag>
-        </Stack>
-      </Stack>
+    <Flex as="header" align="center" justify="space-between" paddingY={8}>
+      <HStack spacing={4}>
+        <Image src="./icons/money-with-wings.svg" alt="money" />
+        <Heading size="lg" color="gray.200">My Finances</Heading>
+        <Tag size="sm">
+          {
+            VERCEL_ENV === "production"
+              ? `v${APP_VERSION} Beta`
+              : VERCEL_ENV === "preview"
+                ? `Homolog | v${APP_VERSION} Beta`
+                : `Develop | v${APP_VERSION} Beta`
+          }
+        </Tag>
+      </HStack>
 
       <HStack as="nav" spacing={8}>
         {/* <ActiveLink href="/transactions">Transações</ActiveLink> */}

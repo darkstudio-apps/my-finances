@@ -1,4 +1,4 @@
-import { getSession } from "next-auth/client"
+import { getSession } from "next-auth/react"
 import { useState } from "react"
 import { TransactionModelProps, TransactionStateProps, TransactionTypeProps } from "../../hooks/useTransactions/transaction.types"
 import { parseToUTCandISO } from "../../utils/dateUtil"
@@ -77,6 +77,7 @@ export function useModalTransaction() {
 
     const type: TransactionTypeProps = transaction.type
 
+    // TODO: essa prop agora é gerada no backend
     const isRecurrence = transaction.typeRecurrence !== ""
 
     const newTransaction: TransactionModelProps = {
