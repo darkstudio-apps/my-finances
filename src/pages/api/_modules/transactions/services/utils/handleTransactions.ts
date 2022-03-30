@@ -23,16 +23,16 @@ export const generateTransaction = (transaction: ITransactionForRegister): ITran
 }
 
 export const generateTransactionToPost = (currentTransaction: ITransaction, transaction: ITransactionPartial): ITransactionForRegister => {
-  const typeRecurrence = transaction.typeRecurrence || currentTransaction.typeRecurrence
+  const typeRecurrence = transaction.typeRecurrence ?? currentTransaction.typeRecurrence
 
   const transactionToPost: ITransactionForRegister = {
     idUser: transaction.idUser || currentTransaction.idUser,
     title: transaction.title || currentTransaction.title,
     amount: transaction.amount || currentTransaction.amount,
     date: transaction.date || currentTransaction.date,
-    status: transaction.status || currentTransaction.status,
+    status: transaction.status ?? currentTransaction.status,
     typeRecurrence: typeRecurrence as ITransactionTypeRecurrenceProp,
-    installments: transaction.installments || currentTransaction.installments,
+    installments: transaction.installments ?? currentTransaction.installments,
     type: transaction.type || currentTransaction.type,
   }
 

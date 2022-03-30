@@ -5,17 +5,19 @@ import { ITransactionGetAllResponse } from "../types/transactionResponse.type"
 interface IList {
   idUser: string
   dateStartISO?: string
+  dateStartNotInclusive?: string
   dateEndISO?: string
   idRecurrence?: string
 }
 
-async function list({ idUser, dateStartISO, dateEndISO, idRecurrence }: IList): Promise<ITransactionGetAllResponse> {
+async function list({ idUser, dateStartISO, dateStartNotInclusive, dateEndISO, idRecurrence }: IList): Promise<ITransactionGetAllResponse> {
   try {
     const transactions = await prisma.transaction.findMany({
       where: {
         idUser,
         date: {
           gte: dateStartISO,
+          gt: dateStartNotInclusive,
           lte: dateEndISO,
         },
         idRecurrence,

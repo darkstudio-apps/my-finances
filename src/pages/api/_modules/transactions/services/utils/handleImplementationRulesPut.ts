@@ -57,7 +57,23 @@ export const implementationRulesPut = {
     return true
   },
 
-  async when_to_change_to_not_be_a_recurrence({ idUser, id, transaction, action }: IImplementationRulesPut) {
+  async when_to_change_to_not_be_a_recurrence({ idUser, id, currentTransaction, transaction }: IImplementationRulesPut) {
+    console.log("🔎 - when_to_change_to_not_be_a_recurrence")
+
+    const _transaction = { ...transaction, installments: "0" }
+    const transactionToPut = generateTransactionToPost(currentTransaction, _transaction)
+
+    const dateStartNotInclusive = currentTransaction.date
+
+    const transactions = await transactionRepository.list({ idUser, dateStartNotInclusive })
+
+    const idTransactions = transactions.data.map(transaction => transaction.id)
+
+    await transactionRepository.put(id, transactionToPut)
+
+    const response = await transactionRepository.removeMany(idTransactions)
+
+    return !!response
   },
 
   async when_to_change_only_the_day_of_a_date({ idUser, id, transaction, action }: IImplementationRulesPut) {
@@ -146,6 +162,8 @@ export const implementationRulesPut = {
   },
 
   async when_to_change_the_installments({ idUser, id, currentTransaction, transaction, action }: IImplementationRulesPut) {
+    console.log("🔎 - when_to_change_the_installments")
+
     // Não editar o campo de data
 
   },
