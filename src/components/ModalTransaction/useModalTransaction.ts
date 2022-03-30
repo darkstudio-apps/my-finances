@@ -2,7 +2,7 @@ import { getSession } from "next-auth/react"
 import { useState } from "react"
 import { TransactionModelProps, TransactionStateProps, TransactionTypeProps } from "../../hooks/useTransactions/transaction.types"
 import { parseToUTCandISO } from "../../utils/dateUtil"
-import { formatFloat, formatReal } from "../../utils/maskUtil"
+import { formatCurrency, formatFloat, formatReal } from "../../utils/maskUtil"
 
 const transactionObjInitial: TransactionStateProps = {
   title: "",
@@ -45,6 +45,26 @@ export function useModalTransaction() {
           type,
         })
       }
+    }
+
+    if(prop === "installments"){
+
+      if (value){
+        const amounts = formatFloat(transaction.amount)
+
+        const installments =  Number(value)
+
+        const total = amounts / installments
+
+        const totalAmount = formatCurrency(total)
+
+        return setTransaction({
+          ...transaction,
+          amount: totalAmount.replace("R$", ""),
+          installments : value,
+        })
+      }
+
     }
 
     setTransaction({
