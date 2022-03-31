@@ -49,7 +49,6 @@ export function useModalTransaction() {
 
     if(prop === "installments"){
 
-      if (value){
         const amounts = formatFloat(transaction.amount)
 
         const installments =  Number(value)
@@ -63,7 +62,6 @@ export function useModalTransaction() {
           amount: totalAmount.replace("R$", ""),
           installments : value,
         })
-      }
 
     }
 
