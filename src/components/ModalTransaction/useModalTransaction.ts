@@ -62,7 +62,10 @@ export function useModalTransaction() {
         installments: value,
       })
     }
-
+    setTransaction({
+      ...transaction,
+      [prop]: value,
+    })
   }
 
   const validateTransaction = () => {
