@@ -1,7 +1,7 @@
 import { transactionService } from "../transactionService"
 import { transactionRepository } from "../../repository/transactionRepository"
 import { getObjYearMonthDayUTC, parseObjToUTCandISO } from "../../../../../../utils/dateUtil"
-import { generateTransactionToPost } from "./handleTransactions"
+import { generateTransactionsRecurrence, generateTransactionToCreate, generateTransactionToPost } from "./handleTransactions"
 import { ITransaction, ITransactionPartial } from "../../types/transaction.type"
 import { ITransactionRequestActionParam } from "../../types/transactionRequest.type"
 
@@ -60,8 +60,8 @@ export const implementationRulesPut = {
   async when_to_change_to_not_be_a_recurrence({ idUser, id, currentTransaction, transaction }: IImplementationRulesPut) {
     console.log("🔎 - when_to_change_to_not_be_a_recurrence")
 
-    const _transaction = { ...transaction, installments: "0" }
-    const transactionToPut = generateTransactionToPost(currentTransaction, _transaction)
+    const _transaction = { ...transaction, installments: "0", isRecurrence: false }
+    const transactionToPut = generateTransactionToCreate(currentTransaction, _transaction)
 
     const dateStartNotInclusive = currentTransaction.date
 
@@ -164,7 +164,38 @@ export const implementationRulesPut = {
   async when_to_change_the_installments({ idUser, id, currentTransaction, transaction, action }: IImplementationRulesPut) {
     console.log("🔎 - when_to_change_the_installments")
 
-    // Não editar o campo de data
+    const isMoreInstallments = Number(transaction.installments) > Number(currentTransaction.installments)
 
+    if (isMoreInstallments) {
+      // TODO: identificar a data da ultima parcela
+      const idRecurrence = currentTransaction.idRecurrence
+      const transactions = await transactionRepository.list({ idUser, idRecurrence })
+
+      const lastTransaction = transactions.data.pop() || currentTransaction
+
+      const transactionToGenerate = generateTransactionToCreate(lastTransaction, transaction)
+
+      // TODO: gerar apenas as tr que falta e com o mesmo idRecurrence
+      const [, ...newTransactions] = generateTransactionsRecurrence(transactionToGenerate)
+
+      // TODO: postMany
+      await transactionRepository.postMany(newTransactions)
+
+      return true
+    }
+    else {
+      const idRecurrence = currentTransaction.idRecurrence
+      const transactions = await transactionRepository.list({ idUser, idRecurrence })
+
+      const start = Number(transaction.installments)
+      const end = transactions.length
+      const transactionsToDelete = transactions.data.slice(start, end)
+
+      const idTransactions = transactionsToDelete.map(transaction => transaction.id)
+
+      const response = await transactionRepository.removeMany(idTransactions)
+
+      return !!response
+    }
   },
 }

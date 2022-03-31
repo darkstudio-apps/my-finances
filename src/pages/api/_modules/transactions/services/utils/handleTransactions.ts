@@ -22,6 +22,7 @@ export const generateTransaction = (transaction: ITransactionForRegister): ITran
   return mappedTransaction
 }
 
+// TODO; alterar o nome para generateTransactionToRegister
 export const generateTransactionToPost = (currentTransaction: ITransaction, transaction: ITransactionPartial): ITransactionForRegister => {
   const typeRecurrence = transaction.typeRecurrence ?? currentTransaction.typeRecurrence
 
@@ -37,6 +38,25 @@ export const generateTransactionToPost = (currentTransaction: ITransaction, tran
   }
 
   return transactionToPost
+}
+
+export const generateTransactionToCreate = (currentTransaction: ITransaction, transaction: ITransactionPartial): ITransactionForCreate => {
+  const typeRecurrence = transaction.typeRecurrence ?? currentTransaction.typeRecurrence
+
+  const transactionToCreate: ITransactionForCreate = {
+    idUser: transaction.idUser || currentTransaction.idUser,
+    title: transaction.title || currentTransaction.title,
+    amount: transaction.amount || currentTransaction.amount,
+    date: transaction.date || currentTransaction.date,
+    status: transaction.status ?? currentTransaction.status,
+    typeRecurrence: typeRecurrence as ITransactionTypeRecurrenceProp,
+    installments: transaction.installments ?? currentTransaction.installments,
+    type: transaction.type || currentTransaction.type,
+    idRecurrence: transaction.idRecurrence || currentTransaction.idRecurrence,
+    isRecurrence: transaction.isRecurrence || currentTransaction.isRecurrence,
+  }
+
+  return transactionToCreate
 }
 
 export const generateTransactionsRecurrence = (transaction: ITransactionForCreate): ITransactionForCreate[] => {
