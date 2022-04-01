@@ -47,13 +47,14 @@ export function useModalTransaction() {
       }
     }
 
+    const amounts = formatFloat(transaction.amount)
+    let newTotal = 0
+    let newTotalAmount = ""
+
     if (prop === "installments" && value) {
-      const amounts = formatFloat(transaction.amount)
 
       const installments = Number(value)
-
       const total = amounts / installments
-
       const totalAmount = formatCurrency(total)
 
       return setTransaction({
@@ -62,6 +63,17 @@ export function useModalTransaction() {
         installments: value,
       })
     }
+    if (prop === "installments" && value === "") {
+      newTotal = amounts * Number(transaction.installments)
+      newTotalAmount = formatCurrency(newTotal)
+
+      return setTransaction({
+        ...transaction,
+        amount: newTotalAmount.replace("R$", ""),
+        installments: value,
+      })
+    }
+
     setTransaction({
       ...transaction,
       [prop]: value,
