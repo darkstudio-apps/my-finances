@@ -63,6 +63,7 @@ export function useModalTransaction() {
         installments: value,
       })
     }
+
     if (prop === "installments" && value === "") {
       newTotal = amounts * Number(transaction.installments)
       newTotalAmount = formatCurrency(newTotal)
