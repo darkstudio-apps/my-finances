@@ -2,7 +2,7 @@ import { getSession } from "next-auth/react"
 import { useState } from "react"
 import { TransactionModelProps, TransactionStateProps, TransactionTypeProps } from "../../hooks/useTransactions/transaction.types"
 import { parseToUTCandISO } from "../../utils/dateUtil"
-import { formatCurrency, formatFloat, formatReal } from "../../utils/maskUtil"
+import { formatCurrencyOnlyNumbers, formatFloat, formatReal } from "../../utils/maskUtil"
 
 const transactionObjInitial: TransactionStateProps = {
   title: "",
@@ -47,31 +47,26 @@ export function useModalTransaction() {
       }
     }
 
-    const amounts = formatFloat(transaction.amount)
-    let newTotal = 0
-    let newTotalAmount = ""
+    if (prop === "installments") {
+      const currentAmount = formatFloat(transaction.amount)
 
-    if (prop === "installments" && value) {
+      const currentInstalments = Number(transaction.installments)
+      const editedInstalments = Number(value)
 
-      const installments = Number(value)
-      const total = amounts / installments
-      const totalAmount = formatCurrency(total)
+      const totalAmount = currentInstalments === 0
+        ? currentAmount
+        : currentInstalments * currentAmount
 
-      return setTransaction({
-        ...transaction,
-        amount: totalAmount.replace("R$", ""),
-        installments: value,
-      })
-    }
+      const editedAmount = editedInstalments > 0
+        ? totalAmount / editedInstalments
+        : totalAmount
 
-    if (prop === "installments" && value === "") {
-      newTotal = amounts * Number(transaction.installments)
-      newTotalAmount = formatCurrency(newTotal)
+      const amount = formatCurrencyOnlyNumbers(editedAmount)
 
       return setTransaction({
         ...transaction,
-        amount: newTotalAmount.replace("R$", ""),
         installments: value,
+        amount,
       })
     }
 
