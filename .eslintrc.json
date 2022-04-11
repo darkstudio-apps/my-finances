@@ -5,6 +5,7 @@
   ],
   "rules": {
     "no-trailing-spaces": "error",
+    "@typescript-eslint/no-explicit-any": "off",
     "semi": [
       "error",
       "never"
