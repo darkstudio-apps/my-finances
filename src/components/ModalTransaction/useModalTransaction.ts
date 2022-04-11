@@ -2,7 +2,7 @@ import { getSession } from "next-auth/react"
 import { useState } from "react"
 import { TransactionModelProps, TransactionStateProps, TransactionTypeProps } from "../../hooks/useTransactions/transaction.types"
 import { parseToUTCandISO } from "../../utils/dateUtil"
-import { formatCurrencyOnlyNumbers, formatFloat, formatReal } from "../../utils/maskUtil"
+import { formatFloat, formatReal } from "../../utils/maskUtil"
 
 const transactionObjInitial: TransactionStateProps = {
   title: "",
@@ -71,7 +71,7 @@ export function useModalTransaction() {
         ? totalAmount / editedInstalments
         : totalAmount
 
-      const amountDisplay = formatCurrencyOnlyNumbers(editedAmount)
+      const amountDisplay = formatReal(editedAmount)
 
       return setTransaction({
         ...transaction,

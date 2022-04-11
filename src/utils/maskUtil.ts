@@ -7,19 +7,6 @@ export const formatCurrency = (amount: number) => {
     .format(amount)
 }
 
-export const formatCurrencyOnlyNumbers = (amount: number) => {
-  const currency = new Intl
-    .NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    })
-    .format(amount)
-
-  const currencyFormatted = currency.replace("R$", "").trim()
-
-  return currencyFormatted
-}
-
 export const onlyNumbers = (txt: string) => {
   const arrayNumbers = txt.match(/[0-9]/g)
   if (arrayNumbers === null) return ""
