@@ -10,7 +10,8 @@ export type TransactionTypeRecurrenceProps = ""
 
 export interface TransactionStateProps {
   title: string
-  amount: string
+  amount: number
+  amountDisplay: string
   date: string
   status: string
   typeRecurrence: string

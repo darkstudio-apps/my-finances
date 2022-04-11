@@ -6,7 +6,8 @@ import { formatFloat, formatReal } from "../../utils/maskUtil"
 
 const transactionObjInitial: TransactionStateProps = {
   title: "",
-  amount: "0,00",
+  amount: 0,
+  amountDisplay: "0,00",
   date: "",
   status: "",
   typeRecurrence: "",
@@ -18,7 +19,16 @@ export function useModalTransaction() {
   const [transaction, setTransaction] = useState<TransactionStateProps>(transactionObjInitial)
 
   const handleChangeTransaction = (prop: string, value: string) => {
-    if (prop === "amount") value = formatReal(value)
+    if (prop === "amount") {
+      const amountDisplay = formatReal(value)
+      const amount = formatFloat(amountDisplay)
+
+      return setTransaction({
+        ...transaction,
+        amountDisplay,
+        amount,
+      })
+    }
 
     if (prop === "status") {
       const type = value === "deposit" || value === "withdraw"
@@ -47,6 +57,30 @@ export function useModalTransaction() {
       }
     }
 
+    if (prop === "installments") {
+      const currentAmount = transaction.amount
+
+      const currentInstalments = Number(transaction.installments)
+      const editedInstalments = Number(value)
+
+      const totalAmount = currentInstalments === 0
+        ? currentAmount
+        : currentInstalments * currentAmount
+
+      const editedAmount = editedInstalments > 0
+        ? totalAmount / editedInstalments
+        : totalAmount
+
+      const amountDisplay = formatReal(editedAmount)
+
+      return setTransaction({
+        ...transaction,
+        installments: value,
+        amount: editedAmount,
+        amountDisplay,
+      })
+    }
+
     setTransaction({
       ...transaction,
       [prop]: value,
@@ -57,7 +91,7 @@ export function useModalTransaction() {
     const { title, date } = transaction
 
     const includesValueEmpty = [title, date].includes("")
-    const amountZero = transaction.amount === "0,00"
+    const amountZero = transaction.amountDisplay === "0,00"
     const isTypeNull = transaction.type === null
 
     if (includesValueEmpty || amountZero || isTypeNull) {
@@ -81,14 +115,16 @@ export function useModalTransaction() {
     const isRecurrence = transaction.typeRecurrence !== ""
 
     const newTransaction: TransactionModelProps = {
-      ...transaction,
       idUser,
+      title: transaction.title,
+      amount: transaction.amount,
+      status: transaction.status,
+      typeRecurrence: transaction.typeRecurrence,
+      installments: transaction.installments,
       type,
       isRecurrence,
-      amount: formatFloat(transaction.amount),
       date: parseToUTCandISO(transaction.date, "start"),
     }
-
     return newTransaction
   }
 
