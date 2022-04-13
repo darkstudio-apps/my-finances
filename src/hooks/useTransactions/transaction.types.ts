@@ -1,3 +1,11 @@
+export type ITransactionActionRequest = "current" | "next" | "all"
+
+export interface ITransactionEditRequest {
+  id: string
+  transaction: TransactionModelProps
+  action: ITransactionActionRequest
+}
+
 export type TransactionTypeProps = "deposit" | "withdraw"
 
 // TODO: Usar Enum
