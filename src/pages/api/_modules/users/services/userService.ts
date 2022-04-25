@@ -1,11 +1,6 @@
 import { userRepository } from "../repository/userRepository"
 import { UserModelProps, UserReqProps } from "../../../../../hooks/useUsers/user.types"
 
-async function list() {
-  const users = await userRepository.list()
-  return users
-}
-
 async function get(email: string) {
   const user = await userRepository.get(email)
   return user
@@ -32,7 +27,6 @@ function remove(id: string) {
 }
 
 export const userService = {
-  list,
   get,
   post,
   put,

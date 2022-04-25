@@ -1,16 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import { userService } from "../services/userService"
-import { RequestPostType, RequestType } from "../types/userRequests.type"
-
-async function list(req: NextApiRequest, res: NextApiResponse) {
-  try {
-    const users = await userService.list()
-    return res.status(200).json({ users })
-  } catch (error) {
-    return res.status(400).json({ message: error })
-  }
-
-}
+import { RequestPostType, RequestType } from "../types/userRequest.type"
 
 async function get(req: RequestType, res: NextApiResponse) {
   try {
