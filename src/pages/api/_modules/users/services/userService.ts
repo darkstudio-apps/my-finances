@@ -16,11 +16,6 @@ async function put(id: string, transaction: Partial<UserReqProps>) {
   return editedUser
 }
 
-function patch(id: string, transaction: Partial<UserReqProps>) {
-  const editedUser = userRepository.put(id, transaction)
-  return editedUser
-}
-
 function remove(id: string) {
   const ok = userRepository.remove(id)
   return ok
@@ -30,6 +25,5 @@ export const userService = {
   get,
   post,
   put,
-  patch,
   remove,
 }

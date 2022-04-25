@@ -55,15 +55,6 @@ async function put(idUser: string, User: PartialUser) {
   return editedUser
 }
 
-function patch(idUser: string, user: PartialUser) {
-  const obj = {
-    ...user,
-    id: idUser,
-  }
-
-  return obj
-}
-
 async function remove(idUser: string): Promise<boolean> {
   const user = await prisma.user.delete({
     where: { id: idUser },
@@ -77,6 +68,5 @@ export const userRepository = {
   post,
   upsert,
   put,
-  patch,
   remove,
 }

@@ -41,19 +41,6 @@ async function put(req: RequestType, res: NextApiResponse) {
 
 }
 
-function patch(req: RequestType, res: NextApiResponse) {
-  try {
-    const { query, body } = req
-
-    const user = userService.put(query.id, body)
-
-    return res.status(200).json({ user })
-  } catch (error) {
-
-  }
-
-}
-
 async function remove(req: RequestType, res: NextApiResponse) {
   try {
     const { id } = req.query
@@ -68,10 +55,8 @@ async function remove(req: RequestType, res: NextApiResponse) {
 }
 
 export const userController = {
-  list,
   get,
   post,
   put,
-  patch,
   remove,
 }
