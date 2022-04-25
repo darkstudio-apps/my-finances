@@ -1,17 +1,17 @@
 import { userRepository } from "../repository/userRepository"
-import { UserModelProps, UserReqProps } from "../../../../../hooks/useUsers/user.types"
+import { IUserPost, IUserPut } from "../types/user.type"
 
 async function get(email: string) {
   const user = await userRepository.get(email)
   return user
 }
 
-async function post(user: UserModelProps) {
+async function post(user: IUserPost) {
   const createdUser = await userRepository.post(user)
   return createdUser
 }
 
-async function put(id: string, transaction: Partial<UserReqProps>) {
+async function put(id: string, transaction: IUserPut) {
   const editedUser = await userRepository.put(id, transaction)
   return editedUser
 }
