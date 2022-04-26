@@ -3,7 +3,7 @@ import { transactionRepository } from "../repository/transactionRepository"
 import { generateTransaction, generateTransactionsRecurrence, implementationRulesPut } from "./utils"
 import { dateNowYearMonthDay, endOfMonthInYearMonthDay, generateDecimalNumberInString, getObjYearMonthDay, getObjYearMonthDayUTC, parseToUTCandISO } from "../../../../../utils/dateUtil"
 
-import { ITransaction, ITransactionForRegister, ITransactionPartial } from "../types/transaction.type"
+import { ITransaction, ITransactionPatch, ITransactionPut, ITransactionServicePost } from "../types/transaction.type"
 import { ITransactionRequestActionParam } from "../types/transactionRequest.type"
 
 async function list(idUser: string, month?: string, year?: string) {
@@ -33,7 +33,7 @@ async function get(id: string) {
   return transaction
 }
 
-async function post(transaction: ITransactionForRegister) {
+async function post(transaction: ITransactionServicePost) {
   const objTransaction = generateTransaction(transaction)
 
   if (!objTransaction.isRecurrence) {
@@ -55,7 +55,7 @@ interface IPut {
   idUser: string
   id: string
   // TODO: modificar a tipagem para obrigar o envio de todos os dados, algumas regras dependem de certos dados
-  transaction: ITransactionPartial
+  transaction: ITransactionPut
   action?: ITransactionRequestActionParam
 }
 
@@ -138,7 +138,7 @@ async function put({ idUser, id, transaction, action }: IPut) {
   return response
 }
 
-async function patch(id: string, transaction: ITransactionPartial) {
+async function patch(id: string, transaction: ITransactionPatch) {
   const editedTransaction = await transactionRepository.put(id, transaction)
 
   // TODO: retornar um obj com a tipagem de transactionResponse

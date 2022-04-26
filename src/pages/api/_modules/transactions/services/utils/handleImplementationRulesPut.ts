@@ -2,14 +2,14 @@ import { transactionService } from "../transactionService"
 import { transactionRepository } from "../../repository/transactionRepository"
 import { getObjYearMonthDayUTC, parseObjToUTCandISO } from "../../../../../../utils/dateUtil"
 import { generateTransactionsRecurrence, generateTransactionToCreate, generateTransactionToPost } from "./handleTransactions"
-import { ITransaction, ITransactionPartial } from "../../types/transaction.type"
+import { ITransaction, ITransactionPut } from "../../types/transaction.type"
 import { ITransactionRequestActionParam } from "../../types/transactionRequest.type"
 
 interface IImplementationRulesPut {
   idUser: string
   id: string
   currentTransaction: ITransaction
-  transaction: ITransactionPartial
+  transaction: ITransactionPut
   action?: ITransactionRequestActionParam
 }
 
@@ -24,7 +24,7 @@ export const implementationRulesPut = {
   async when_to_change_basic_data({ idUser, currentTransaction, transaction, action }: IImplementationRulesPut) {
     console.log("🔎 - when_to_change_basic_data")
 
-    const transactionMapped: ITransactionPartial = {
+    const transactionMapped: ITransactionPut = {
       title: transaction.title || currentTransaction.title,
       amount: transaction.amount || currentTransaction.amount,
       status: transaction.status || currentTransaction.status,
@@ -98,7 +98,7 @@ export const implementationRulesPut = {
       // TODO: verificar se a data existe naquele mes
       const date = parseObjToUTCandISO({ day, month, year }, "start")
 
-      const transactionMapped: ITransactionPartial = {
+      const transactionMapped: ITransactionPut = {
         id: transaction.id || currentTransaction.id,
         title: transaction.title || currentTransaction.title,
         amount: transaction.amount || currentTransaction.amount,

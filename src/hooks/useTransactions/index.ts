@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query"
 import { useToast } from "@chakra-ui/react"
 
 import { api } from "../../services/api"
-import { TransactionReqProps, TransactionModelProps } from "./transaction.types"
+import { TransactionReqProps, TransactionModelProps, ITransactionActionRequest, ITransactionEditRequest } from "./transaction.types"
 import { formatCurrency } from "../../utils/maskUtil"
 import { dateNowYearMonthDay, getObjYearMonthDay, parseDateBrUTC, parseYearMonthDayUTC } from "../../utils/dateUtil"
 import { getStatusDisplay, summaryDefault } from "./transaction.util"
@@ -134,8 +134,7 @@ export function useTransactions() {
     },
   })
 
-  type EditProps = { id: string, transaction: TransactionModelProps }
-  const edit = useMutation(async ({ id, transaction }: EditProps) => {
+  const edit = useMutation(async ({ id, transaction, action }: ITransactionEditRequest) => {
     try {
       const { data } = await api.put<GetType>(`/transactions/${id}`, transaction)
       if (!data.transaction) return

@@ -1,4 +1,4 @@
-import { ITransactionForRegister, ITransaction } from "./transaction.type"
+import { ITransactionServicePost, ITransaction } from "./transaction.type"
 
 export interface ITransactionRequestSession {
   user?: {
@@ -27,5 +27,5 @@ export interface ITransactionRequestRoot {
     month?: string
     year?: string
   }
-  body: ITransactionForRegister
+  body: ITransactionServicePost
 }
