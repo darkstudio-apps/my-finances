@@ -1,8 +1,21 @@
 import { IUser } from "./user.type"
-export type IUserResponseGet = IUser
-export type IUserResponsePost = IUser
-export type IUserResponseUpsert = IUser
-export type IUserResponsePut = IUser
-export type IUserResponseRemove = {
+
+export interface IUserResponseGet {
+  user: IUser
+}
+
+export interface IUserResponsePost {
+  user: IUser
+}
+
+export interface IUserResponseUpsert {
+  user: IUser
+}
+
+export interface IUserResponsePut {
+  user: IUser
+}
+
+export interface IUserResponseRemove {
   success: boolean
 }

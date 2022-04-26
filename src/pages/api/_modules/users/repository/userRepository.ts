@@ -10,12 +10,17 @@ const prisma = new PrismaClient()
 // TODO: um usuario nunca pode conseguir ter acesso à informações de outros usuarios
 // O mesmo para as outras ações, o user só pode editar ele mesmo
 async function get(email: string): Promise<IUserResponseGet> {
-  const user = await prisma.user.findFirst({
+  const user: any = await prisma.user.findFirst({
     where: {
       email,
     },
   })
-  return user as IUserResponseGet
+
+  const response: IUserResponseGet = {
+    user,
+  }
+
+  return response
 }
 
 async function post(user: IUserPost): Promise<IUserResponsePost> {
@@ -23,19 +28,29 @@ async function post(user: IUserPost): Promise<IUserResponsePost> {
     data: user,
   })
 
-  return newUser
+  const response: IUserResponsePost = {
+    user: newUser,
+  }
+
+  return response
 }
 
 async function upsert(user: IUserPost): Promise<IUserResponseUpsert> {
   const { name, email } = user
 
-  const getUser = await prisma.user.findFirst({
+  const getUser: any = await prisma.user.findFirst({
     where: {
       email,
     },
   })
 
-  if (getUser) return getUser
+  if (getUser) {
+    const response: IUserResponseUpsert = {
+      user: getUser,
+    }
+
+    return response
+  }
 
   const newUser = await prisma.user.create({
     data: {
@@ -44,7 +59,11 @@ async function upsert(user: IUserPost): Promise<IUserResponseUpsert> {
     },
   })
 
-  return newUser
+  const responseCreate: IUserResponseUpsert = {
+    user: newUser,
+  }
+
+  return responseCreate
 }
 
 async function put(idUser: string, User: PartialUser): Promise<IUserResponsePut> {
@@ -53,17 +72,24 @@ async function put(idUser: string, User: PartialUser): Promise<IUserResponsePut>
     data: User,
   })
 
-  return editedUser
+  const response: IUserResponsePut = {
+    user: editedUser,
+  }
+
+  return response
 }
 
 async function remove(idUser: string): Promise<IUserResponseRemove> {
-  const user = await prisma.user.delete({
+  const user: any = await prisma.user.delete({
     where: { id: idUser },
   })
 
-  return {
+  const response: IUserResponseRemove = {
     success: !!user,
   }
+
+  return response
+
 }
 
 export const userRepository = {
