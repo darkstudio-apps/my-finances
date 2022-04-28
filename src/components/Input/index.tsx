@@ -1,5 +1,5 @@
 import { forwardRef, ForwardRefRenderFunction } from "react"
-import { FormLabel, FormControl, Input as ChakraInput, InputProps, FormErrorMessage } from "@chakra-ui/react"
+import { FormLabel, FormControl, Input as ChakraInput, InputProps } from "@chakra-ui/react"
 
 interface Props extends InputProps {
   name: string
