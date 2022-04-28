@@ -3,10 +3,11 @@ import { transactionRepository } from "../repository/transactionRepository"
 import { generateTransaction, generateTransactionsRecurrence, implementationRulesPut } from "./utils"
 import { dateNowYearMonthDay, endOfMonthInYearMonthDay, generateDecimalNumberInString, getObjYearMonthDay, getObjYearMonthDayUTC, parseToUTCandISO } from "../../../../../utils/dateUtil"
 
-import { ITransaction, ITransactionPatch, ITransactionPut, ITransactionServicePost } from "../types/transaction.type"
+import { ITransaction } from "../types/transaction.type"
+import { ITransactionServiceList, ITransactionServicePatch, ITransactionServicePost, ITransactionServicePut, ITransactionServiceRemove } from "../types/transactionService.type"
 import { ITransactionRequestActionParam } from "../types/transactionRequest.type"
 
-async function list(idUser: string, month?: string, year?: string) {
+async function list({ idUser, month, year }: ITransactionServiceList) {
   const dateYearMonthDay = dateNowYearMonthDay()
   const dateNow = getObjYearMonthDay(dateYearMonthDay)
 
@@ -51,14 +52,6 @@ async function post(transaction: ITransactionServicePost) {
   // TODO: ter um unico retorno
 }
 
-interface IPut {
-  idUser: string
-  id: string
-  // TODO: modificar a tipagem para obrigar o envio de todos os dados, algumas regras dependem de certos dados
-  transaction: ITransactionPut
-  action?: ITransactionRequestActionParam
-}
-
 // TODO: mover essa tipagem para um arquivo de tipagem e forçar o objeto de regras a ter esses metodos implementados
 type IEditRule = "edit_transaction"
   | "when_to_change_to_be_a_recurrence"
@@ -69,7 +62,7 @@ type IEditRule = "edit_transaction"
   | "when_to_change_the_installments"
   | "when_to_change_basic_data"
 
-async function put({ idUser, id, transaction, action }: IPut) {
+async function put({ idUser, id, transaction, action }: ITransactionServicePut) {
   const currentTransaction = await transactionRepository.get(id)
 
   if (!currentTransaction) throw new Error("transaction not found")
@@ -138,18 +131,12 @@ async function put({ idUser, id, transaction, action }: IPut) {
   return response
 }
 
-async function patch(id: string, transaction: ITransactionPatch) {
+async function patch({ id, transaction }: ITransactionServicePatch) {
   const editedTransaction = await transactionRepository.put(id, transaction)
 
   // TODO: retornar um obj com a tipagem de transactionResponse
 
   return editedTransaction
-}
-
-interface IRemove {
-  idUser: string
-  id: string
-  action?: ITransactionRequestActionParam
 }
 
 const generateFiltersListRemove = (transaction: ITransaction, action?: ITransactionRequestActionParam) => {
@@ -164,7 +151,7 @@ const generateFiltersListRemove = (transaction: ITransaction, action?: ITransact
   return { idUser, id }
 }
 
-async function remove({ id, action }: IRemove): Promise<boolean> {
+async function remove({ id, action }: ITransactionServiceRemove): Promise<boolean> {
   const transaction = await get(id)
 
   if (!transaction) throw new Error("transaction not found")

@@ -7,7 +7,7 @@ async function list(req: ITransactionRequestRoot, res: NextApiResponse) {
     // TODO: receber o idRecurrence e usar ele para fazer a busca tbm
     const { idUser, month, year } = req.query
 
-    const transactionsData = await transactionService.list(idUser, month, year)
+    const transactionsData = await transactionService.list({ idUser, month, year })
 
     return res.status(200).json(transactionsData)
   } catch (error) {

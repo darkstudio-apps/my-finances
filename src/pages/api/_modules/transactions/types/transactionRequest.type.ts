@@ -1,4 +1,5 @@
-import { ITransactionServicePost, ITransaction } from "./transaction.type"
+import { ITransaction } from "./transaction.type"
+import { ITransactionServicePost } from "./transactionService.type"
 
 export interface ITransactionRequestSession {
   user?: {

@@ -1,3 +1,5 @@
+import { ITransactionServicePost } from "./transactionService.type"
+
 export type ITransactionTypeProp = "deposit" | "withdraw"
 
 // TODO: usar Enum  - https://www.typescriptlang.org/docs/handbook/enums.html
@@ -18,17 +20,6 @@ export interface ITransaction {
   idRecurrence: string
   typeRecurrence: string
   isRecurrence: boolean
-  installments: string
-  type: ITransactionTypeProp
-}
-
-export interface ITransactionServicePost {
-  idUser: string
-  title: string
-  amount: number
-  date: string
-  status: string
-  typeRecurrence: ITransactionTypeRecurrence
   installments: string
   type: ITransactionTypeProp
 }

@@ -5,9 +5,9 @@ import {
   ITransaction,
   ITransactionPost,
   ITransactionPut,
-  ITransactionServicePost,
   ITransactionTypeRecurrence,
 } from "../../types/transaction.type"
+import { ITransactionServicePost } from "../../types/transactionService.type"
 
 export const generateTransaction = (transaction: ITransactionServicePost): ITransactionPost => {
   const isRecurrence = transaction.typeRecurrence !== ""
