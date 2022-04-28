@@ -1,6 +1,6 @@
 import { prisma } from "../../../../../services/prisma"
 import { ITransaction, ITransactionPatch, ITransactionPost, ITransactionPut, ITransactionPutMany, ITransactionRemove, ITransactionRemoveMany } from "../types/transaction.type"
-import { ITransactionGetAllResponse } from "../types/transactionResponse.type"
+import { ITransactionListResponse } from "../types/transactionResponse.type"
 
 interface IList {
   idUser: string
@@ -10,7 +10,7 @@ interface IList {
   idRecurrence?: string
 }
 
-async function list({ idUser, dateStartISO, dateStartNotInclusive, dateEndISO, idRecurrence }: IList): Promise<ITransactionGetAllResponse> {
+async function list({ idUser, dateStartISO, dateStartNotInclusive, dateEndISO, idRecurrence }: IList): Promise<ITransactionListResponse> {
   try {
     const transactions = await prisma.transaction.findMany({
       where: {
@@ -27,7 +27,8 @@ async function list({ idUser, dateStartISO, dateStartNotInclusive, dateEndISO, i
       },
     }) as ITransaction[] | undefined
 
-    const transactionsData: ITransactionGetAllResponse = {
+    // TODO: mover isso para a camada de services
+    const transactionsData: ITransactionListResponse = {
       search: {
         dateStart: dateStartISO || "",
         dateEnd: dateEndISO || "",
