@@ -6,7 +6,7 @@ async function get(req: IUserRequestGet, res: NextApiResponse) {
   try {
     const { id } = req.query
 
-    const { user } = await userService.get(id)
+    const user = await userService.get(id)
 
     return res.status(200).json(user)
   } catch (error) {
@@ -18,7 +18,7 @@ async function post(req: IUserRequestPost, res: NextApiResponse) {
   try {
     const { body } = req
 
-    const { user } = await userService.post(body)
+    const user = await userService.post(body)
 
     return res.status(200).json(user)
   } catch (error) {
@@ -30,7 +30,7 @@ async function put(req: IUserRequestPut, res: NextApiResponse) {
   try {
     const { query, body } = req
 
-    const { user } = await userService.put(query.id, body)
+    const user = await userService.put(query.id, body)
 
     return res.status(200).json(user)
   } catch (error) {
