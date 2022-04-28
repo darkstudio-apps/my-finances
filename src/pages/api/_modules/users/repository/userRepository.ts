@@ -1,41 +1,31 @@
 import { PrismaClient } from "@prisma/client"
 import { UserReqProps } from "../../../../../hooks/useUsers/user.types"
-import { IUserPost } from "../types/user.type"
-import { IUserResponseGet, IUserResponsePost, IUserResponsePut, IUserResponseRemove, IUserResponseUpsert } from "../types/userResponse.type"
-
+import { IUser, IUserPost } from "../types/user.type"
 type PartialUser = Partial<UserReqProps>
 
 const prisma = new PrismaClient()
 
 // TODO: um usuario nunca pode conseguir ter acesso à informações de outros usuarios
 // O mesmo para as outras ações, o user só pode editar ele mesmo
-async function get(email: string): Promise<IUserResponseGet> {
+async function get(email: string): Promise<IUser> {
   const user: any = await prisma.user.findFirst({
     where: {
       email,
     },
   })
 
-  const response: IUserResponseGet = {
-    user,
-  }
-
-  return response
+  return user as IUser
 }
 
-async function post(user: IUserPost): Promise<IUserResponsePost> {
+async function post(user: IUserPost): Promise<IUser> {
   const newUser = await prisma.user.create({
     data: user,
   })
 
-  const response: IUserResponsePost = {
-    user: newUser,
-  }
-
-  return response
+  return newUser as IUser
 }
 
-async function upsert(user: IUserPost): Promise<IUserResponseUpsert> {
+async function upsert(user: IUserPost): Promise<IUser> {
   const { name, email } = user
 
   const getUser: any = await prisma.user.findFirst({
@@ -44,13 +34,7 @@ async function upsert(user: IUserPost): Promise<IUserResponseUpsert> {
     },
   })
 
-  if (getUser) {
-    const response: IUserResponseUpsert = {
-      user: getUser,
-    }
-
-    return response
-  }
+  if (getUser) return getUser
 
   const newUser = await prisma.user.create({
     data: {
@@ -59,37 +43,24 @@ async function upsert(user: IUserPost): Promise<IUserResponseUpsert> {
     },
   })
 
-  const responseCreate: IUserResponseUpsert = {
-    user: newUser,
-  }
-
-  return responseCreate
+  return newUser as IUser
 }
 
-async function put(idUser: string, User: PartialUser): Promise<IUserResponsePut> {
+async function put(idUser: string, User: PartialUser): Promise<IUser> {
   const editedUser = await prisma.user.update({
     where: { id: idUser },
     data: User,
   })
 
-  const response: IUserResponsePut = {
-    user: editedUser,
-  }
-
-  return response
+  return editedUser as IUser
 }
 
-async function remove(idUser: string): Promise<IUserResponseRemove> {
+async function remove(idUser: string): Promise<IUser> {
   const user: any = await prisma.user.delete({
     where: { id: idUser },
   })
 
-  const response: IUserResponseRemove = {
-    success: !!user,
-  }
-
-  return response
-
+  return user as IUser
 }
 
 export const userRepository = {
