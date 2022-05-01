@@ -3,14 +3,13 @@ import { useMutation, useQuery, useQueryClient } from "react-query"
 import { useToast } from "@chakra-ui/react"
 import { summaryDefault, generateResumeSummary } from "./transaction.helpers"
 import { api } from "libs/api"
-import { createTransactionService, getTransactionsService } from "services/transactions"
+import { createTransactionService, editTransactionService, getTransactionsService } from "services/transactions"
 import { formatCurrency } from "utils/maskUtil"
 import { dateNowYearMonthDay, getObjYearMonthDay } from "utils/dateUtil"
 import {
   ITransactionRequestPost,
-  ITransactionEditRequest,
   ITransactionGetFilters,
-  ITransactionRequestGet
+  ITransactionRequestPut
 } from "models/transactions/transaction"
 
 export function useTransactions() {
@@ -98,10 +97,11 @@ export function useTransactions() {
     }
   )
 
-  const editTransaction = useMutation(async ({ id, transaction, action }: ITransactionEditRequest) => {
+  const editTransaction = useMutation(async ({ id, transaction, action }: ITransactionRequestPut) => {
     try {
-      const { data } = await api.put<ITransactionRequestGet>(`/transactions/${id}`, transaction)
-      if (!data.transaction) return
+      const editedTransaction = await editTransactionService(id, transaction)
+
+      if (!editedTransaction) return
 
       toast({
         title: "Transação editada com sucesso!",

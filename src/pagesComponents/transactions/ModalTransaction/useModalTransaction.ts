@@ -4,7 +4,7 @@ import { parseToUTCandISO } from "utils/dateUtil"
 import { formatFloat, formatReal } from "utils/maskUtil"
 import {
   TransactionStateProps,
-  TransactionModelProps,
+  ITransactionRequestBase,
   TransactionTypeProps,
 } from "models/transactions/transaction"
 
@@ -71,7 +71,7 @@ export function useModalTransaction() {
     return true
   }
 
-  const generateTransactionToSave = async (): Promise<TransactionModelProps | null> => {
+  const generateTransactionToSave = async (): Promise<ITransactionRequestBase | null> => {
     if (transaction.type === null) return null
 
     const session: any = await getSession()
@@ -81,14 +81,10 @@ export function useModalTransaction() {
 
     const type: TransactionTypeProps = transaction.type
 
-    // TODO: essa prop agora é gerada no backend
-    const isRecurrence = transaction.typeRecurrence !== ""
-
-    const newTransaction: TransactionModelProps = {
+    const newTransaction: ITransactionRequestBase = {
       ...transaction,
       idUser,
       type,
-      isRecurrence,
       amount: formatFloat(transaction.amount),
       date: parseToUTCandISO(transaction.date, "start"),
     }

@@ -1,6 +1,6 @@
 import { parseDateBrUTC, parseYearMonthDayUTC } from "utils/dateUtil"
 import { formatCurrency } from "utils/maskUtil"
-import { ITransaction, ITransactionRequest } from "models/transactions/transaction"
+import { ITransaction, ITransactionResponse } from "models/transactions/transaction"
 
 const statusDisplayObj: any = {
   deposit: "À receber",
@@ -14,7 +14,7 @@ export function getStatusDisplay(status: string) {
   return statusDisplay
 }
 
-export function generateTransaction(transaction: ITransactionRequest): ITransaction {
+export function generateTransaction(transaction: ITransactionResponse): ITransaction {
   const dateUTC = transaction.date
   const statusDisplay = transaction.status ? getStatusDisplay(transaction.status) : ""
 

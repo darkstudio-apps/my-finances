@@ -1,9 +1,9 @@
 import { api } from "libs/api"
 import { generateTransaction } from "./transaction.helpers"
-import { ITransaction, ITransactionGetFilters, ITransactionRequestGet, ITransactionRequestPost } from "models/transactions/transaction"
+import { ITransaction, ITransactionGetFilters, ITransactionResponseGet, ITransactionRequestPost, ITransactionResponsePut, ITransactionRequestBase } from "models/transactions/transaction"
 
 export async function getTransactionsService({ month, year }: ITransactionGetFilters): Promise<ITransaction[]> {
-  const { data: transactions } = await api.get<ITransactionRequestGet>("/transactions", {
+  const { data: transactions } = await api.get<ITransactionResponseGet>("/transactions", {
     params: {
       month,
       year,
@@ -25,7 +25,7 @@ export async function getTransactionService() {
 }
 
 export async function createTransactionService(transaction: ITransactionRequestPost): Promise<ITransaction | undefined> {
-  const { data } = await api.post<ITransactionRequestGet>("/transactions", transaction)
+  const { data } = await api.post<ITransactionResponseGet>("/transactions", transaction)
 
   const transactionCreated = data.transaction
   if (!transactionCreated) return undefined
@@ -35,8 +35,15 @@ export async function createTransactionService(transaction: ITransactionRequestP
   return transactionMapped
 }
 
-export async function editTransactionService() {
-  console.log("editTransactionService")
+export async function editTransactionService(id: string, transaction: ITransactionRequestBase) {
+  const { data } = await api.put<ITransactionResponsePut>(`/transactions/${id}`, transaction)
+
+  const transactionCreated = data.transaction
+  if (!transactionCreated) return undefined
+
+  const transactionMapped = generateTransaction(transactionCreated)
+
+  return transactionMapped
 }
 
 export async function deleteTransactionService() {
