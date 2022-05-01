@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import { useToast } from "@chakra-ui/react"
-import { summaryDefault, generateResumeSummary } from "./transaction.util"
+import { summaryDefault, generateResumeSummary } from "./transaction.helpers"
 import { api } from "libs/api"
-import { getTransactionsService } from "services/transactions"
+import { createTransactionService, getTransactionsService } from "services/transactions"
 import { formatCurrency } from "utils/maskUtil"
 import { dateNowYearMonthDay, getObjYearMonthDay } from "utils/dateUtil"
 import {
-  TransactionModelProps,
+  ITransactionRequestPost,
   ITransactionEditRequest,
   ITransactionGetFilters,
   ITransactionRequestGet
@@ -67,32 +67,36 @@ export function useTransactions() {
     }
   }, [transactions])
 
-  const createTransaction = useMutation(async (transaction: TransactionModelProps) => {
-    try {
-      const { data } = await api.post<ITransactionRequestGet>("/transactions", transaction)
-      if (!data.transaction) return
+  const createTransaction = useMutation(
+    async (transaction: ITransactionRequestPost) => {
+      try {
+        const transactionCreated = await createTransactionService(transaction)
 
-      toast({
-        title: "Transação criada com sucesso!",
-        status: "success",
-        position: "top",
-        duration: 3000,
-        isClosable: true,
-      })
-    } catch (error) {
-      toast({
-        title: "Erro ao criar a transação!",
-        status: "error",
-        position: "top",
-        duration: 3000,
-        isClosable: true,
-      })
-    }
-  }, {
-    onSuccess: () => {
-      queryClient.invalidateQueries('/transactions')
+        if (!transactionCreated) return
+
+        toast({
+          title: "Transação criada com sucesso!",
+          status: "success",
+          position: "top",
+          duration: 3000,
+          isClosable: true,
+        })
+      } catch (error) {
+        toast({
+          title: "Erro ao criar a transação!",
+          status: "error",
+          position: "top",
+          duration: 3000,
+          isClosable: true,
+        })
+      }
     },
-  })
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('/transactions')
+      },
+    }
+  )
 
   const editTransaction = useMutation(async ({ id, transaction, action }: ITransactionEditRequest) => {
     try {

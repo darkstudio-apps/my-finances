@@ -1,8 +1,6 @@
 import { api } from "libs/api"
-import { ITransaction, ITransactionGetFilters, ITransactionRequestGet } from "models/transactions/transaction"
-import { parseDateBrUTC, parseYearMonthDayUTC } from "utils/dateUtil"
-import { formatCurrency } from "utils/maskUtil"
-import { getStatusDisplay } from "hooks/useTransactions/transaction.util"
+import { generateTransaction } from "./transaction.helpers"
+import { ITransaction, ITransactionGetFilters, ITransactionRequestGet, ITransactionRequestPost } from "models/transactions/transaction"
 
 export async function getTransactionsService({ month, year }: ITransactionGetFilters): Promise<ITransaction[]> {
   const { data: transactions } = await api.get<ITransactionRequestGet>("/transactions", {
@@ -13,17 +11,7 @@ export async function getTransactionsService({ month, year }: ITransactionGetFil
   })
 
   const mappedTransactions: ITransaction[] = transactions.data.map(transaction => {
-    const dateUTC = transaction.date
-    const statusDisplay = transaction.status ? getStatusDisplay(transaction.status) : ""
-
-    const transactionMapped: ITransaction = {
-      ...transaction,
-      date: parseYearMonthDayUTC(dateUTC),
-      dateDisplay: parseDateBrUTC(dateUTC),
-      amountDisplay: formatCurrency(transaction.amount),
-      statusDisplay,
-    }
-
+    const transactionMapped = generateTransaction(transaction)
     return transactionMapped
   })
 
@@ -32,18 +20,25 @@ export async function getTransactionsService({ month, year }: ITransactionGetFil
   // TODO: tratar o erro criando um obj de erro global
 }
 
-export function getTransactionService() {
+export async function getTransactionService() {
   console.log("getTransactionService")
 }
 
-export function createTransactionService() {
-  console.log("createTransactionService")
+export async function createTransactionService(transaction: ITransactionRequestPost): Promise<ITransaction | undefined> {
+  const { data } = await api.post<ITransactionRequestGet>("/transactions", transaction)
+
+  const transactionCreated = data.transaction
+  if (!transactionCreated) return undefined
+
+  const transactionMapped = generateTransaction(transactionCreated)
+
+  return transactionMapped
 }
 
-export function editTransactionService() {
+export async function editTransactionService() {
   console.log("editTransactionService")
 }
 
-export function deleteTransactionService() {
+export async function deleteTransactionService() {
   console.log("deleteTransactionService")
 }
