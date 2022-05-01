@@ -1,5 +1,13 @@
-import { prisma } from "../../../../../services/prisma"
-import { ITransaction, ITransactionPatch, ITransactionPost, ITransactionPut, ITransactionPutMany, ITransactionRemove, ITransactionRemoveMany } from "../types/transaction.type"
+import { prisma } from "libs/prisma"
+import {
+  ITransaction,
+  ITransactionPatch,
+  ITransactionPost,
+  ITransactionPut,
+  ITransactionPutMany,
+  ITransactionRemove,
+  ITransactionRemoveMany,
+} from "../types/transaction.type"
 import { ITransactionListResponse } from "../types/transactionResponse.type"
 
 interface IList {

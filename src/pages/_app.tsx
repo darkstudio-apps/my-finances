@@ -5,7 +5,7 @@ import { QueryClientProvider } from "react-query"
 import { Box, ChakraProvider, Divider } from "@chakra-ui/react"
 
 import { Header } from "../components/Header"
-import { queryClient } from "../services/queryClient"
+import { queryClient } from "../libs/queryClient"
 
 import { theme } from "../styles/theme"
 import "../styles/scrollbar.css"

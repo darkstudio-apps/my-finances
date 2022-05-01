@@ -1,10 +1,9 @@
 
 import NextAuth from "next-auth"
 import Google from "next-auth/providers/google"
-
 import { userService } from "../_modules/users/services/userService"
 import { userRepository } from "../_modules/users/repository/userRepository"
-
+// TODO: mudar a tipagem - usar a tipagem do back essa é a do front
 import { UserModelProps } from "models/users/user"
 
 export default NextAuth({
