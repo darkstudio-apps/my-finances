@@ -39,7 +39,7 @@ export interface ITransactionGetFilters {
   year: string
 }
 
-export interface ITransaction extends ITransactionRequest {
+export interface ITransaction extends ITransactionResponse {
   dateDisplay: string
   amountDisplay: string
   statusDisplay: string
@@ -47,7 +47,31 @@ export interface ITransaction extends ITransactionRequest {
 
 // ------------------------ Mover para o arquivo de transaction.request ------------------------
 
-export interface ITransactionRequest {
+// TODO: renomear para "ITransactionRequestQueryAction"
+export type ITransactionRequestAction = "current" | "next" | "all"
+
+export interface ITransactionRequestBase {
+  idUser: string
+  title: string
+  amount: number
+  date: string
+  status: string
+  typeRecurrence: string
+  installments: string
+  type: TransactionTypeProps
+}
+
+export type ITransactionRequestPost = ITransactionRequestBase
+
+export interface ITransactionRequestPut {
+  id: string
+  transaction: ITransactionRequestBase
+  action: ITransactionRequestAction
+}
+
+// ------------------------ Mover para o arquivo de transaction.response ------------------------
+
+export interface ITransactionResponse {
   id: string
   idUser: string
   title: string
@@ -61,33 +85,24 @@ export interface ITransactionRequest {
   type: TransactionTypeProps
 }
 
-export interface ITransactionRequestGet {
+export interface ITransactionResponseGet {
   search: {
     dateStart: number // aaaa-mm-dd
     dateEnd: number // aaaa-mm-dd
   },
   length: number
-  data: ITransactionRequest[]
-  transaction?: ITransactionRequest
+  data: ITransactionResponse[]
+  transaction?: ITransactionResponse
 }
 
-export interface ITransactionRequestPost {
-  idUser: string
-  title: string
-  amount: number
-  date: string
-  status: string
-  typeRecurrence: string
-  installments: string
-  type: TransactionTypeProps
+export interface ITransactionResponsePost {
+  transaction?: ITransactionResponse
 }
 
-// TODO: editar o nome para "ITransactionRequestAction"
-export type ITransactionActionRequest = "current" | "next" | "all"
+export interface ITransactionResponsePut {
+  transaction?: ITransactionResponse | any
+}
 
-// TODO: editar o nome para "ITransactionRequestEdit"
-export interface ITransactionEditRequest {
-  id: string
-  transaction: TransactionModelProps
-  action: ITransactionActionRequest
+export interface ITransactionResponseDelete {
+  message: "Success"
 }
