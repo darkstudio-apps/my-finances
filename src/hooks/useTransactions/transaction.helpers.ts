@@ -1,4 +1,4 @@
-import { TransactionProps } from "."
+import { ITransaction } from "models/transactions/transaction"
 
 export const summaryDefault = {
   deposit: "R$ 0,00",
@@ -6,18 +6,7 @@ export const summaryDefault = {
   total: "R$ 0,00",
 }
 
-const statusDisplay: any = {
-  deposit: "À receber",
-  withdraw: "À pagar",
-  overdue: "Vencido",
-  paid: "Pago",
-}
-
-export function getStatusDisplay(status: string) {
-  return statusDisplay[status]
-}
-
-export function generateResumeSummary(transactions: TransactionProps[]) {
+export function generateResumeSummary(transactions: ITransaction[]) {
   const deposit = transactions.reduce((acc, transaction) => {
     if (transaction.type === "deposit") {
       return acc + transaction.amount
