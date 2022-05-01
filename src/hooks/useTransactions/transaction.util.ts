@@ -1,3 +1,5 @@
+import { TransactionProps } from "."
+
 export const summaryDefault = {
   deposit: "R$ 0,00",
   withdraw: "R$ 0,00",
@@ -11,6 +13,32 @@ const statusDisplay: any = {
   paid: "Pago",
 }
 
-export const getStatusDisplay = (status: string) => {
+export function getStatusDisplay(status: string) {
   return statusDisplay[status]
+}
+
+export function generateResumeSummary(transactions: TransactionProps[]) {
+  const deposit = transactions.reduce((acc, transaction) => {
+    if (transaction.type === "deposit") {
+      return acc + transaction.amount
+    }
+
+    return acc
+  }, 0)
+
+  const withdraw = transactions.reduce((acc, transaction) => {
+    if (transaction.type === "withdraw") {
+      return acc + transaction.amount
+    }
+
+    return acc
+  }, 0)
+
+  const total = deposit - withdraw
+
+  return {
+    deposit,
+    withdraw,
+    total,
+  }
 }

@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import { useToast } from "@chakra-ui/react"
-import { getStatusDisplay, summaryDefault } from "./transaction.util"
+import { getStatusDisplay, summaryDefault, generateResumeSummary } from "./transaction.util"
 import { api } from "libs/api"
 import { formatCurrency } from "utils/maskUtil"
 import { dateNowYearMonthDay, getObjYearMonthDay, parseDateBrUTC, parseYearMonthDayUTC } from "utils/dateUtil"
 import { TransactionReqProps, TransactionModelProps, ITransactionEditRequest } from "models/transactions/transaction"
 
+// TODO: remover essa tipagem daqui
 export interface TransactionProps extends TransactionReqProps {
   dateDisplay: string
   amountDisplay: string
   statusDisplay: string
 }
 
+// TODO: remover essa tipagem daqui
 interface GetType {
   search: {
     dateStart: number // aaaa-mm-dd
@@ -78,23 +80,7 @@ export function useTransactions() {
 
   useEffect(() => {
     if (transactions && transactions.length > 0) {
-      const deposit = transactions.reduce((acc, transaction) => {
-        if (transaction.type === "deposit") {
-          return acc + transaction.amount
-        }
-
-        return acc
-      }, 0)
-
-      const withdraw = transactions.reduce((acc, transaction) => {
-        if (transaction.type === "withdraw") {
-          return acc + transaction.amount
-        }
-
-        return acc
-      }, 0)
-
-      const total = deposit - withdraw
+      const { deposit, withdraw, total } = generateResumeSummary(transactions)
 
       setSummary({
         deposit: formatCurrency(deposit),
