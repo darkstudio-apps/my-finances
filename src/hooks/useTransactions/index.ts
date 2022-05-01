@@ -2,14 +2,13 @@ import { useEffect, useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import { useToast } from "@chakra-ui/react"
 import { summaryDefault, generateResumeSummary } from "./transaction.helpers"
-import { api } from "libs/api"
-import { createTransactionService, editTransactionService, getTransactionsService } from "services/transactions"
+import { createTransactionService, deleteTransactionService, editTransactionService, getTransactionsService } from "services/transactions"
 import { formatCurrency } from "utils/maskUtil"
 import { dateNowYearMonthDay, getObjYearMonthDay } from "utils/dateUtil"
 import {
   ITransactionRequestPost,
   ITransactionGetFilters,
-  ITransactionRequestPut
+  ITransactionRequestPut,
 } from "models/transactions/transaction"
 
 export function useTransactions() {
@@ -125,19 +124,19 @@ export function useTransactions() {
     },
   })
 
-  const deleteTransaction = useMutation(async (idTransaction: string) => {
+  const deleteTransaction = useMutation(async (id: string) => {
     try {
-      const { status } = await api.delete<{ ok?: true }>(`/transactions/${idTransaction}`)
+      const status = await deleteTransactionService(id)
 
-      if (status === 200) {
-        toast({
-          title: "Transação removida com sucesso!",
-          status: "success",
-          position: "top",
-          duration: 3000,
-          isClosable: true,
-        })
-      }
+      if (!status) return
+
+      toast({
+        title: "Transação removida com sucesso!",
+        status: "success",
+        position: "top",
+        duration: 3000,
+        isClosable: true,
+      })
     } catch (error) {
       toast({
         title: "Erro ao remover a transação!",

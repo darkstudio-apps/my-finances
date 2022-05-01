@@ -1,6 +1,6 @@
 import { api } from "libs/api"
 import { generateTransaction } from "./transaction.helpers"
-import { ITransaction, ITransactionGetFilters, ITransactionResponseGet, ITransactionRequestPost, ITransactionResponsePut, ITransactionRequestBase } from "models/transactions/transaction"
+import { ITransaction, ITransactionGetFilters, ITransactionResponseGet, ITransactionRequestPost, ITransactionResponsePut, ITransactionRequestBase, ITransactionResponseDelete } from "models/transactions/transaction"
 
 export async function getTransactionsService({ month, year }: ITransactionGetFilters): Promise<ITransaction[]> {
   const { data: transactions } = await api.get<ITransactionResponseGet>("/transactions", {
@@ -53,6 +53,10 @@ export async function editTransactionService(id: string, transaction: ITransacti
   // TODO: tratar o erro criando um obj de erro global
 }
 
-export async function deleteTransactionService(id: string) {
-  console.log("deleteTransactionService")
+export async function deleteTransactionService(id: string): Promise<boolean> {
+  const { data } = await api.delete<ITransactionResponseDelete>(`/transactions/${id}`)
+
+  const status = !!data.message
+
+  return status
 }
