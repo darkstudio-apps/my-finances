@@ -18,18 +18,6 @@ export interface TransactionStateProps {
   type: TransactionTypeProps | null
 }
 
-export interface TransactionModelProps {
-  idUser: string
-  title: string
-  amount: number
-  date: string
-  status: string
-  typeRecurrence: string
-  isRecurrence: boolean
-  installments: string
-  type: TransactionTypeProps
-}
-
 export interface TransactionReqProps {
   id: string
   idUser: string
@@ -81,6 +69,17 @@ export interface ITransactionRequestGet {
   length: number
   data: ITransactionRequest[]
   transaction?: ITransactionRequest
+}
+
+export interface ITransactionRequestPost {
+  idUser: string
+  title: string
+  amount: number
+  date: string
+  status: string
+  typeRecurrence: string
+  installments: string
+  type: TransactionTypeProps
 }
 
 // TODO: editar o nome para "ITransactionRequestAction"

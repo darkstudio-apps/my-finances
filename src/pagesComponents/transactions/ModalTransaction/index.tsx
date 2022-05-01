@@ -18,18 +18,18 @@ import {
 } from "@chakra-ui/react"
 import { useModalTransaction } from "./useModalTransaction"
 import { CheckBoxCard } from "components/CheckBoxCard"
-import { TransactionProps } from "hooks/useTransactions"
 import {
+  ITransaction,
   ITransactionEditRequest,
-  TransactionModelProps,
+  ITransactionRequestPost,
   TransactionStateProps
 } from "models/transactions/transaction"
 
 interface ModalTransactionProps {
-  dataToEdit?: TransactionProps | null
+  dataToEdit?: ITransaction | null
   editMode: boolean
   onClose: () => void
-  onSave: UseMutationResult<void, unknown, TransactionModelProps, unknown>
+  onSave: UseMutationResult<void, unknown, ITransactionRequestPost, unknown>
   onSaveEdit: UseMutationResult<void, unknown, ITransactionEditRequest, unknown>
 }
 
