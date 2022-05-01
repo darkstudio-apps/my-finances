@@ -16,24 +16,26 @@ import {
   Stack,
   useToast,
 } from "@chakra-ui/react"
-
-import { CheckBoxCard } from "../CheckBoxCard"
-import { TransactionModelProps, TransactionStateProps } from "../../hooks/useTransactions/transaction.types"
 import { useModalTransaction } from "./useModalTransaction"
-import { TransactionProps } from "../../hooks/useTransactions"
+import { CheckBoxCard } from "components/CheckBoxCard"
+import { TransactionProps } from "hooks/useTransactions"
+import {
+  ITransactionEditRequest,
+  TransactionModelProps,
+  TransactionStateProps
+} from "models/transactions/transaction"
 
 interface ModalTransactionProps {
   dataToEdit?: TransactionProps | null
   editMode: boolean
   onClose: () => void
   onSave: UseMutationResult<void, unknown, TransactionModelProps, unknown>
-  onSaveEdit: UseMutationResult<void, unknown, { id: string, transaction: TransactionModelProps }, unknown>
+  onSaveEdit: UseMutationResult<void, unknown, ITransactionEditRequest, unknown>
 }
 
 export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSaveEdit }: ModalTransactionProps) {
   const toast = useToast()
   const initialRef = useRef(null)
-  const finalRef = useRef(null)
 
   const {
     transaction,
@@ -66,9 +68,7 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
   }, [dataToEdit])
 
   const [enableEditing, setEnableEditing] = useState(false)
-  useEffect(() => {
-    setEnableEditing(editMode)
-  }, [editMode])
+  useEffect(() => { setEnableEditing(editMode) }, [editMode])
 
   const isDisabled = !!dataToEdit && !enableEditing
 
@@ -94,7 +94,8 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
       const modifiedTransaction = await generateTransactionToSave()
       if (modifiedTransaction) await onSaveEdit.mutateAsync({
         id: dataToEdit.id,
-        transaction: modifiedTransaction
+        transaction: modifiedTransaction,
+        action: "current"
       })
     }
 
@@ -105,7 +106,6 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
   return (
     <Modal
       initialFocusRef={initialRef}
-      finalFocusRef={finalRef}
       isOpen={true}
       onClose={onClose}
       isCentered

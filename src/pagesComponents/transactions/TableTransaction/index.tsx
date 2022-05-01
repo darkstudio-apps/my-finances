@@ -2,11 +2,10 @@ import { useState } from "react"
 import { UseMutationResult } from "react-query"
 import { Box, Text, Table, Thead, Tbody, Tfoot, Tr, Th, Td, Icon, HStack, useDisclosure } from "@chakra-ui/react"
 import { FiEdit3, FiTrash } from "react-icons/fi"
-
 import { TableTransactionTh } from "./TableTransactionTh"
-import { TransactionProps } from "../../hooks/useTransactions"
-import { AlertDialogDelete } from "../AlertDialogDelete"
 import { NoContentTableTransaction } from "./NoContentTableTransaction"
+import { AlertDialogDelete } from "components/AlertDialogDelete"
+import { TransactionProps } from "hooks/useTransactions"
 
 interface TableTransactionProps {
   data: TransactionProps[] | undefined

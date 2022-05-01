@@ -2,12 +2,11 @@ import { useEffect, useState } from "react"
 import { GetServerSideProps } from "next"
 import { getSession } from "next-auth/react"
 import { SimpleGrid, Stack, Button, Select, Spinner, HStack, useDisclosure } from "@chakra-ui/react"
-
-import { CardTransaction } from "../components/CardTransaction"
-import { TableTransaction } from "../components/TableTransaction"
-import { ModalTransaction } from "../components/ModalTransaction"
-import { TransactionProps, useTransactions } from "../hooks/useTransactions"
-import { dateNowYearMonthDay, getObjYearMonthDay } from "../utils/dateUtil"
+import { CardTransaction } from "pagesComponents/transactions/CardTransaction"
+import { TableTransaction } from "pagesComponents/transactions/TableTransaction"
+import { ModalTransaction } from "pagesComponents/transactions/ModalTransaction"
+import { TransactionProps, useTransactions } from "hooks/useTransactions"
+import { dateNowYearMonthDay, getObjYearMonthDay } from "utils/dateUtil"
 
 export default function Transactions() {
   const { isOpen, onOpen, onClose } = useDisclosure()

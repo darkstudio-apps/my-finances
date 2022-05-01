@@ -1,8 +1,12 @@
-import { getSession } from "next-auth/react"
 import { useState } from "react"
-import { TransactionModelProps, TransactionStateProps, TransactionTypeProps } from "../../hooks/useTransactions/transaction.types"
-import { parseToUTCandISO } from "../../utils/dateUtil"
-import { formatFloat, formatReal } from "../../utils/maskUtil"
+import { getSession } from "next-auth/react"
+import { parseToUTCandISO } from "utils/dateUtil"
+import { formatFloat, formatReal } from "utils/maskUtil"
+import {
+  TransactionStateProps,
+  TransactionModelProps,
+  TransactionTypeProps,
+} from "models/transactions/transaction"
 
 const transactionObjInitial: TransactionStateProps = {
   title: "",

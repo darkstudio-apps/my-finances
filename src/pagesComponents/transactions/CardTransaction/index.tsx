@@ -22,11 +22,7 @@ const icons = {
   },
 }
 
-export function CardTransaction({
-  description,
-  title,
-  icon,
-}: CardTransactionProps) {
+export function CardTransaction({ description, title, icon }: CardTransactionProps) {
   return (
     <Stack bg="gray.700" borderRadius="xl" padding={6} spacing={2}>
       <Flex alignItems="center" justifyContent="space-between">
