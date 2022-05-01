@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client"
-import { UserModelProps, UserReqProps } from "../../../../../hooks/useUsers/user.types"
+import { UserModelProps, UserReqProps } from "models/users/user"
 
 type PartialUser = Partial<UserReqProps>
 

@@ -1,5 +1,5 @@
 import { NextApiRequest } from "next"
-import { UserModelProps, UserReqProps } from "../../../../../hooks/useUsers/user.types"
+import { UserModelProps, UserReqProps } from "models/users/user"
 
 export interface RequestType {
   query: {

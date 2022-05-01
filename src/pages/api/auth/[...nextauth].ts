@@ -5,7 +5,7 @@ import Google from "next-auth/providers/google"
 import { userService } from "../_modules/users/services/userService"
 import { userRepository } from "../_modules/users/repository/userRepository"
 
-import { UserModelProps } from "../../../hooks/useUsers/user.types"
+import { UserModelProps } from "models/users/user"
 
 export default NextAuth({
   providers: [

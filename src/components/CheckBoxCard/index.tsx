@@ -1,6 +1,6 @@
 import { HStack, Text, Icon } from "@chakra-ui/react"
 import { FiArrowUp, FiArrowDown } from "react-icons/fi"
-import { TransactionTypeProps } from "../../hooks/useTransactions/transaction.types"
+import { TransactionTypeProps } from "models/transactions/transaction"
 
 interface CheckBoxCardProps {
   label: string
