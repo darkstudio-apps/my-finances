@@ -33,19 +33,26 @@ export async function createTransactionService(transaction: ITransactionRequestP
   const transactionMapped = generateTransaction(transactionCreated)
 
   return transactionMapped
+
+  // TODO: tratar o erro criando um obj de erro global
 }
 
-export async function editTransactionService(id: string, transaction: ITransactionRequestBase) {
+export async function editTransactionService(id: string, transaction: ITransactionRequestBase): Promise<ITransaction | undefined> {
   const { data } = await api.put<ITransactionResponsePut>(`/transactions/${id}`, transaction)
 
   const transactionCreated = data.transaction
   if (!transactionCreated) return undefined
 
-  const transactionMapped = generateTransaction(transactionCreated)
+  try {
+    const transactionMapped = generateTransaction(transactionCreated)
+    return transactionMapped
+  } catch (error) {
+    return undefined
+  }
 
-  return transactionMapped
+  // TODO: tratar o erro criando um obj de erro global
 }
 
-export async function deleteTransactionService() {
+export async function deleteTransactionService(id: string) {
   console.log("deleteTransactionService")
 }
