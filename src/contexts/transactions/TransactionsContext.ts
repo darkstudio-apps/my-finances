@@ -1,12 +1,10 @@
 import { createContext, Dispatch, SetStateAction } from "react"
 import { UseMutationResult } from "react-query"
-import { ITransaction, ITransactionGetFilters, ITransactionSummary } from "models/transactions/transaction"
-import { ITransactionRequestBase, ITransactionRequestPut } from "models/transactions/transaction.request"
+import { ITransaction, ITransactionFormState, ITransactionGetFilters, ITransactionRequestBase, ITransactionRequestPut, ITransactionSummary } from "models/transactions"
 
 interface ITransactionsContext {
   filters: ITransactionGetFilters
   setFilters: Dispatch<SetStateAction<ITransactionGetFilters>>
-  summary: ITransactionSummary
   transactions: {
     data: ITransaction[] | undefined
     isLoading: boolean
@@ -16,6 +14,13 @@ interface ITransactionsContext {
   createTransaction: UseMutationResult<void, unknown, ITransactionRequestBase, unknown>
   editTransaction: UseMutationResult<void, unknown, ITransactionRequestPut, unknown>
   deleteTransaction: UseMutationResult<void, unknown, string, unknown>
+
+  summary: ITransactionSummary
+
+  transactionForm: ITransactionFormState
+  setTransactionForm: Dispatch<SetStateAction<ITransactionFormState>>
+  clearStateTransactionForm: () => void
+  handleChangeTransactionForm: (prop: string, value: string) => void
 }
 
 export const TransactionsContext = createContext(

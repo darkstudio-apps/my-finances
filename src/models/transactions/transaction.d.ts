@@ -16,7 +16,7 @@ export interface ITransaction extends ITransactionResponse {
   statusDisplay: string
 }
 
-export interface ITransactionState {
+export interface ITransactionFormState {
   title: string
   amount: string
   date: string

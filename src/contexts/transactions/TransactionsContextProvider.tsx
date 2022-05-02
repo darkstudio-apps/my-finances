@@ -2,12 +2,22 @@ import { ReactNode, useEffect, useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import { useToast } from "@chakra-ui/react"
 import { TransactionsContext } from "./TransactionsContext"
-import { generateResumeSummary, summaryDefault } from "./transaction.helpers"
-import { createTransactionService, deleteTransactionService, editTransactionService, getTransactionsService } from "services/transactions"
-import { ITransactionGetFilters, ITransactionSummary } from "models/transactions/transaction"
-import { ITransactionRequestPost, ITransactionRequestPut } from "models/transactions/transaction.request"
+import { generateResumeSummary, summaryDefault, transactionFormInitial } from "./transaction.helpers"
+import {
+  createTransactionService,
+  deleteTransactionService,
+  editTransactionService,
+  getTransactionsService
+} from "services/transactions"
+import {
+  ITransactionGetFilters,
+  ITransactionSummary,
+  ITransactionRequestPost,
+  ITransactionRequestPut,
+  ITransactionFormState
+} from "models/transactions"
 import { dateNowYearMonthDay, getObjYearMonthDay } from "utils/dateUtil"
-import { formatCurrency } from "utils/maskUtil"
+import { formatCurrency, formatReal } from "utils/maskUtil"
 
 interface ITransactionsContextProvider {
   children: ReactNode
@@ -17,7 +27,7 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
   const toast = useToast()
   const queryClient = useQueryClient()
 
-  const [summary, setSummary] = useState<ITransactionSummary>(summaryDefault)
+  // -------------------- TRANSACTION --------------------
 
   const [filters, setFilters] = useState<ITransactionGetFilters>(() => {
     const dateYearMonthDay = dateNowYearMonthDay()
@@ -53,20 +63,6 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
   useEffect(() => {
     if (filters.month && filters.year) refetch()
   }, [filters.month, filters.year])
-
-  useEffect(() => {
-    if (transactions && transactions.length > 0) {
-      const { deposit, withdraw, total } = generateResumeSummary(transactions)
-
-      setSummary({
-        deposit: formatCurrency(deposit),
-        withdraw: formatCurrency(withdraw),
-        total: formatCurrency(total),
-      })
-    } else {
-      setSummary(summaryDefault)
-    }
-  }, [transactions])
 
   const createTransaction = useMutation(
     async (transaction: ITransactionRequestPost) => {
@@ -155,11 +151,71 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
     },
   })
 
+  // -------------------- SUMMARY --------------------
+
+  const [summary, setSummary] = useState<ITransactionSummary>(summaryDefault)
+
+  useEffect(() => {
+    if (transactions && transactions.length > 0) {
+      const { deposit, withdraw, total } = generateResumeSummary(transactions)
+
+      setSummary({
+        deposit: formatCurrency(deposit),
+        withdraw: formatCurrency(withdraw),
+        total: formatCurrency(total),
+      })
+    } else {
+      setSummary(summaryDefault)
+    }
+  }, [transactions])
+
+  // -------------------- FORM --------------------
+
+  const [transactionForm, setTransactionForm] = useState<ITransactionFormState>(transactionFormInitial)
+
+  const clearStateTransactionForm = () => {
+    setTransactionForm(transactionFormInitial)
+  }
+
+  const handleChangeTransactionForm = (prop: string, value: string) => {
+    if (prop === "amount") value = formatReal(value)
+
+    if (prop === "status") {
+      const type = value === "deposit" || value === "withdraw"
+        ? value
+        : transactionForm.type
+
+      return setTransactionForm({
+        ...transactionForm,
+        status: value,
+        type,
+      })
+    }
+
+    if (prop === "type") {
+      if (transactionForm.status === "deposit" || transactionForm.status === "withdraw") {
+        const type = value === "deposit" || value === "withdraw"
+          ? value
+          : null
+
+        return setTransactionForm({
+          ...transactionForm,
+          status: value,
+          type,
+        })
+      }
+    }
+
+    setTransactionForm({
+      ...transactionForm,
+      [prop]: value,
+    })
+  }
+
   return (
     <TransactionsContext.Provider value={{
       filters,
       setFilters,
-      summary,
       transactions: {
         data: transactions,
         isLoading,
@@ -169,6 +225,13 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
       createTransaction,
       editTransaction,
       deleteTransaction,
+
+      summary,
+
+      transactionForm,
+      setTransactionForm,
+      clearStateTransactionForm,
+      handleChangeTransactionForm,
     }}>
       {children}
     </TransactionsContext.Provider>

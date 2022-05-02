@@ -1,4 +1,23 @@
-import { ITransaction, ITransactionSummary } from "models/transactions/transaction"
+import { getSession } from "next-auth/react"
+import { parseToUTCandISO } from "utils/dateUtil"
+import { formatFloat } from "utils/maskUtil"
+import {
+  ITransactionFormState,
+  ITransactionPropType,
+  ITransactionRequestBase,
+  ITransactionSummary,
+  ITransaction,
+} from "models/transactions"
+
+export const transactionFormInitial: ITransactionFormState = {
+  title: "",
+  amount: "0,00",
+  date: "",
+  status: "",
+  typeRecurrence: "",
+  installments: "",
+  type: null,
+}
 
 export const summaryDefault: ITransactionSummary = {
   deposit: "R$ 0,00",
@@ -30,4 +49,41 @@ export function generateResumeSummary(transactions: ITransaction[]) {
     withdraw,
     total,
   }
+}
+
+export function validateTransaction(transaction: ITransactionFormState): boolean {
+  const { title, date } = transaction
+
+  const includesValueEmpty = [title, date].includes("")
+  const amountZero = transaction.amount === "0,00"
+  const isTypeNull = transaction.type === null
+
+  if (includesValueEmpty || amountZero || isTypeNull) {
+    return false
+  }
+
+  return true
+}
+
+export async function generateTransactionToSave(
+  transaction: ITransactionFormState
+): Promise<ITransactionRequestBase | null> {
+  if (transaction.type === null) return null
+
+  const session: any = await getSession()
+
+  const idUser = session?.user?.idUser
+  if (!idUser) return null
+
+  const type: ITransactionPropType = transaction.type
+
+  const newTransaction: ITransactionRequestBase = {
+    ...transaction,
+    idUser,
+    type,
+    amount: formatFloat(transaction.amount),
+    date: parseToUTCandISO(transaction.date, "start"),
+  }
+
+  return newTransaction
 }

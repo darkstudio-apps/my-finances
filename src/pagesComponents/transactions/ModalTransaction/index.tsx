@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react"
-import { UseMutationResult } from "react-query"
 import { css } from "@emotion/react"
 import {
   Modal,
@@ -16,10 +15,10 @@ import {
   Stack,
   useToast,
 } from "@chakra-ui/react"
-import { useModalTransaction } from "./useModalTransaction"
 import { CheckBoxCard } from "components/CheckBoxCard"
 import { useTransactions } from "contexts/transactions"
-import { ITransaction, ITransactionState } from "models/transactions/transaction"
+import { ITransaction, ITransactionFormState } from "models/transactions/transaction"
+import { generateTransactionToSave, validateTransaction } from "contexts/transactions/transaction.helpers"
 
 interface ModalTransactionProps {
   isOpen: boolean
@@ -32,20 +31,18 @@ export function ModalTransaction({ isOpen, dataToEdit, editMode, onClose }: Moda
   const toast = useToast()
   const initialRef = useRef(null)
 
-  const { createTransaction, editTransaction } = useTransactions()
-
   const {
-    transaction,
-    setTransaction,
-    handleChangeTransaction,
-    validateTransaction,
-    generateTransactionToSave,
-    clearState,
-  } = useModalTransaction()
+    transactionForm,
+    setTransactionForm,
+    handleChangeTransactionForm,
+    createTransaction,
+    editTransaction,
+    clearStateTransactionForm,
+  } = useTransactions()
 
   useEffect(() => {
     if (dataToEdit) {
-      const transitionToEdit: ITransactionState = {
+      const transitionToEdit: ITransactionFormState = {
         title: dataToEdit.title,
         amount: dataToEdit.amountDisplay,
         date: dataToEdit.date,
@@ -55,11 +52,11 @@ export function ModalTransaction({ isOpen, dataToEdit, editMode, onClose }: Moda
         type: dataToEdit.type,
       }
 
-      setTransaction(transitionToEdit)
+      setTransactionForm(transitionToEdit)
       setEnableEditing(false)
     }
     else {
-      setTransaction(null)
+      clearStateTransactionForm()
       setEnableEditing(false)
     }
   }, [dataToEdit])
@@ -70,7 +67,7 @@ export function ModalTransaction({ isOpen, dataToEdit, editMode, onClose }: Moda
   const isDisabled = !!dataToEdit && !enableEditing
 
   const handleSave = async () => {
-    const isValid = validateTransaction()
+    const isValid = validateTransaction(transactionForm)
 
     if (!isValid) {
       return toast({
@@ -84,20 +81,20 @@ export function ModalTransaction({ isOpen, dataToEdit, editMode, onClose }: Moda
     }
 
     if (!dataToEdit) {
-      const newTransaction = await generateTransactionToSave()
+      const newTransaction = await generateTransactionToSave(transactionForm)
       if (newTransaction) await createTransaction.mutateAsync(newTransaction)
     }
     else {
-      const modifiedTransaction = await generateTransactionToSave()
+      const modifiedTransaction = await generateTransactionToSave(transactionForm)
       if (modifiedTransaction) await editTransaction.mutateAsync({
         id: dataToEdit.id,
         transaction: modifiedTransaction,
-        action: "current"
+        action: "current",
       })
     }
 
     onClose()
-    clearState()
+    clearStateTransactionForm()
   }
 
   return (
@@ -125,8 +122,8 @@ export function ModalTransaction({ isOpen, dataToEdit, editMode, onClose }: Moda
             <Input
               name="title"
               placeholder="Nome"
-              value={transaction.title}
-              onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
+              value={transactionForm.title}
+              onChange={({ target }) => handleChangeTransactionForm(target.name, target.value)}
               ref={initialRef}
               disabled={isDisabled}
               _disabled={{ cursor: "no-drop" }}
@@ -136,8 +133,8 @@ export function ModalTransaction({ isOpen, dataToEdit, editMode, onClose }: Moda
               <Input
                 name="amount"
                 placeholder="Valor"
-                value={transaction.amount}
-                onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
+                value={transactionForm.amount}
+                onChange={({ target }) => handleChangeTransactionForm(target.name, target.value)}
                 disabled={isDisabled}
                 _disabled={{ cursor: "no-drop" }}
               />
@@ -145,8 +142,8 @@ export function ModalTransaction({ isOpen, dataToEdit, editMode, onClose }: Moda
               <Input
                 name="date"
                 placeholder="Data"
-                value={transaction.date}
-                onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
+                value={transactionForm.date}
+                onChange={({ target }) => handleChangeTransactionForm(target.name, target.value)}
                 type="date"
                 disabled={isDisabled}
                 _disabled={{ cursor: "no-drop" }}
@@ -164,8 +161,8 @@ export function ModalTransaction({ isOpen, dataToEdit, editMode, onClose }: Moda
             <HStack spacing={2}>
               <Select
                 name="status"
-                value={transaction.status}
-                onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
+                value={transactionForm.status}
+                onChange={({ target }) => handleChangeTransactionForm(target.name, target.value)}
                 placeholder="Status"
                 disabled={isDisabled}
                 _disabled={{ cursor: "no-drop", opacity: 1 }}
@@ -178,8 +175,8 @@ export function ModalTransaction({ isOpen, dataToEdit, editMode, onClose }: Moda
 
               <Select
                 name="typeRecurrence"
-                value={transaction.typeRecurrence}
-                onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
+                value={transactionForm.typeRecurrence}
+                onChange={({ target }) => handleChangeTransactionForm(target.name, target.value)}
                 placeholder="Recorrência"
                 disabled={isDisabled}
                 _disabled={{ cursor: "no-drop", opacity: 1 }}
@@ -191,13 +188,13 @@ export function ModalTransaction({ isOpen, dataToEdit, editMode, onClose }: Moda
                 <option value="installments">Parcelas</option>
               </Select>
 
-              {transaction.typeRecurrence === "installments" && (
+              {transactionForm.typeRecurrence === "installments" && (
                 <Input
                   maxWidth="100px"
                   name="installments"
                   placeholder="Parcelas"
-                  value={transaction.installments}
-                  onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
+                  value={transactionForm.installments}
+                  onChange={({ target }) => handleChangeTransactionForm(target.name, target.value)}
                   disabled={isDisabled}
                   type="number"
                   _disabled={{ cursor: "no-drop" }}
@@ -209,16 +206,16 @@ export function ModalTransaction({ isOpen, dataToEdit, editMode, onClose }: Moda
               <CheckBoxCard
                 type="deposit"
                 label="Entrada"
-                checkedType={transaction.type}
-                onClick={(typeSelected) => handleChangeTransaction("type", typeSelected)}
+                checkedType={transactionForm.type}
+                onClick={(typeSelected) => handleChangeTransactionForm("type", typeSelected)}
                 disabled={isDisabled}
               />
 
               <CheckBoxCard
                 type="withdraw"
                 label="Saída"
-                checkedType={transaction.type}
-                onClick={(typeSelected) => handleChangeTransaction("type", typeSelected)}
+                checkedType={transactionForm.type}
+                onClick={(typeSelected) => handleChangeTransactionForm("type", typeSelected)}
                 disabled={isDisabled}
               />
             </HStack>
