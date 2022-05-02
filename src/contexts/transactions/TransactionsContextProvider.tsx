@@ -1,18 +1,23 @@
-import { useEffect, useState } from "react"
+import { ReactNode, useEffect, useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import { useToast } from "@chakra-ui/react"
-import { summaryDefault, generateResumeSummary } from "./transaction.helpers"
+import { TransactionsContext } from "./TransactionsContext"
+import { generateResumeSummary, summaryDefault } from "./transaction.helpers"
 import { createTransactionService, deleteTransactionService, editTransactionService, getTransactionsService } from "services/transactions"
-import { formatCurrency } from "utils/maskUtil"
-import { dateNowYearMonthDay, getObjYearMonthDay } from "utils/dateUtil"
-import { ITransactionGetFilters } from "models/transactions/transaction"
+import { ITransactionGetFilters, ITransactionSummary } from "models/transactions/transaction"
 import { ITransactionRequestPost, ITransactionRequestPut } from "models/transactions/transaction.request"
+import { dateNowYearMonthDay, getObjYearMonthDay } from "utils/dateUtil"
+import { formatCurrency } from "utils/maskUtil"
 
-export function useTransactions() {
+interface ITransactionsContextProvider {
+  children: ReactNode
+}
+
+export function TransactionsContextProvider({ children }: ITransactionsContextProvider) {
   const toast = useToast()
   const queryClient = useQueryClient()
 
-  const [summary, setSummary] = useState(summaryDefault)
+  const [summary, setSummary] = useState<ITransactionSummary>(summaryDefault)
 
   const [filters, setFilters] = useState<ITransactionGetFilters>(() => {
     const dateYearMonthDay = dateNowYearMonthDay()
@@ -37,6 +42,7 @@ export function useTransactions() {
           duration: 3000,
           isClosable: true,
         })
+        return []
       }
     },
     {
@@ -149,18 +155,22 @@ export function useTransactions() {
     },
   })
 
-  return {
-    transactions: {
-      data: transactions,
-      isLoading,
-      isFetching,
-      refetch,
-    },
-    filters,
-    setFilters,
-    summary,
-    create: createTransaction,
-    edit: editTransaction,
-    remove: deleteTransaction,
-  }
+  return (
+    <TransactionsContext.Provider value={{
+      filters,
+      setFilters,
+      summary,
+      transactions: {
+        data: transactions,
+        isLoading,
+        isFetching,
+        refetch,
+      },
+      createTransaction,
+      editTransaction,
+      deleteTransaction,
+    }}>
+      {children}
+    </TransactionsContext.Provider>
+  )
 }

@@ -1,6 +1,6 @@
-import { ITransaction } from "models/transactions/transaction"
+import { ITransaction, ITransactionSummary } from "models/transactions/transaction"
 
-export const summaryDefault = {
+export const summaryDefault: ITransactionSummary = {
   deposit: "R$ 0,00",
   withdraw: "R$ 0,00",
   total: "R$ 0,00",

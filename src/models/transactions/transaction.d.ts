@@ -26,6 +26,12 @@ export interface ITransactionState {
   type: ITransactionPropType | null
 }
 
+export interface ITransactionSummary {
+  deposit: string
+  withdraw: string
+  total: string
+}
+
 export interface ITransactionGetFilters {
   month: string
   year: string

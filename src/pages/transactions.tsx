@@ -5,14 +5,14 @@ import { SimpleGrid, Stack, Button, Select, Spinner, HStack, useDisclosure } fro
 import { CardTransaction } from "pagesComponents/transactions/CardTransaction"
 import { TableTransaction } from "pagesComponents/transactions/TableTransaction"
 import { ModalTransaction } from "pagesComponents/transactions/ModalTransaction"
-import { useTransactions } from "hooks/useTransactions"
+import { TransactionsContextProvider, useTransactions } from "contexts/transactions"
 import { dateNowYearMonthDay, getObjYearMonthDay } from "utils/dateUtil"
 import { ITransaction } from "models/transactions/transaction"
 
-export default function Transactions() {
+function Transactions() {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const { transactions, filters, setFilters, summary, create, edit, remove } = useTransactions()
+  const { transactions, filters, setFilters, summary } = useTransactions()
 
   const [transactionToEdit, setTransactionToEdit] = useState<ITransaction | null>(null)
   const [editMode, setEditMode] = useState(false)
@@ -91,7 +91,7 @@ export default function Transactions() {
               name="year"
               placeholder="Selecione o ano"
               value={filters.year}
-              onChange={({ target: { name, value } }) => setFilters(old => ({ ...old, [name]: value }))}
+              onChange={({ target: { name, value } }) => handleChangeFilters(name, value)}
             >
               <option value="2021">2021</option>
               <option value="2022">2022</option>
@@ -120,23 +120,25 @@ export default function Transactions() {
         <TableTransaction
           data={transactions.data}
           isLoading={transactions.isLoading}
-          enableModal={handleEnableModal}
-          onDelete={remove}
+          handleEnableModal={handleEnableModal}
         />
       </Stack>
 
-      {isOpen && (
-        <ModalTransaction
-          dataToEdit={transactionToEdit}
-          editMode={editMode}
-          onClose={onClose}
-          onSave={create}
-          onSaveEdit={edit}
-        />
-      )}
+      <ModalTransaction
+        isOpen={isOpen}
+        dataToEdit={transactionToEdit}
+        editMode={editMode}
+        onClose={onClose}
+      />
     </Stack>
   )
 }
+
+export default () => (
+  <TransactionsContextProvider>
+    <Transactions />
+  </TransactionsContextProvider>
+)
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context)

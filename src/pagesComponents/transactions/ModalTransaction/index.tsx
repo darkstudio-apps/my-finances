@@ -18,21 +18,21 @@ import {
 } from "@chakra-ui/react"
 import { useModalTransaction } from "./useModalTransaction"
 import { CheckBoxCard } from "components/CheckBoxCard"
+import { useTransactions } from "contexts/transactions"
 import { ITransaction, ITransactionState } from "models/transactions/transaction"
-import { ITransactionRequestPost, ITransactionRequestPut } from "models/transactions/transaction.request"
-
 
 interface ModalTransactionProps {
+  isOpen: boolean
   dataToEdit?: ITransaction | null
   editMode: boolean
   onClose: () => void
-  onSave: UseMutationResult<void, unknown, ITransactionRequestPost, unknown>
-  onSaveEdit: UseMutationResult<void, unknown, ITransactionRequestPut, unknown>
 }
 
-export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSaveEdit }: ModalTransactionProps) {
+export function ModalTransaction({ isOpen, dataToEdit, editMode, onClose }: ModalTransactionProps) {
   const toast = useToast()
   const initialRef = useRef(null)
+
+  const { createTransaction, editTransaction } = useTransactions()
 
   const {
     transaction,
@@ -85,11 +85,11 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
 
     if (!dataToEdit) {
       const newTransaction = await generateTransactionToSave()
-      if (newTransaction) await onSave.mutateAsync(newTransaction)
+      if (newTransaction) await createTransaction.mutateAsync(newTransaction)
     }
     else {
       const modifiedTransaction = await generateTransactionToSave()
-      if (modifiedTransaction) await onSaveEdit.mutateAsync({
+      if (modifiedTransaction) await editTransaction.mutateAsync({
         id: dataToEdit.id,
         transaction: modifiedTransaction,
         action: "current"
@@ -103,7 +103,7 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
   return (
     <Modal
       initialFocusRef={initialRef}
-      isOpen={true}
+      isOpen={isOpen}
       onClose={onClose}
       isCentered
     >
@@ -232,7 +232,7 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
                 colorScheme="green"
                 mr={3}
                 onClick={handleSave}
-                isLoading={onSave.isLoading || onSaveEdit.isLoading}
+                isLoading={createTransaction.isLoading || editTransaction.isLoading}
               >
                 Salvar
               </Button>
