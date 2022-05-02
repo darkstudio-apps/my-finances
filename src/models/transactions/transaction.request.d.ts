@@ -16,5 +16,10 @@ export type ITransactionRequestPost = ITransactionRequestBase
 export interface ITransactionRequestPut {
   id: string
   transaction: ITransactionRequestBase
-  action: ITransactionRequestQueryAction
+  action?: ITransactionRequestQueryAction
+}
+
+export interface ITransactionRequestDelete {
+  id: string
+  action?: ITransactionRequestQueryAction
 }

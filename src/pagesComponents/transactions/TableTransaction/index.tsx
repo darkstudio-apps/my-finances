@@ -38,9 +38,9 @@ export function TableTransaction({ data, isLoading, handleEnableModal }: TableTr
     onOpen()
   }
 
-  const submitDialogDelete = async (idTransaction: string) => {
+  const submitDialogDelete = async (id: string) => {
     onClose()
-    await deleteTransaction.mutateAsync(idTransaction)
+    await deleteTransaction.mutateAsync({ id })
   }
 
   if (isLoading) return null

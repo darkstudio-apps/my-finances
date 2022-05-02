@@ -14,7 +14,8 @@ import {
   ITransactionSummary,
   ITransactionRequestPost,
   ITransactionRequestPut,
-  ITransactionFormState
+  ITransactionFormState,
+  ITransactionRequestDelete
 } from "models/transactions"
 import { dateNowYearMonthDay, getObjYearMonthDay } from "utils/dateUtil"
 import { formatCurrency, formatReal } from "utils/maskUtil"
@@ -123,7 +124,7 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
     },
   })
 
-  const deleteTransaction = useMutation(async (id: string) => {
+  const deleteTransaction = useMutation(async ({ id, action }: ITransactionRequestDelete) => {
     try {
       const status = await deleteTransactionService(id)
 

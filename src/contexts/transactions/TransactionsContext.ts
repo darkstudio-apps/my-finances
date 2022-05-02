@@ -1,6 +1,14 @@
 import { createContext, Dispatch, SetStateAction } from "react"
 import { UseMutationResult } from "react-query"
-import { ITransaction, ITransactionFormState, ITransactionGetFilters, ITransactionRequestBase, ITransactionRequestPut, ITransactionSummary } from "models/transactions"
+import {
+  ITransaction,
+  ITransactionFormState,
+  ITransactionGetFilters,
+  ITransactionRequestBase,
+  ITransactionRequestDelete,
+  ITransactionRequestPut,
+  ITransactionSummary,
+} from "models/transactions"
 
 interface ITransactionsContext {
   filters: ITransactionGetFilters
@@ -13,7 +21,7 @@ interface ITransactionsContext {
   }
   createTransaction: UseMutationResult<void, unknown, ITransactionRequestBase, unknown>
   editTransaction: UseMutationResult<void, unknown, ITransactionRequestPut, unknown>
-  deleteTransaction: UseMutationResult<void, unknown, string, unknown>
+  deleteTransaction: UseMutationResult<void, unknown, ITransactionRequestDelete, unknown>
 
   summary: ITransactionSummary
 
