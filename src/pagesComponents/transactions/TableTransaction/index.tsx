@@ -5,12 +5,12 @@ import { FiEdit3, FiTrash } from "react-icons/fi"
 import { TableTransactionTh } from "./TableTransactionTh"
 import { NoContentTableTransaction } from "./NoContentTableTransaction"
 import { AlertDialogDelete } from "components/AlertDialogDelete"
-import { TransactionProps } from "hooks/useTransactions"
+import { ITransaction } from "models/transactions/transaction"
 
 interface TableTransactionProps {
-  data: TransactionProps[] | undefined
+  data: ITransaction[] | undefined
   isLoading: boolean
-  enableModal?: (transaction: TransactionProps, editMode?: boolean) => void
+  enableModal?: (transaction: ITransaction, editMode?: boolean) => void
   onDelete?: UseMutationResult<void, unknown, string, unknown>
 }
 

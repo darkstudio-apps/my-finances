@@ -5,7 +5,7 @@ import { dateNowYearMonthDay, endOfMonthInYearMonthDay, generateDecimalNumberInS
 
 import { ITransaction } from "../types/transaction.type"
 import { ITransactionServiceList, ITransactionServicePatch, ITransactionServicePost, ITransactionServicePut, ITransactionServiceRemove } from "../types/transactionService.type"
-import { ITransactionRequestActionParam } from "../types/transactionRequest.type"
+import { ITransactionRequestQueryActionParam } from "../types/transactionRequest.type"
 
 async function list({ idUser, month, year }: ITransactionServiceList) {
   const dateYearMonthDay = dateNowYearMonthDay()
@@ -139,7 +139,7 @@ async function patch({ id, transaction }: ITransactionServicePatch) {
   return editedTransaction
 }
 
-const generateFiltersListRemove = (transaction: ITransaction, action?: ITransactionRequestActionParam) => {
+const generateFiltersListRemove = (transaction: ITransaction, action?: ITransactionRequestQueryActionParam) => {
   const { id, idUser, idRecurrence, date } = transaction
 
   const dateStartISO = date

@@ -3,14 +3,14 @@ import { transactionRepository } from "../../repository/transactionRepository"
 import { getObjYearMonthDayUTC, parseObjToUTCandISO } from "../../../../../../utils/dateUtil"
 import { generateTransactionsRecurrence, generateTransactionToCreate, generateTransactionToPost } from "./handleTransactions"
 import { ITransaction, ITransactionPut } from "../../types/transaction.type"
-import { ITransactionRequestActionParam } from "../../types/transactionRequest.type"
+import { ITransactionRequestQueryActionParam } from "../../types/transactionRequest.type"
 
 interface IImplementationRulesPut {
   idUser: string
   id: string
   currentTransaction: ITransaction
   transaction: ITransactionPut
-  action?: ITransactionRequestActionParam
+  action?: ITransactionRequestQueryActionParam
 }
 
 export const implementationRulesPut = {

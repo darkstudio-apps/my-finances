@@ -92,13 +92,13 @@ export const endOfMonthInYearMonthDay = (dateYearMonthDay: string) => {
 export const dateNowYearMonthDay = () => {
   const date = new Date()
 
-  let year = String(date.getFullYear())
+  const year = String(date.getFullYear())
 
-  let monthNumber = date.getMonth() + 1
-  let month = generateDecimalNumberInString(monthNumber)
+  const monthNumber = date.getMonth() + 1
+  const month = generateDecimalNumberInString(monthNumber)
 
-  let dayNumber = date.getDate()
-  let day = generateDecimalNumberInString(dayNumber)
+  const dayNumber = date.getDate()
+  const day = generateDecimalNumberInString(dayNumber)
 
   return `${year}-${month}-${day}`
 }
@@ -110,9 +110,9 @@ export const getObjYearMonthDay = (dateYearMonthDay: string) => {
   const monthNumber = Number(monthSplit)
   const dayNumber = Number(daySplit)
 
-  let year = String(yearParam)
-  let month = generateDecimalNumberInString(monthNumber)
-  let day = generateDecimalNumberInString(dayNumber)
+  const year = String(yearParam)
+  const month = generateDecimalNumberInString(monthNumber)
+  const day = generateDecimalNumberInString(dayNumber)
 
   return { year, month, day }
 }
@@ -122,13 +122,13 @@ export const getObjYearMonthDayUTC = (dateUTC?: string) => {
 
   const date = new Date(dateUTC)
 
-  let year = String(date.getUTCFullYear())
+  const year = String(date.getUTCFullYear())
 
-  let monthNumber = date.getUTCMonth() + 1
-  let month = generateDecimalNumberInString(monthNumber)
+  const monthNumber = date.getUTCMonth() + 1
+  const month = generateDecimalNumberInString(monthNumber)
 
-  let dayNumber = date.getUTCDate()
-  let day = generateDecimalNumberInString(dayNumber)
+  const dayNumber = date.getUTCDate()
+  const day = generateDecimalNumberInString(dayNumber)
 
   return { year, month, day }
 }

@@ -2,13 +2,10 @@ import { useState } from "react"
 import { getSession } from "next-auth/react"
 import { parseToUTCandISO } from "utils/dateUtil"
 import { formatFloat, formatReal } from "utils/maskUtil"
-import {
-  TransactionStateProps,
-  ITransactionRequestBase,
-  TransactionTypeProps,
-} from "models/transactions/transaction"
+import { ITransactionState, ITransactionPropType } from "models/transactions/transaction"
+import { ITransactionRequestBase } from "models/transactions/transaction.request"
 
-const transactionObjInitial: TransactionStateProps = {
+const transactionObjInitial: ITransactionState = {
   title: "",
   amount: "0,00",
   date: "",
@@ -19,7 +16,7 @@ const transactionObjInitial: TransactionStateProps = {
 }
 
 export function useModalTransaction() {
-  const [transaction, setTransaction] = useState<TransactionStateProps>(transactionObjInitial)
+  const [transaction, setTransaction] = useState<ITransactionState>(transactionObjInitial)
 
   const handleChangeTransaction = (prop: string, value: string) => {
     if (prop === "amount") value = formatReal(value)
@@ -79,7 +76,7 @@ export function useModalTransaction() {
     const idUser = session?.user?.idUser
     if (!idUser) return null
 
-    const type: TransactionTypeProps = transaction.type
+    const type: ITransactionPropType = transaction.type
 
     const newTransaction: ITransactionRequestBase = {
       ...transaction,
@@ -98,7 +95,7 @@ export function useModalTransaction() {
 
   return {
     transaction,
-    setTransaction: (transaction: TransactionStateProps | null) => {
+    setTransaction: (transaction: ITransactionState | null) => {
       if (transaction) setTransaction(transaction)
       else setTransaction(transactionObjInitial)
     },

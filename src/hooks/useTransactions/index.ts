@@ -5,11 +5,8 @@ import { summaryDefault, generateResumeSummary } from "./transaction.helpers"
 import { createTransactionService, deleteTransactionService, editTransactionService, getTransactionsService } from "services/transactions"
 import { formatCurrency } from "utils/maskUtil"
 import { dateNowYearMonthDay, getObjYearMonthDay } from "utils/dateUtil"
-import {
-  ITransactionRequestPost,
-  ITransactionGetFilters,
-  ITransactionRequestPut,
-} from "models/transactions/transaction"
+import { ITransactionGetFilters } from "models/transactions/transaction"
+import { ITransactionRequestPost, ITransactionRequestPut } from "models/transactions/transaction.request"
 
 export function useTransactions() {
   const toast = useToast()

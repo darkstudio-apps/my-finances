@@ -5,15 +5,16 @@ import { SimpleGrid, Stack, Button, Select, Spinner, HStack, useDisclosure } fro
 import { CardTransaction } from "pagesComponents/transactions/CardTransaction"
 import { TableTransaction } from "pagesComponents/transactions/TableTransaction"
 import { ModalTransaction } from "pagesComponents/transactions/ModalTransaction"
-import { TransactionProps, useTransactions } from "hooks/useTransactions"
+import { useTransactions } from "hooks/useTransactions"
 import { dateNowYearMonthDay, getObjYearMonthDay } from "utils/dateUtil"
+import { ITransaction } from "models/transactions/transaction"
 
 export default function Transactions() {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const { transactions, filters, setFilters, summary, create, edit, remove } = useTransactions()
 
-  const [transactionToEdit, setTransactionToEdit] = useState<TransactionProps | null>(null)
+  const [transactionToEdit, setTransactionToEdit] = useState<ITransaction | null>(null)
   const [editMode, setEditMode] = useState(false)
 
   useEffect(() => {
@@ -35,7 +36,7 @@ export default function Transactions() {
     }))
   }
 
-  const handleEnableModal = (transaction: TransactionProps, edit_mode: boolean = false) => {
+  const handleEnableModal = (transaction: ITransaction, edit_mode: boolean = false) => {
     setTransactionToEdit(transaction)
     setEditMode(edit_mode)
     onOpen()

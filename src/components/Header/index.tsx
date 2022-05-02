@@ -1,5 +1,5 @@
-import { Avatar, Tag, Box, Flex, Heading, HStack, Text, Menu, MenuButton, MenuList, MenuItem, Image } from "@chakra-ui/react"
 import { signOut, useSession } from "next-auth/react"
+import { Avatar, Tag, Box, Flex, Heading, HStack, Text, Menu, MenuButton, MenuList, MenuItem, Image } from "@chakra-ui/react"
 // import { ActiveLink } from "./ActiveLink"
 import packageJson from "../../../package.json"
 

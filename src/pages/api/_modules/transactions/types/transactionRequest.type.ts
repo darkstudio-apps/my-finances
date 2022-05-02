@@ -11,13 +11,13 @@ export interface ITransactionRequestSession {
   expires?: string
 }
 
-export type ITransactionRequestActionParam = "current" | "next" | "all"
+export type ITransactionRequestQueryActionParam = "current" | "next" | "all"
 
 export interface ITransactionRequest {
   query: {
     idUser: string
     id: string
-    action?: ITransactionRequestActionParam
+    action?: ITransactionRequestQueryActionParam
   }
   body: Partial<ITransaction>
 }

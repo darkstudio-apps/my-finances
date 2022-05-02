@@ -1,12 +1,12 @@
 import { HStack, Text, Icon } from "@chakra-ui/react"
 import { FiArrowUp, FiArrowDown } from "react-icons/fi"
-import { TransactionTypeProps } from "models/transactions/transaction"
+import { ITransactionPropType } from "models/transactions/transaction"
 
-interface CheckBoxCardProps {
+interface ICheckBoxCard {
   label: string
-  type: TransactionTypeProps
-  checkedType?: TransactionTypeProps | null
-  onClick?: (typeSelected: TransactionTypeProps) => void
+  type: ITransactionPropType
+  checkedType?: ITransactionPropType | null
+  onClick?: (typeSelected: ITransactionPropType) => void
   disabled?: boolean
 }
 
@@ -23,7 +23,7 @@ const themes = {
   },
 }
 
-export function CheckBoxCard({ label, type, checkedType, onClick, disabled }: CheckBoxCardProps) {
+export function CheckBoxCard({ label, type, checkedType, onClick, disabled }: ICheckBoxCard) {
   let backgroundColor = "initial"
 
   if (checkedType === type) {
@@ -51,8 +51,14 @@ export function CheckBoxCard({ label, type, checkedType, onClick, disabled }: Ch
       onClick={handleOnClick}
       cursor={!disabled ? "pointer" : "no-drop"}
     >
-      <Text>{label}</Text>
-      <Icon as={themes[type].iconSvg} w={6} h={6} color={themes[type].color} />
+      <Text>
+        {label}
+      </Text>
+      <Icon
+        width={6}
+        height={6}
+        as={themes[type].iconSvg}
+        color={themes[type].color} />
     </HStack>
   )
 }
