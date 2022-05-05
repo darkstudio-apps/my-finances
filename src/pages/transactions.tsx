@@ -8,7 +8,7 @@ import {
   ModalTransaction,
   ModalTransactionRecurrenceDelete,
   ModalTransactionRecurrenceEdit,
-} from "pagesComponents/transactions"
+} from "partialComponents/transactions"
 import { TransactionsContextProvider, useTransactions } from "contexts/transactions"
 import { ITransaction } from "models/transactions"
 import { dateNowYearMonthDay, getObjYearMonthDay } from "utils/dateUtil"
