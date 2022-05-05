@@ -1,4 +1,4 @@
-import { apiClient } from "libs/api"
+import { apiClient } from "libs/apiClient"
 import { generateTransaction } from "./transaction.helpers"
 import {
   ITransaction,
