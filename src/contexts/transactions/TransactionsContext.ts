@@ -29,8 +29,11 @@ interface ITransactionsContext {
   setTransactionForm: Dispatch<SetStateAction<ITransactionFormState>>
   clearStateTransactionForm: () => void
   handleChangeTransactionForm: (prop: string, value: string) => void
+
+  isOpenModalRecurrenceEdit: boolean
+  isOpenModalRecurrenceDelete: boolean
+  setIsOpenModalRecurrenceEdit: Dispatch<SetStateAction<boolean>>
+  setIsOpenModalRecurrenceDelete: Dispatch<SetStateAction<boolean>>
 }
 
-export const TransactionsContext = createContext(
-  {} as ITransactionsContext
-)
+export const TransactionsContext = createContext({} as ITransactionsContext)

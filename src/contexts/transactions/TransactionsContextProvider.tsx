@@ -213,6 +213,11 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
     })
   }
 
+  // -------------------- MODALS RECURRENCE --------------------
+
+  const [isOpenModalRecurrenceEdit, setIsOpenModalRecurrenceEdit] = useState<boolean>(false)
+  const [isOpenModalRecurrenceDelete, setIsOpenModalRecurrenceDelete] = useState<boolean>(false)
+
   return (
     <TransactionsContext.Provider value={{
       filters,
@@ -233,6 +238,11 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
       setTransactionForm,
       clearStateTransactionForm,
       handleChangeTransactionForm,
+
+      isOpenModalRecurrenceEdit,
+      isOpenModalRecurrenceDelete,
+      setIsOpenModalRecurrenceEdit,
+      setIsOpenModalRecurrenceDelete
     }}>
       {children}
     </TransactionsContext.Provider>
