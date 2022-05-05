@@ -2,12 +2,16 @@ import { useEffect, useState } from "react"
 import { GetServerSideProps } from "next"
 import { getSession } from "next-auth/react"
 import { SimpleGrid, Stack, Button, Select, Spinner, HStack, useDisclosure } from "@chakra-ui/react"
-import { CardTransaction } from "pagesComponents/transactions/CardTransaction"
-import { TableTransaction } from "pagesComponents/transactions/TableTransaction"
-import { ModalTransaction } from "pagesComponents/transactions/ModalTransaction"
+import {
+  CardTransaction,
+  TableTransaction,
+  ModalTransaction,
+  ModalTransactionRecurrenceDelete,
+  ModalTransactionRecurrenceEdit,
+} from "pagesComponents/transactions"
 import { TransactionsContextProvider, useTransactions } from "contexts/transactions"
+import { ITransaction } from "models/transactions"
 import { dateNowYearMonthDay, getObjYearMonthDay } from "utils/dateUtil"
-import { ITransaction } from "models/transactions/transaction"
 
 function Transactions() {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -130,6 +134,10 @@ function Transactions() {
         editMode={editMode}
         onClose={onClose}
       />
+
+      <ModalTransactionRecurrenceEdit />
+
+      <ModalTransactionRecurrenceDelete />
     </Stack>
   )
 }
