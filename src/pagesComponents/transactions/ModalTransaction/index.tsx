@@ -16,18 +16,17 @@ import {
   useToast,
 } from "@chakra-ui/react"
 import { CheckBoxCard } from "components/CheckBoxCard"
-import { useTransactions } from "contexts/transactions"
-import { ITransaction, ITransactionFormState } from "models/transactions/transaction"
-import { generateTransactionToSave, validateTransaction } from "contexts/transactions/transaction.helpers"
+import { useTransactions, generateTransactionToSave, validateTransaction } from "contexts/transactions"
+import { ITransaction, ITransactionFormState } from "models/transactions"
 
-interface ModalTransactionProps {
+interface IModalTransaction {
   isOpen: boolean
   dataToEdit?: ITransaction | null
   editMode: boolean
   onClose: () => void
 }
 
-export function ModalTransaction({ isOpen, dataToEdit, editMode, onClose }: ModalTransactionProps) {
+export function ModalTransaction({ isOpen, dataToEdit, editMode, onClose }: IModalTransaction) {
   const toast = useToast()
   const initialRef = useRef(null)
 

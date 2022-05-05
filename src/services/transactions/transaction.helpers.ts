@@ -1,6 +1,6 @@
+import { ITransaction, ITransactionResponse } from "models/transactions"
 import { parseDateBrUTC, parseYearMonthDayUTC } from "utils/dateUtil"
 import { formatCurrency } from "utils/maskUtil"
-import { ITransaction, ITransactionResponse } from "models/transactions"
 
 const statusDisplayObj: any = {
   deposit: "À receber",

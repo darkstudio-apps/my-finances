@@ -6,9 +6,9 @@ import { TableTransactionTh } from "./TableTransactionTh"
 import { NoContentTableTransaction } from "./NoContentTableTransaction"
 import { AlertDialogDelete } from "components/AlertDialogDelete"
 import { useTransactions } from "contexts/transactions"
-import { ITransaction } from "models/transactions/transaction"
+import { ITransaction } from "models/transactions"
 
-interface TableTransactionProps {
+interface ITableTransaction {
   data: ITransaction[] | undefined
   isLoading: boolean
   handleEnableModal?: (transaction: ITransaction, editMode?: boolean) => void
@@ -27,7 +27,7 @@ const getColorStatus = (type: string) => {
   return color ? color : "gray.400"
 }
 
-export function TableTransaction({ data, isLoading, handleEnableModal }: TableTransactionProps) {
+export function TableTransaction({ data, isLoading, handleEnableModal }: ITableTransaction) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { deleteTransaction, transactions } = useTransactions()
 

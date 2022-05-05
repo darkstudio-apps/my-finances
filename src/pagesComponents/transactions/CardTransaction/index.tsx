@@ -1,7 +1,7 @@
 import { Flex, Stack, Text, Heading, Icon } from "@chakra-ui/react"
 import { FiArrowUp, FiArrowDown, FiDollarSign } from "react-icons/fi"
 
-interface CardTransactionProps {
+interface ICardTransaction {
   description: string
   title: string
   icon?: "arrowUp" | "arrowDown" | "dollarSign"
@@ -22,7 +22,7 @@ const icons = {
   },
 }
 
-export function CardTransaction({ description, title, icon }: CardTransactionProps) {
+export function CardTransaction({ description, title, icon }: ICardTransaction) {
   return (
     <Stack bg="gray.700" borderRadius="xl" padding={6} spacing={2}>
       <Flex alignItems="center" justifyContent="space-between">

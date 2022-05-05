@@ -1,8 +1,14 @@
 import { apiClient } from "libs/api"
 import { generateTransaction } from "./transaction.helpers"
-import { ITransaction, ITransactionGetFilters } from "models/transactions/transaction"
-import { ITransactionResponseGet, ITransactionResponsePut, ITransactionResponseDelete } from "models/transactions/transaction.response"
-import { ITransactionRequestBase, ITransactionRequestPost } from "models/transactions/transaction.request"
+import {
+  ITransaction,
+  ITransactionGetFilters,
+  ITransactionResponseGet,
+  ITransactionResponsePut,
+  ITransactionResponseDelete,
+  ITransactionRequestBase,
+  ITransactionRequestPost,
+} from "models/transactions"
 
 export async function getTransactionsService({ month, year }: ITransactionGetFilters): Promise<ITransaction[]> {
   const { data: transactions } = await apiClient.get<ITransactionResponseGet>("/transactions", {
