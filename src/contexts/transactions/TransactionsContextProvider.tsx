@@ -16,7 +16,9 @@ import {
   ITransactionRequestPut,
   ITransactionFormState,
   ITransactionRequestDelete,
-  ITransactionModalDeleteState
+  ITransactionModalDeleteState,
+  ITransactionModalRecurrenceEditState,
+  ITransactionRequestBase
 } from "models/transactions"
 import { dateNowYearMonthDay, getObjYearMonthDay } from "utils/dateUtil"
 import { formatCurrency, formatReal } from "utils/maskUtil"
@@ -99,7 +101,7 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
 
   const editTransaction = useMutation(async ({ id, transaction, action }: ITransactionRequestPut) => {
     try {
-      const editedTransaction = await editTransactionService(id, transaction)
+      const editedTransaction = await editTransactionService(id, transaction, action)
 
       if (!editedTransaction) return
 
@@ -216,7 +218,27 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
 
   // -------------------- MODALS RECURRENCE --------------------
 
-  const [isOpenModalRecurrenceEdit, setIsOpenModalRecurrenceEdit] = useState<boolean>(false)
+  const [modalRecurrenceEdit, setModalRecurrenceEdit] = useState<ITransactionModalRecurrenceEditState>({
+    isOpen: false,
+    idTransaction: null,
+    transaction: null
+  })
+
+  const openModalRecurrenceEdit = (idTransaction: string, transaction: ITransactionRequestBase) => {
+    setModalRecurrenceEdit(oldValue => ({
+      isOpen: true,
+      idTransaction,
+      transaction,
+    }))
+  }
+
+  const closeModalRecurrenceEdit = () => {
+    setModalRecurrenceEdit({
+      isOpen: false,
+      idTransaction: null,
+      transaction: null
+    })
+  }
 
   const [modalDelete, setModalDelete] = useState<ITransactionModalDeleteState>({
     isOpenModal: false,
@@ -264,9 +286,12 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
       clearStateTransactionForm,
       handleChangeTransactionForm,
 
-      isOpenModalRecurrenceEdit,
+      modalRecurrenceEdit,
+      setModalRecurrenceEdit,
+      openModalRecurrenceEdit,
+      closeModalRecurrenceEdit,
+
       modalDelete,
-      setIsOpenModalRecurrenceEdit,
       setModalDelete,
       openModalDelete,
       closeModalDelete,

@@ -11,7 +11,9 @@ import {
   ITransactionRequestQueryAction,
 } from "models/transactions"
 
-export async function getTransactionsService({ month, year }: ITransactionGetFilters): Promise<ITransaction[]> {
+export async function getTransactionsService(
+  { month, year }: ITransactionGetFilters
+): Promise<ITransaction[]> {
   const { data: transactions } = await apiClient.get<ITransactionResponseGet>("/transactions", {
     params: {
       month,
@@ -33,7 +35,9 @@ export async function getTransactionService() {
   console.log("getTransactionService")
 }
 
-export async function createTransactionService(transaction: ITransactionRequestPost): Promise<ITransaction | undefined> {
+export async function createTransactionService(
+  transaction: ITransactionRequestPost
+): Promise<ITransaction | undefined> {
   const { data } = await apiClient.post<ITransactionResponseGet>("/transactions", transaction)
 
   const transactionCreated = data.transaction
@@ -46,8 +50,16 @@ export async function createTransactionService(transaction: ITransactionRequestP
   // TODO: tratar o erro criando um obj de erro global
 }
 
-export async function editTransactionService(id: string, transaction: ITransactionRequestBase): Promise<ITransaction | undefined> {
-  const { data } = await apiClient.put<ITransactionResponsePut>(`/transactions/${id}`, transaction)
+export async function editTransactionService(
+  id: string,
+  transaction: ITransactionRequestBase,
+  action?: ITransactionRequestQueryAction
+): Promise<ITransaction | undefined> {
+  const { data } = await apiClient.put<ITransactionResponsePut>(`/transactions/${id}`, transaction, {
+    params: {
+      action,
+    },
+  })
 
   const transactionCreated = data.transaction
   if (!transactionCreated) return undefined
@@ -62,7 +74,10 @@ export async function editTransactionService(id: string, transaction: ITransacti
   // TODO: tratar o erro criando um obj de erro global
 }
 
-export async function deleteTransactionService(id: string, action?: ITransactionRequestQueryAction): Promise<boolean> {
+export async function deleteTransactionService(
+  id: string,
+  action?: ITransactionRequestQueryAction
+): Promise<boolean> {
   const { data } = await apiClient.delete<ITransactionResponseDelete>(`/transactions/${id}`, {
     params: {
       action,

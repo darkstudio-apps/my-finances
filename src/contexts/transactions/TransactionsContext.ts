@@ -5,6 +5,7 @@ import {
   ITransactionFormState,
   ITransactionGetFilters,
   ITransactionModalDeleteState,
+  ITransactionModalRecurrenceEditState,
   ITransactionRequestBase,
   ITransactionRequestDelete,
   ITransactionRequestPut,
@@ -31,9 +32,12 @@ interface ITransactionsContext {
   clearStateTransactionForm: () => void
   handleChangeTransactionForm: (prop: string, value: string) => void
 
-  isOpenModalRecurrenceEdit: boolean
+  modalRecurrenceEdit: ITransactionModalRecurrenceEditState
+  setModalRecurrenceEdit: Dispatch<SetStateAction<ITransactionModalRecurrenceEditState>>
+  openModalRecurrenceEdit: (idTransaction: string, transaction: ITransactionRequestBase) => void
+  closeModalRecurrenceEdit: () => void
+
   modalDelete: ITransactionModalDeleteState
-  setIsOpenModalRecurrenceEdit: Dispatch<SetStateAction<boolean>>
   setModalDelete: Dispatch<SetStateAction<ITransactionModalDeleteState>>
   openModalDelete: (idTransaction: string, isRecurrence: boolean) => void
   closeModalDelete: () => void
