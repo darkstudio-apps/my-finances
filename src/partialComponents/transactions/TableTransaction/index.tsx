@@ -1,10 +1,8 @@
-import { useState } from "react"
 import { UseMutationResult } from "react-query"
-import { Box, Text, Table, Thead, Tbody, Tfoot, Tr, Th, Td, Icon, HStack, useDisclosure } from "@chakra-ui/react"
+import { Box, Text, Table, Thead, Tbody, Tr, Td, Icon, HStack } from "@chakra-ui/react"
 import { FiEdit3, FiTrash } from "react-icons/fi"
 import { TableTransactionTh } from "./TableTransactionTh"
 import { NoContentTableTransaction } from "./NoContentTableTransaction"
-import { AlertDialogDelete } from "components/AlertDialogDelete"
 import { useTransactions } from "contexts/transactions"
 import { ITransaction } from "models/transactions"
 
@@ -28,19 +26,11 @@ const getColorStatus = (type: string) => {
 }
 
 export function TableTransaction({ data, isLoading, handleEnableModal }: ITableTransaction) {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const { deleteTransaction, transactions } = useTransactions()
+  const { transactions, openModalDelete } = useTransactions()
 
-  const [idTransaction, setIdTransaction] = useState("")
-
-  const openDialogDelete = (idTransaction: string) => {
-    setIdTransaction(idTransaction)
-    onOpen()
-  }
-
-  const submitDialogDelete = async (id: string) => {
-    onClose()
-    await deleteTransaction.mutateAsync({ id })
+  const openDialogDelete = (transaction: ITransaction) => {
+    const { id, isRecurrence } = transaction
+    openModalDelete(id, isRecurrence)
   }
 
   if (isLoading) return null
@@ -108,7 +98,7 @@ export function TableTransaction({ data, isLoading, handleEnableModal }: ITableT
                     as={FiTrash}
                     width={5}
                     height={5}
-                    onClick={() => openDialogDelete(transaction.id)}
+                    onClick={() => openDialogDelete(transaction)}
                     transition="200ms"
                     _hover={{ color: "red.400" }}
                   />
@@ -118,22 +108,6 @@ export function TableTransaction({ data, isLoading, handleEnableModal }: ITableT
           )
         })}
       </Tbody>
-
-      <Tfoot>
-        <Tr>
-          <Th>
-            <AlertDialogDelete
-              id={idTransaction}
-              title="Deletar transação"
-              description="Deseja realmente exluir a transação?"
-              isOpen={isOpen}
-              onClose={onClose}
-              onSubmit={submitDialogDelete}
-              isLoading={deleteTransaction.isLoading}
-            />
-          </Th>
-        </Tr>
-      </Tfoot>
     </Table>
   )
 }

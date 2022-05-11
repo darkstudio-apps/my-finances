@@ -36,3 +36,10 @@ export interface ITransactionGetFilters {
   month: string
   year: string
 }
+
+export interface ITransactionModalDeleteState {
+  isOpenModal: boolean
+  isOpenModalRecurrence: boolean
+  idTransaction: string | null
+  isRecurrence: boolean
+}

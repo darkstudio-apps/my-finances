@@ -18,7 +18,7 @@ interface IModalRecurrence {
   isOpen: boolean
   title: string
   titleBtnConfirm?: string
-  onConfirm: (value: ITransactionRequestQueryAction) => void
+  onSubmit: (value: ITransactionRequestQueryAction) => void
   onClose: () => void
   options: {
     current: string
@@ -26,16 +26,18 @@ interface IModalRecurrence {
     all?: string
   }
   colorScheme?: string
+  isLoading?: boolean
 }
 
 export function ModalRecurrence({
   isOpen,
   title,
   titleBtnConfirm,
-  onConfirm,
+  onSubmit,
   onClose,
   options,
   colorScheme,
+  isLoading,
 }: IModalRecurrence) {
   const initialRef = useRef(null)
 
@@ -73,8 +75,8 @@ export function ModalRecurrence({
           <Button
             colorScheme={colorScheme ? colorScheme : "green"}
             mr={3}
-            onClick={() => onConfirm(value as ITransactionRequestQueryAction)}
-          // isLoading={onSave.isLoading || onSaveEdit.isLoading}
+            onClick={() => onSubmit(value as ITransactionRequestQueryAction)}
+            isLoading={isLoading}
           >
             {titleBtnConfirm ? titleBtnConfirm : "Salvar"}
           </Button>

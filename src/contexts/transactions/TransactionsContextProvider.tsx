@@ -15,7 +15,8 @@ import {
   ITransactionRequestPost,
   ITransactionRequestPut,
   ITransactionFormState,
-  ITransactionRequestDelete
+  ITransactionRequestDelete,
+  ITransactionModalDeleteState
 } from "models/transactions"
 import { dateNowYearMonthDay, getObjYearMonthDay } from "utils/dateUtil"
 import { formatCurrency, formatReal } from "utils/maskUtil"
@@ -216,7 +217,31 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
   // -------------------- MODALS RECURRENCE --------------------
 
   const [isOpenModalRecurrenceEdit, setIsOpenModalRecurrenceEdit] = useState<boolean>(false)
-  const [isOpenModalRecurrenceDelete, setIsOpenModalRecurrenceDelete] = useState<boolean>(false)
+
+  const [modalDelete, setModalDelete] = useState<ITransactionModalDeleteState>({
+    isOpenModal: false,
+    isOpenModalRecurrence: false,
+    idTransaction: null,
+    isRecurrence: false,
+  })
+
+  const openModalDelete = (idTransaction: string, isRecurrence: boolean) => {
+    setModalDelete(oldValue => ({
+      ...oldValue,
+      idTransaction,
+      isOpenModal: !isRecurrence,
+      isOpenModalRecurrence: isRecurrence,
+    }))
+  }
+
+  const closeModalDelete = () => {
+    setModalDelete({
+      isOpenModal: false,
+      isOpenModalRecurrence: false,
+      idTransaction: null,
+      isRecurrence: false,
+    })
+  }
 
   return (
     <TransactionsContext.Provider value={{
@@ -240,9 +265,11 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
       handleChangeTransactionForm,
 
       isOpenModalRecurrenceEdit,
-      isOpenModalRecurrenceDelete,
+      modalDelete,
       setIsOpenModalRecurrenceEdit,
-      setIsOpenModalRecurrenceDelete
+      setModalDelete,
+      openModalDelete,
+      closeModalDelete,
     }}>
       {children}
     </TransactionsContext.Provider>
