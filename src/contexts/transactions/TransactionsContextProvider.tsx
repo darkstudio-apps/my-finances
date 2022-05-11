@@ -127,12 +127,12 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
 
   const deleteTransaction = useMutation(async ({ id, action }: ITransactionRequestDelete) => {
     try {
-      const status = await deleteTransactionService(id)
+      const status = await deleteTransactionService(id, action)
 
       if (!status) return
 
       toast({
-        title: "Transação removida com sucesso!",
+        title: "Transação excluida com sucesso!",
         status: "success",
         position: "top",
         duration: 3000,
@@ -140,7 +140,7 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
       })
     } catch (error) {
       toast({
-        title: "Erro ao remover a transação!",
+        title: "Erro ao excluir a transação!",
         status: "error",
         position: "top",
         duration: 3000,

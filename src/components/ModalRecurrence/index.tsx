@@ -1,4 +1,4 @@
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import {
   Modal,
   ModalOverlay,
@@ -18,7 +18,7 @@ interface IModalRecurrence {
   isOpen: boolean
   title: string
   titleBtnConfirm?: string
-  onSubmit: (value: ITransactionRequestQueryAction) => void
+  onSubmit: (action: ITransactionRequestQueryAction) => void
   onClose: () => void
   options: {
     current: string
@@ -41,7 +41,11 @@ export function ModalRecurrence({
 }: IModalRecurrence) {
   const initialRef = useRef(null)
 
-  const [value, setValue] = useState("current")
+  const [action, setAction] = useState("current")
+
+  useEffect(() => {
+    setAction("current")
+  }, [isOpen])
 
   const { current, next, all } = options
 
@@ -60,7 +64,7 @@ export function ModalRecurrence({
         <ModalCloseButton />
 
         <ModalBody pb={4}>
-          <RadioGroup onChange={setValue} value={value}>
+          <RadioGroup onChange={setAction} value={action}>
             <Stack>
               {current && <Radio value="current">{current}</Radio>}
               {next && <Radio value="next">{next}</Radio>}
@@ -75,7 +79,7 @@ export function ModalRecurrence({
           <Button
             colorScheme={colorScheme ? colorScheme : "green"}
             mr={3}
-            onClick={() => onSubmit(value as ITransactionRequestQueryAction)}
+            onClick={() => onSubmit(action as ITransactionRequestQueryAction)}
             isLoading={isLoading}
           >
             {titleBtnConfirm ? titleBtnConfirm : "Salvar"}

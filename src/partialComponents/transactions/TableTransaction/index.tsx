@@ -1,5 +1,5 @@
 import { UseMutationResult } from "react-query"
-import { Box, Text, Table, Thead, Tbody, Tr, Td, Icon, HStack } from "@chakra-ui/react"
+import { Box, Text, Table, Thead, Tbody, Tr, Td, Icon, HStack, Tfoot, Th } from "@chakra-ui/react"
 import { FiEdit3, FiTrash } from "react-icons/fi"
 import { TableTransactionTh } from "./TableTransactionTh"
 import { NoContentTableTransaction } from "./NoContentTableTransaction"
@@ -108,6 +108,12 @@ export function TableTransaction({ data, isLoading, handleEnableModal }: ITableT
           )
         })}
       </Tbody>
+
+      <Tfoot>
+        <Tr>
+          <Th />
+        </Tr>
+      </Tfoot>
     </Table>
   )
 }

@@ -1,40 +1,41 @@
+import { useToast } from "@chakra-ui/react"
 import { AlertDialogDelete } from "components/AlertDialogDelete"
 import { ModalRecurrence } from "components/ModalRecurrence"
 import { useTransactions } from "contexts/transactions"
+import { ITransactionRequestQueryAction } from "models/transactions"
 
 export function ModalTransactionRecurrenceDelete() {
+  const toast = useToast()
+
   const {
     modalDelete: { idTransaction, isOpenModal, isOpenModalRecurrence },
-    setModalDelete,
-    deleteTransaction,
     closeModalDelete,
+    deleteTransaction,
   } = useTransactions()
 
-  const handleSubmitModalDelete = async () => {
-    const id = idTransaction
-    if (!id) return
+  const handleSubmit = async (id: string | null, action?: ITransactionRequestQueryAction) => {
+    if (!id) {
+      toast({
+        title: "Erro ao excluir a transação!",
+        status: "error",
+        position: "top",
+        duration: 3000,
+        isClosable: true,
+      })
+      return
+    }
 
-    await deleteTransaction.mutateAsync({ id: idTransaction })
+    await deleteTransaction.mutateAsync({ id, action })
 
     closeModalDelete()
   }
 
-  const handleSubmitModalRecurrenceDelete = () => {
-    console.log("handleSubmitModalRecurrenceDelete")
+  const handleSubmitModalDelete = async () => {
+    handleSubmit(idTransaction)
   }
 
-  const handleCloseModalDelete = () => {
-    setModalDelete(oldValue => ({
-      ...oldValue,
-      isOpenModal: false,
-    }))
-  }
-
-  const handleCloseModalRecurrenceDelete = () => {
-    setModalDelete(oldValue => ({
-      ...oldValue,
-      isOpenModalRecurrence: false,
-    }))
+  const handleSubmitModalRecurrenceDelete = async (action: ITransactionRequestQueryAction) => {
+    handleSubmit(idTransaction, action)
   }
 
   return (
@@ -44,7 +45,7 @@ export function ModalTransactionRecurrenceDelete() {
         id={idTransaction || ""}
         title="Deletar transação"
         description="Deseja realmente exluir a transação?"
-        onClose={handleCloseModalDelete}
+        onClose={closeModalDelete}
         onSubmit={handleSubmitModalDelete}
         isLoading={deleteTransaction.isLoading}
       />
@@ -54,12 +55,12 @@ export function ModalTransactionRecurrenceDelete() {
         title="Excluir uma transação recorrente"
         colorScheme="red"
         titleBtnConfirm="Excluir"
-        onClose={handleCloseModalRecurrenceDelete}
+        onClose={closeModalDelete}
         onSubmit={handleSubmitModalRecurrenceDelete}
         options={{
-          current: "Excluir a transação atual",
-          next: "Excluir a transação atual e as proximas",
-          all: "Excluir todas as transações",
+          current: "Excluir a atual",
+          next: "Excluir a atual e as proximas",
+          all: "Excluir todas",
         }}
         isLoading={deleteTransaction.isLoading}
       />
