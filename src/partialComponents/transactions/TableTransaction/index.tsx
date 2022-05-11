@@ -58,7 +58,6 @@ export function TableTransaction({ data, isLoading, handleEnableModal }: ITableT
           return (
             <Tr
               key={transaction.id}
-              name="tr-transaction"
               _hover={{ bg: "gray.600" }}
               cursor="pointer"
             >
