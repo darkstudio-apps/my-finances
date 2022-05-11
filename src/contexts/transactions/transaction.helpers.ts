@@ -26,64 +26,81 @@ export const summaryDefault: ITransactionSummary = {
 }
 
 export function generateResumeSummary(transactions: ITransaction[]) {
-  const deposit = transactions.reduce((acc, transaction) => {
-    if (transaction.type === "deposit") {
-      return acc + transaction.amount
+  try {
+    const deposit = transactions.reduce((acc, transaction) => {
+      if (transaction.type === "deposit") {
+        return acc + transaction.amount
+      }
+
+      return acc
+    }, 0)
+
+    const withdraw = transactions.reduce((acc, transaction) => {
+      if (transaction.type === "withdraw") {
+        return acc + transaction.amount
+      }
+
+      return acc
+    }, 0)
+
+    const total = deposit - withdraw
+
+    return {
+      deposit,
+      withdraw,
+      total,
     }
-
-    return acc
-  }, 0)
-
-  const withdraw = transactions.reduce((acc, transaction) => {
-    if (transaction.type === "withdraw") {
-      return acc + transaction.amount
+  } catch {
+    return {
+      deposit: 0,
+      withdraw: 0,
+      total: 0,
     }
-
-    return acc
-  }, 0)
-
-  const total = deposit - withdraw
-
-  return {
-    deposit,
-    withdraw,
-    total,
   }
 }
 
 export function validateTransaction(transaction: ITransactionFormState): boolean {
-  const { title, date } = transaction
+  try {
+    const { title, date } = transaction
 
-  const includesValueEmpty = [title, date].includes("")
-  const amountZero = transaction.amount === "0,00"
-  const isTypeNull = transaction.type === null
+    const includesValueEmpty = [title, date].includes("")
+    const amountZero = transaction.amount === "0,00"
+    const isTypeNull = transaction.type === null
 
-  if (includesValueEmpty || amountZero || isTypeNull) {
+    if (includesValueEmpty || amountZero || isTypeNull) {
+      return false
+    }
+
+    return true
+  } catch {
     return false
   }
-
-  return true
 }
 
 export async function generateTransactionToSave(
   transaction: ITransactionFormState
 ): Promise<ITransactionRequestBase | null> {
-  if (transaction.type === null) return null
+  try {
+    if (transaction.type === null) return null
 
-  const session: any = await getSession()
+    const session: any = await getSession()
 
-  const idUser = session?.user?.idUser
-  if (!idUser) return null
+    const idUser = session?.user?.idUser
+    if (!idUser) return null
 
-  const type: ITransactionPropType = transaction.type
+    const type: ITransactionPropType = transaction.type
 
-  const newTransaction: ITransactionRequestBase = {
-    ...transaction,
-    idUser,
-    type,
-    amount: formatFloat(transaction.amount),
-    date: parseToUTCandISO(transaction.date, "start"),
+    const newTransaction: ITransactionRequestBase = {
+      ...transaction,
+      idUser,
+      type,
+      amount: formatFloat(transaction.amount),
+      date: parseToUTCandISO(transaction.date, "start"),
+    }
+
+    return newTransaction
+
+  } catch (error) {
+    return null
   }
-
-  return newTransaction
 }
