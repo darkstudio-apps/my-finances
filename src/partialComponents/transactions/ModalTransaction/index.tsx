@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react"
-import { UseMutationResult } from "react-query"
 import { css } from "@emotion/react"
 import {
   Modal,
@@ -16,40 +15,36 @@ import {
   Stack,
   useToast,
 } from "@chakra-ui/react"
+import { CheckBoxCard } from "components/CheckBoxCard"
+import { useTransactions, generateTransactionToSave, validateTransaction } from "contexts/transactions"
+import { ITransaction, ITransactionFormState } from "models/transactions"
 
-import { CheckBoxCard } from "../CheckBoxCard"
-import { TransactionModelProps, TransactionStateProps } from "../../hooks/useTransactions/transaction.types"
-import { useModalTransaction } from "./useModalTransaction"
-import { TransactionProps } from "../../hooks/useTransactions"
-
-interface ModalTransactionProps {
-  dataToEdit?: TransactionProps | null
+interface IModalTransaction {
+  isOpen: boolean
+  dataToEdit?: ITransaction | null
   editMode: boolean
   onClose: () => void
-  onSave: UseMutationResult<void, unknown, TransactionModelProps, unknown>
-  onSaveEdit: UseMutationResult<void, unknown, { id: string, transaction: TransactionModelProps }, unknown>
 }
 
-export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSaveEdit }: ModalTransactionProps) {
+export function ModalTransaction({ isOpen, dataToEdit, editMode, onClose }: IModalTransaction) {
   const toast = useToast()
   const initialRef = useRef(null)
-  const finalRef = useRef(null)
 
   const {
-    transaction,
-    setTransaction,
-    handleChangeTransaction,
-    validateTransaction,
-    generateTransactionToSave,
-    clearState,
-  } = useModalTransaction()
+    transactionForm,
+    setTransactionForm,
+    handleChangeTransactionForm,
+    createTransaction,
+    editTransaction,
+    clearStateTransactionForm,
+    openModalRecurrenceEdit,
+  } = useTransactions()
 
   useEffect(() => {
     if (dataToEdit) {
-      const transitionToEdit: TransactionStateProps = {
+      const transitionToEdit: ITransactionFormState = {
         title: dataToEdit.title,
-        amount: dataToEdit.amount,
-        amountDisplay: dataToEdit.amountDisplay,
+        amount: dataToEdit.amountDisplay,
         date: dataToEdit.date,
         status: dataToEdit.status,
         typeRecurrence: dataToEdit.typeRecurrence,
@@ -57,24 +52,22 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
         type: dataToEdit.type,
       }
 
-      setTransaction(transitionToEdit)
+      setTransactionForm(transitionToEdit)
       setEnableEditing(false)
     }
     else {
-      setTransaction(null)
+      clearStateTransactionForm()
       setEnableEditing(false)
     }
   }, [dataToEdit])
 
   const [enableEditing, setEnableEditing] = useState(false)
-  useEffect(() => {
-    setEnableEditing(editMode)
-  }, [editMode])
+  useEffect(() => { setEnableEditing(editMode) }, [editMode])
 
   const isDisabled = !!dataToEdit && !enableEditing
 
   const handleSave = async () => {
-    const isValid = validateTransaction()
+    const isValid = validateTransaction(transactionForm)
 
     if (!isValid) {
       return toast({
@@ -88,26 +81,42 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
     }
 
     if (!dataToEdit) {
-      const newTransaction = await generateTransactionToSave()
-      if (newTransaction) await onSave.mutateAsync(newTransaction)
+      const newTransaction = await generateTransactionToSave(transactionForm)
+      if (newTransaction) await createTransaction.mutateAsync(newTransaction)
     }
     else {
-      const modifiedTransaction = await generateTransactionToSave()
-      if (modifiedTransaction) await onSaveEdit.mutateAsync({
+      const modifiedTransaction = await generateTransactionToSave(transactionForm)
+
+      if (!modifiedTransaction) {
+        toast({
+          title: "Erro ao editar a transação.",
+          status: "error",
+          position: "top",
+          duration: 3000,
+          isClosable: true,
+        })
+        return
+      }
+
+      if (modifiedTransaction.typeRecurrence !== "") {
+        openModalRecurrenceEdit(dataToEdit.id, modifiedTransaction)
+        return
+      }
+
+      await editTransaction.mutateAsync({
         id: dataToEdit.id,
-        transaction: modifiedTransaction
+        transaction: modifiedTransaction,
       })
     }
 
     onClose()
-    clearState()
+    clearStateTransactionForm()
   }
 
   return (
     <Modal
       initialFocusRef={initialRef}
-      finalFocusRef={finalRef}
-      isOpen={true}
+      isOpen={isOpen}
       onClose={onClose}
       isCentered
     >
@@ -129,8 +138,8 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
             <Input
               name="title"
               placeholder="Nome"
-              value={transaction.title}
-              onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
+              value={transactionForm.title}
+              onChange={({ target }) => handleChangeTransactionForm(target.name, target.value)}
               ref={initialRef}
               disabled={isDisabled}
               _disabled={{ cursor: "no-drop" }}
@@ -140,8 +149,8 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
               <Input
                 name="amount"
                 placeholder="Valor"
-                value={transaction.amountDisplay}
-                onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
+                value={transactionForm.amount}
+                onChange={({ target }) => handleChangeTransactionForm(target.name, target.value)}
                 disabled={isDisabled}
                 _disabled={{ cursor: "no-drop" }}
               />
@@ -149,8 +158,8 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
               <Input
                 name="date"
                 placeholder="Data"
-                value={transaction.date}
-                onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
+                value={transactionForm.date}
+                onChange={({ target }) => handleChangeTransactionForm(target.name, target.value)}
                 type="date"
                 disabled={isDisabled}
                 _disabled={{ cursor: "no-drop" }}
@@ -168,8 +177,8 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
             <HStack spacing={2}>
               <Select
                 name="status"
-                value={transaction.status}
-                onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
+                value={transactionForm.status}
+                onChange={({ target }) => handleChangeTransactionForm(target.name, target.value)}
                 placeholder="Status"
                 disabled={isDisabled}
                 _disabled={{ cursor: "no-drop", opacity: 1 }}
@@ -182,8 +191,8 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
 
               <Select
                 name="typeRecurrence"
-                value={transaction.typeRecurrence}
-                onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
+                value={transactionForm.typeRecurrence}
+                onChange={({ target }) => handleChangeTransactionForm(target.name, target.value)}
                 placeholder="Recorrência"
                 disabled={isDisabled}
                 _disabled={{ cursor: "no-drop", opacity: 1 }}
@@ -195,13 +204,13 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
                 <option value="installments">Parcelas</option>
               </Select>
 
-              {transaction.typeRecurrence === "installments" && (
+              {transactionForm.typeRecurrence === "installments" && (
                 <Input
                   maxWidth="100px"
                   name="installments"
                   placeholder="Parcelas"
-                  value={transaction.installments}
-                  onChange={({ target }) => handleChangeTransaction(target.name, target.value)}
+                  value={transactionForm.installments}
+                  onChange={({ target }) => handleChangeTransactionForm(target.name, target.value)}
                   disabled={isDisabled}
                   type="number"
                   _disabled={{ cursor: "no-drop" }}
@@ -213,16 +222,16 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
               <CheckBoxCard
                 type="deposit"
                 label="Entrada"
-                checkedType={transaction.type}
-                onClick={(typeSelected) => handleChangeTransaction("type", typeSelected)}
+                checkedType={transactionForm.type}
+                onClick={(typeSelected) => handleChangeTransactionForm("type", typeSelected)}
                 disabled={isDisabled}
               />
 
               <CheckBoxCard
                 type="withdraw"
                 label="Saída"
-                checkedType={transaction.type}
-                onClick={(typeSelected) => handleChangeTransaction("type", typeSelected)}
+                checkedType={transactionForm.type}
+                onClick={(typeSelected) => handleChangeTransactionForm("type", typeSelected)}
                 disabled={isDisabled}
               />
             </HStack>
@@ -236,7 +245,7 @@ export function ModalTransaction({ dataToEdit, editMode, onClose, onSave, onSave
                 colorScheme="green"
                 mr={3}
                 onClick={handleSave}
-                isLoading={onSave.isLoading || onSaveEdit.isLoading}
+                isLoading={createTransaction.isLoading || editTransaction.isLoading}
               >
                 Salvar
               </Button>

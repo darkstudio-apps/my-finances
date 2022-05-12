@@ -10,7 +10,7 @@ import {
   Button,
 } from "@chakra-ui/react"
 
-interface AlertDialogProps {
+interface IAlertDialog {
   id: string
   title: string
   description: ReactNode
@@ -20,7 +20,7 @@ interface AlertDialogProps {
   isLoading: boolean
 }
 
-export function AlertDialogDelete({ id, title, description, isOpen, onClose, onSubmit, isLoading }: AlertDialogProps) {
+export function AlertDialogDelete({ id, title, description, isOpen, onClose, onSubmit, isLoading }: IAlertDialog) {
   const cancelRef = useRef(null)
 
   return (

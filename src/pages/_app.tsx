@@ -1,14 +1,12 @@
+import Head from "next/head"
 import { AppProps } from "next/app"
 import { SessionProvider } from "next-auth/react"
-import Head from "next/head"
 import { QueryClientProvider } from "react-query"
 import { Box, ChakraProvider, Divider } from "@chakra-ui/react"
-
-import { Header } from "../components/Header"
-import { queryClient } from "../services/queryClient"
-
-import { theme } from "../styles/theme"
-import "../styles/scrollbar.css"
+import { Header } from "components/Header"
+import { queryClient } from "libs/queryClient"
+import { theme } from "styles/theme"
+import "styles/scrollbar.css"
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (

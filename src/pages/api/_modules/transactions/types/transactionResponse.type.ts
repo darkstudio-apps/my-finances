@@ -1,6 +1,6 @@
 import { ITransaction } from "./transaction.type"
 
-export interface ITransactionGetAllResponse {
+export interface ITransactionListResponse {
   search: {
     dateStart: string
     dateEnd: string

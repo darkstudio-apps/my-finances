@@ -1,12 +1,12 @@
 import { forwardRef, ForwardRefRenderFunction } from "react"
-import { FormLabel, FormControl, Input as ChakraInput, InputProps, FormErrorMessage } from "@chakra-ui/react"
+import { FormLabel, FormControl, Input as ChakraInput, InputProps } from "@chakra-ui/react"
 
-interface Props extends InputProps {
+interface IInput extends InputProps {
   name: string
   label?: string
 }
 
-const InputBase: ForwardRefRenderFunction<HTMLInputElement, Props> =
+const InputBase: ForwardRefRenderFunction<HTMLInputElement, IInput> =
   ({ name, label, ...rest }, ref) => {
     return (
       <FormControl>

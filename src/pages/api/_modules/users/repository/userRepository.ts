@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client"
-import { UserReqProps } from "../../../../../hooks/useUsers/user.types"
+import { UserReqProps } from "models/users/user"
 import { IUser, IUserPost } from "../types/user.type"
+
 type PartialUser = Partial<UserReqProps>
 
 const prisma = new PrismaClient()

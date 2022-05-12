@@ -1,28 +1,14 @@
+import { ITransactionServicePost } from "./transactionService.type"
+
 export type ITransactionTypeProp = "deposit" | "withdraw"
 
 // TODO: usar Enum  - https://www.typescriptlang.org/docs/handbook/enums.html
-export type ITransactionTypeRecurrenceProp = ""
+export type ITransactionTypeRecurrence = ""
   | "every_1_week"
   | "every_15_days"
   | "monthly"
   | "yearly"
   | "installments"
-
-export interface ITransactionForRegister {
-  idUser: string
-  title: string
-  amount: number
-  date: string
-  status: string
-  typeRecurrence: ITransactionTypeRecurrenceProp
-  installments: string
-  type: ITransactionTypeProp
-}
-
-export interface ITransactionForCreate extends ITransactionForRegister {
-  isRecurrence: boolean
-  idRecurrence: string
-}
 
 export interface ITransaction {
   id: string
@@ -38,4 +24,17 @@ export interface ITransaction {
   type: ITransactionTypeProp
 }
 
-export type ITransactionPartial = Partial<ITransaction>
+export interface ITransactionPost extends ITransactionServicePost {
+  isRecurrence: boolean
+  idRecurrence: string
+}
+
+export type ITransactionPut = Partial<ITransaction>
+
+export type ITransactionPutMany = Partial<ITransaction>
+
+export type ITransactionPatch = Partial<ITransaction>
+
+export type ITransactionRemove = string
+
+export type ITransactionRemoveMany = string[]

@@ -1,7 +1,7 @@
 import { dateAddDays, dateAddMonths, dateAddYears, dateIsBefore } from "../../../../../../utils/dateUtil"
-import { ITransactionForRegister } from "../../types/transaction.type"
+import { ITransactionServicePost } from "../../types/transactionService.type"
 
-const generateDatesByDays = (transaction: ITransactionForRegister, days: number) => {
+const generateDatesByDays = (transaction: ITransactionServicePost, days: number) => {
   const { date } = transaction
   const dateYearFuture = dateAddYears(date, 1)
 
@@ -20,7 +20,7 @@ const generateDatesByDays = (transaction: ITransactionForRegister, days: number)
   return datesFuture
 }
 
-const generateDatesByMonths = (transaction: ITransactionForRegister, installments: number) => {
+const generateDatesByMonths = (transaction: ITransactionServicePost, installments: number) => {
   const { date } = transaction
 
   const datesFuture = [...Array(installments)].map((_, idx) => {
@@ -34,7 +34,7 @@ const generateDatesByMonths = (transaction: ITransactionForRegister, installment
   return datesFuture
 }
 
-const generateDatesByYears = (transaction: ITransactionForRegister, installments: number) => {
+const generateDatesByYears = (transaction: ITransactionServicePost, installments: number) => {
   const { date } = transaction
 
   const datesFuture = [...Array(installments)].map((_, idx) => {
@@ -49,23 +49,23 @@ const generateDatesByYears = (transaction: ITransactionForRegister, installments
 }
 
 export const generateDatesRecurrence = {
-  every_1_week: (transaction: ITransactionForRegister): string[] => {
+  every_1_week: (transaction: ITransactionServicePost): string[] => {
     return generateDatesByDays(transaction, 7)
   },
 
-  every_15_days: (transaction: ITransactionForRegister): string[] => {
+  every_15_days: (transaction: ITransactionServicePost): string[] => {
     return generateDatesByDays(transaction, 15)
   },
 
-  monthly: (transaction: ITransactionForRegister): string[] => {
+  monthly: (transaction: ITransactionServicePost): string[] => {
     return generateDatesByMonths(transaction, 12)
   },
 
-  yearly: (transaction: ITransactionForRegister): string[] => {
+  yearly: (transaction: ITransactionServicePost): string[] => {
     return generateDatesByYears(transaction, 2)
   },
 
-  installments: (transaction: ITransactionForRegister): string[] => {
+  installments: (transaction: ITransactionServicePost): string[] => {
     const installments = parseInt(transaction.installments)
     return generateDatesByMonths(transaction, installments)
   },

@@ -1,4 +1,5 @@
-import { ITransactionForRegister, ITransaction } from "./transaction.type"
+import { ITransaction } from "./transaction.type"
+import { ITransactionServicePost } from "./transactionService.type"
 
 export interface ITransactionRequestSession {
   user?: {
@@ -10,13 +11,13 @@ export interface ITransactionRequestSession {
   expires?: string
 }
 
-export type ITransactionRequestActionParam = "current" | "next" | "all"
+export type ITransactionRequestQueryActionParam = "current" | "next" | "all"
 
 export interface ITransactionRequest {
   query: {
     idUser: string
     id: string
-    action?: ITransactionRequestActionParam
+    action?: ITransactionRequestQueryActionParam
   }
   body: Partial<ITransaction>
 }
@@ -27,5 +28,5 @@ export interface ITransactionRequestRoot {
     month?: string
     year?: string
   }
-  body: ITransactionForRegister
+  body: ITransactionServicePost
 }

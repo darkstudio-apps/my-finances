@@ -2,19 +2,23 @@ import { useEffect, useState } from "react"
 import { GetServerSideProps } from "next"
 import { getSession } from "next-auth/react"
 import { SimpleGrid, Stack, Button, Select, Spinner, HStack, useDisclosure } from "@chakra-ui/react"
+import {
+  CardTransaction,
+  TableTransaction,
+  ModalTransaction,
+  ModalTransactionRecurrenceDelete,
+  ModalTransactionRecurrenceEdit,
+} from "partialComponents/transactions"
+import { TransactionsContextProvider, useTransactions } from "contexts/transactions"
+import { ITransaction } from "models/transactions"
+import { dateNowYearMonthDay, getObjYearMonthDay } from "utils/dateUtil"
 
-import { CardTransaction } from "../components/CardTransaction"
-import { TableTransaction } from "../components/TableTransaction"
-import { ModalTransaction } from "../components/ModalTransaction"
-import { TransactionProps, useTransactions } from "../hooks/useTransactions"
-import { dateNowYearMonthDay, getObjYearMonthDay } from "../utils/dateUtil"
-
-export default function Transactions() {
+function Transactions() {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const { transactions, filters, setFilters, summary, create, edit, remove } = useTransactions()
+  const { transactions, filters, setFilters, summary } = useTransactions()
 
-  const [transactionToEdit, setTransactionToEdit] = useState<TransactionProps | null>(null)
+  const [transactionToEdit, setTransactionToEdit] = useState<ITransaction | null>(null)
   const [editMode, setEditMode] = useState(false)
 
   useEffect(() => {
@@ -36,7 +40,7 @@ export default function Transactions() {
     }))
   }
 
-  const handleEnableModal = (transaction: TransactionProps, edit_mode: boolean = false) => {
+  const handleEnableModal = (transaction: ITransaction, edit_mode: boolean = false) => {
     setTransactionToEdit(transaction)
     setEditMode(edit_mode)
     onOpen()
@@ -93,7 +97,7 @@ export default function Transactions() {
               name="year"
               placeholder="Selecione o ano"
               value={filters.year}
-              onChange={({ target: { name, value } }) => setFilters(old => ({ ...old, [name]: value }))}
+              onChange={({ target: { name, value } }) => handleChangeFilters(name, value)}
             >
               <option value="2021">2021</option>
               <option value="2022">2022</option>
@@ -124,23 +128,29 @@ export default function Transactions() {
         <TableTransaction
           data={transactions.data}
           isLoading={transactions.isLoading}
-          enableModal={handleEnableModal}
-          onDelete={remove}
+          handleEnableModal={handleEnableModal}
         />
       </Stack>
 
-      {isOpen && (
-        <ModalTransaction
-          dataToEdit={transactionToEdit}
-          editMode={editMode}
-          onClose={onClose}
-          onSave={create}
-          onSaveEdit={edit}
-        />
-      )}
+      <ModalTransaction
+        isOpen={isOpen}
+        dataToEdit={transactionToEdit}
+        editMode={editMode}
+        onClose={onClose}
+      />
+
+      <ModalTransactionRecurrenceEdit />
+
+      <ModalTransactionRecurrenceDelete />
     </Stack>
   )
 }
+
+export default () => (
+  <TransactionsContextProvider>
+    <Transactions />
+  </TransactionsContextProvider>
+)
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context)
