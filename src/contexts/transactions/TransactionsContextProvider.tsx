@@ -27,6 +27,8 @@ interface ITransactionsContextProvider {
   children: ReactNode
 }
 
+const transactionsQuerie = '/transactions'
+
 export function TransactionsContextProvider({ children }: ITransactionsContextProvider) {
   const toast = useToast()
   const queryClient = useQueryClient()
@@ -40,7 +42,7 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
   })
 
   const { data: transactions, isLoading, refetch, isFetching } = useQuery(
-    '/transactions',
+    transactionsQuerie,
     async () => {
       try {
         const { month, year } = filters
@@ -94,7 +96,7 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('/transactions')
+        queryClient.invalidateQueries(transactionsQuerie)
       },
     }
   )
@@ -123,7 +125,7 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
     }
   }, {
     onSuccess: () => {
-      queryClient.invalidateQueries('/transactions')
+      queryClient.invalidateQueries(transactionsQuerie)
     },
   })
 
@@ -151,7 +153,7 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
     }
   }, {
     onSuccess: () => {
-      queryClient.invalidateQueries('/transactions')
+      queryClient.invalidateQueries(transactionsQuerie)
     },
   })
 
