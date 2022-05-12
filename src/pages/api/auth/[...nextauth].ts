@@ -28,7 +28,7 @@ export default NextAuth({
 
         if (typeof userEmail !== "string") throw new Error("User email not found")
 
-        const user = await userService.get(userEmail)
+        const { user } = await userService.get(userEmail)
 
         if (user) {
           const idUser = user.id
