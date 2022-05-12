@@ -70,7 +70,7 @@ export function ModalTransaction({ isOpen, dataToEdit, editMode, onClose }: IMod
     const isValid = validateTransaction(transactionForm)
 
     if (!isValid) {
-      return toast({
+      toast({
         title: "Campos obrigatórios",
         description: "Todos os campos devem ser preenchidos.",
         status: "warning",
@@ -78,39 +78,44 @@ export function ModalTransaction({ isOpen, dataToEdit, editMode, onClose }: IMod
         duration: 4000,
         isClosable: true,
       })
+      return
     }
 
-    if (!dataToEdit) {
-      const newTransaction = await generateTransactionToSave(transactionForm)
-      if (newTransaction) await createTransaction.mutateAsync(newTransaction)
-    }
-    else {
-      const modifiedTransaction = await generateTransactionToSave(transactionForm)
+    try {
+      if (!dataToEdit) {
+        const newTransaction = await generateTransactionToSave(transactionForm)
 
-      if (!modifiedTransaction) {
-        toast({
-          title: "Erro ao editar a transação.",
-          status: "error",
-          position: "top",
-          duration: 3000,
-          isClosable: true,
-        })
-        return
+        if (!newTransaction) throw new Error()
+
+        await createTransaction.mutateAsync(newTransaction)
+      }
+      else {
+        const modifiedTransaction = await generateTransactionToSave(transactionForm)
+
+        if (!modifiedTransaction) throw new Error()
+
+        if (modifiedTransaction.typeRecurrence === "") {
+          await editTransaction.mutateAsync({
+            id: dataToEdit.id,
+            transaction: modifiedTransaction,
+          })
+        }
+        else {
+          openModalRecurrenceEdit(dataToEdit.id, modifiedTransaction)
+        }
       }
 
-      if (modifiedTransaction.typeRecurrence !== "") {
-        openModalRecurrenceEdit(dataToEdit.id, modifiedTransaction)
-        return
-      }
-
-      await editTransaction.mutateAsync({
-        id: dataToEdit.id,
-        transaction: modifiedTransaction,
+      onClose()
+      clearStateTransactionForm()
+    } catch {
+      toast({
+        title: "Erro ao editar a transação.",
+        status: "error",
+        position: "top",
+        duration: 3000,
+        isClosable: true,
       })
     }
-
-    onClose()
-    clearStateTransactionForm()
   }
 
   return (

@@ -267,6 +267,8 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
 
   return (
     <TransactionsContext.Provider value={{
+      // ----- crud - transaction -----
+
       filters,
       setFilters,
       transactions: {
@@ -281,10 +283,14 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
 
       summary,
 
+      // ----- form -----
+
       transactionForm,
       setTransactionForm,
       clearStateTransactionForm,
       handleChangeTransactionForm,
+
+      // ----- modals -----
 
       modalRecurrenceEdit,
       setModalRecurrenceEdit,

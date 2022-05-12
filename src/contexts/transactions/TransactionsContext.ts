@@ -13,6 +13,8 @@ import {
 } from "models/transactions"
 
 interface ITransactionsContext {
+  // ----- crud - transaction -----
+
   filters: ITransactionGetFilters
   setFilters: Dispatch<SetStateAction<ITransactionGetFilters>>
   transactions: {
@@ -27,10 +29,14 @@ interface ITransactionsContext {
 
   summary: ITransactionSummary
 
+  // ----- form -----
+
   transactionForm: ITransactionFormState
   setTransactionForm: Dispatch<SetStateAction<ITransactionFormState>>
   clearStateTransactionForm: () => void
   handleChangeTransactionForm: (prop: string, value: string) => void
+
+  // ----- modals -----
 
   modalRecurrenceEdit: ITransactionModalRecurrenceEditState
   setModalRecurrenceEdit: Dispatch<SetStateAction<ITransactionModalRecurrenceEditState>>
