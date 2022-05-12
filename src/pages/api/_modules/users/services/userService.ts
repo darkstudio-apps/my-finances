@@ -1,41 +1,48 @@
 import { userRepository } from "../repository/userRepository"
-import { UserModelProps, UserReqProps } from "../../../../../hooks/useUsers/user.types"
+import { IUserPost, IUserPut } from "../types/user.type"
+import { IUserResponseGet, IUserResponsePost, IUserResponsePut, IUserResponseRemove } from "../types/userResponse.type"
 
-async function list() {
-  const users = await userRepository.list()
-  return users
-}
-
-async function get(email: string) {
+async function get(email: string): Promise<IUserResponseGet> {
   const user = await userRepository.get(email)
-  return user
+
+  const response: IUserResponseGet = {
+    user,
+  }
+
+  return response
 }
 
-async function post(user: UserModelProps) {
+async function post(user: IUserPost): Promise<IUserResponsePost> {
   const createdUser = await userRepository.post(user)
-  return createdUser
+
+  const response: IUserResponsePost = {
+    user: createdUser,
+  }
+
+  return response
 }
 
-async function put(id: string, transaction: Partial<UserReqProps>) {
+async function put(id: string, transaction: IUserPut): Promise<IUserResponsePut> {
   const editedUser = await userRepository.put(id, transaction)
-  return editedUser
+
+  const response: IUserResponsePut = {
+    user: editedUser,
+  }
+  return response
 }
 
-function patch(id: string, transaction: Partial<UserReqProps>) {
-  const editedUser = userRepository.put(id, transaction)
-  return editedUser
-}
+async function remove(id: string): Promise<IUserResponseRemove> {
+  const ok = await userRepository.remove(id)
 
-function remove(id: string) {
-  const ok = userRepository.remove(id)
-  return ok
+  const response: IUserResponseRemove = {
+    success: !!ok,
+  }
+  return response
 }
 
 export const userService = {
-  list,
   get,
   post,
   put,
-  patch,
   remove,
 }

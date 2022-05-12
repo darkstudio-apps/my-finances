@@ -5,9 +5,6 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
   const { method } = req
 
   switch (method) {
-    case "GET":
-      userController.list(req, res)
-      break
     case "POST":
       userController.post(req, res)
       break
