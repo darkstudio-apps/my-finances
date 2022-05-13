@@ -1,6 +1,7 @@
 import { createContext, Dispatch, SetStateAction } from "react"
 import { UseMutationResult } from "react-query"
 import {
+  IModalTransactionForm,
   ITransaction,
   ITransactionFormState,
   ITransactionGetFilters,
@@ -35,6 +36,9 @@ interface ITransactionsContext {
   setTransactionForm: Dispatch<SetStateAction<ITransactionFormState>>
   clearStateTransactionForm: () => void
   handleChangeTransactionForm: (prop: string, value: string) => void
+
+  modalTransactionForm: IModalTransactionForm
+  handleModalTransactionForm: (props: Partial<IModalTransactionForm>) => void
 
   // ----- modals -----
 

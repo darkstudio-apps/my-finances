@@ -17,16 +17,9 @@ import {
 } from "@chakra-ui/react"
 import { CheckBoxCard } from "components/CheckBoxCard"
 import { useTransactions, generateTransactionToSave, validateTransaction } from "contexts/transactions"
-import { ITransaction, ITransactionFormState } from "models/transactions"
+import { ITransactionFormState } from "models/transactions"
 
-interface IModalTransaction {
-  isOpen: boolean
-  dataToEdit?: ITransaction | null
-  editMode: boolean
-  onClose: () => void
-}
-
-export function ModalTransaction({ isOpen, dataToEdit, editMode, onClose }: IModalTransaction) {
+export function ModalTransaction() {
   const toast = useToast()
   const initialRef = useRef(null)
 
@@ -38,6 +31,8 @@ export function ModalTransaction({ isOpen, dataToEdit, editMode, onClose }: IMod
     editTransaction,
     clearStateTransactionForm,
     openModalRecurrenceEdit,
+    modalTransactionForm: { isOpen, editMode, dataToEdit },
+    handleModalTransactionForm
   } = useTransactions()
 
   useEffect(() => {
@@ -53,18 +48,18 @@ export function ModalTransaction({ isOpen, dataToEdit, editMode, onClose }: IMod
       }
 
       setTransactionForm(transitionToEdit)
-      setEnableEditing(false)
     }
     else {
       clearStateTransactionForm()
-      setEnableEditing(false)
+      handleModalTransactionForm({ editMode: false })
     }
   }, [dataToEdit])
 
-  const [enableEditing, setEnableEditing] = useState(false)
-  useEffect(() => { setEnableEditing(editMode) }, [editMode])
+  const isDisabled = !!dataToEdit && !editMode
 
-  const isDisabled = !!dataToEdit && !enableEditing
+  const onClose = () => {
+    handleModalTransactionForm({ isOpen: false })
+  }
 
   const handleSave = async () => {
     const isValid = validateTransaction(transactionForm)
@@ -99,14 +94,15 @@ export function ModalTransaction({ isOpen, dataToEdit, editMode, onClose }: IMod
             id: dataToEdit.id,
             transaction: modifiedTransaction,
           })
+
+          onClose()
+          clearStateTransactionForm()
         }
         else {
           openModalRecurrenceEdit(dataToEdit.id, modifiedTransaction)
+          onClose()
         }
       }
-
-      onClose()
-      clearStateTransactionForm()
     } catch {
       toast({
         title: "Erro ao editar a transação.",
@@ -131,7 +127,7 @@ export function ModalTransaction({ isOpen, dataToEdit, editMode, onClose }: IMod
           {
             !dataToEdit
               ? "Cadastrar Transação"
-              : enableEditing
+              : editMode
                 ? "Editar Transação"
                 : "Visualizar Transação"
           }
@@ -244,7 +240,7 @@ export function ModalTransaction({ isOpen, dataToEdit, editMode, onClose }: IMod
         </ModalBody>
 
         <ModalFooter>
-          {(!dataToEdit || enableEditing) ? (
+          {(!dataToEdit || editMode) ? (
             <>
               <Button
                 colorScheme="green"
@@ -255,10 +251,14 @@ export function ModalTransaction({ isOpen, dataToEdit, editMode, onClose }: IMod
                 Salvar
               </Button>
 
-              <Button onClick={onClose}>Cancelar</Button>
+              <Button onClick={onClose}>
+                Cancelar
+              </Button>
             </>
           ) : (
-            <Button w="240px" mx="auto" onClick={() => setEnableEditing(true)}>Editar</Button>
+            <Button w="240px" mx="auto" onClick={() => handleModalTransactionForm({ editMode: false })}>
+              Editar
+            </Button>
           )}
         </ModalFooter>
       </ModalContent>

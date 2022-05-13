@@ -1,17 +1,9 @@
-import { UseMutationResult } from "react-query"
 import { Box, Text, Table, Thead, Tbody, Tr, Td, Icon, HStack, Tfoot, Th } from "@chakra-ui/react"
 import { FiEdit3, FiTrash } from "react-icons/fi"
 import { TableTransactionTh } from "./TableTransactionTh"
 import { NoContentTableTransaction } from "./NoContentTableTransaction"
 import { useTransactions } from "contexts/transactions"
 import { ITransaction } from "models/transactions"
-
-interface ITableTransaction {
-  data: ITransaction[] | undefined
-  isLoading: boolean
-  handleEnableModal?: (transaction: ITransaction, editMode?: boolean) => void
-  onDelete?: UseMutationResult<void, unknown, string, unknown>
-}
 
 const colorStatus: any = {
   deposit: "orange.600",
@@ -25,17 +17,25 @@ const getColorStatus = (type: string) => {
   return color ? color : "gray.400"
 }
 
-export function TableTransaction({ data, isLoading, handleEnableModal }: ITableTransaction) {
-  const { transactions, openModalDelete } = useTransactions()
+export function TableTransaction() {
+  const { transactions, handleModalTransactionForm, openModalDelete } = useTransactions()
 
   const openDialogDelete = (transaction: ITransaction) => {
     const { id, isRecurrence } = transaction
     openModalDelete(id, isRecurrence)
   }
 
-  if (isLoading) return null
+  const handleEnableModal = (transactionToEdit: ITransaction, editMode = false) => {
+    handleModalTransactionForm({
+      isOpen: true,
+      editMode,
+      dataToEdit: { ...transactionToEdit },
+    })
+  }
 
-  if (!data || data.length < 1) {
+  if (transactions.isLoading) return null
+
+  if (!transactions.data || transactions.data.length < 1) {
     return <NoContentTableTransaction />
   }
 

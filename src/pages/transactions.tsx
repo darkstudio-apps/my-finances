@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react"
+/* eslint-disable import/no-anonymous-default-export */
+/* eslint-disable react/display-name */
 import { GetServerSideProps } from "next"
 import { getSession } from "next-auth/react"
-import { SimpleGrid, Stack, Button, Select, Spinner, HStack, useDisclosure } from "@chakra-ui/react"
+import { SimpleGrid, Stack, Button, Select, Spinner, HStack } from "@chakra-ui/react"
 import {
   CardTransaction,
   TableTransaction,
@@ -10,28 +11,15 @@ import {
   ModalTransactionRecurrenceEdit,
 } from "partialComponents/transactions"
 import { TransactionsContextProvider, useTransactions } from "contexts/transactions"
-import { ITransaction } from "models/transactions"
-import { dateNowYearMonthDay, getObjYearMonthDay } from "utils/dateUtil"
 
 function Transactions() {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-
-  const { transactions, filters, setFilters, summary } = useTransactions()
-
-  const [transactionToEdit, setTransactionToEdit] = useState<ITransaction | null>(null)
-  const [editMode, setEditMode] = useState(false)
-
-  useEffect(() => {
-    const dateYearMonthDay = dateNowYearMonthDay()
-    const { month, year } = getObjYearMonthDay(dateYearMonthDay)
-    setFilters({ month, year })
-  }, [])
-
-  const handleOpenNewTransaction = () => {
-    setTransactionToEdit(null)
-    setEditMode(false)
-    onOpen()
-  }
+  const {
+    transactions,
+    filters,
+    setFilters,
+    summary,
+    openModalTransactionForm,
+  } = useTransactions()
 
   const handleChangeFilters = (name: string, value: string) => {
     setFilters(old => ({
@@ -40,10 +28,12 @@ function Transactions() {
     }))
   }
 
-  const handleEnableModal = (transaction: ITransaction, edit_mode: boolean = false) => {
-    setTransactionToEdit(transaction)
-    setEditMode(edit_mode)
-    onOpen()
+  const handleOpenNewTransaction = () => {
+    openModalTransactionForm({
+      isOpen: true,
+      editMode: false,
+      dataToEdit: null,
+    })
   }
 
   return (
@@ -125,19 +115,10 @@ function Transactions() {
           </HStack>
         </HStack>
 
-        <TableTransaction
-          data={transactions.data}
-          isLoading={transactions.isLoading}
-          handleEnableModal={handleEnableModal}
-        />
+        <TableTransaction />
       </Stack>
 
-      <ModalTransaction
-        isOpen={isOpen}
-        dataToEdit={transactionToEdit}
-        editMode={editMode}
-        onClose={onClose}
-      />
+      <ModalTransaction />
 
       <ModalTransactionRecurrenceEdit />
 

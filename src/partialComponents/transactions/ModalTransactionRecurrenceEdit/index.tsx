@@ -10,7 +10,13 @@ export function ModalTransactionRecurrenceEdit() {
     modalRecurrenceEdit: { isOpen, idTransaction, transaction },
     closeModalRecurrenceEdit,
     editTransaction,
+    handleModalTransactionForm,
   } = useTransactions()
+
+  const onCancel = () => {
+    handleModalTransactionForm({ isOpen: true })
+    closeModalRecurrenceEdit()
+  }
 
   const handleSubmit = async (action: ITransactionRequestQueryAction) => {
     if (!idTransaction) {
@@ -41,11 +47,13 @@ export function ModalTransactionRecurrenceEdit() {
       titleBtnConfirm="Salvar"
       onClose={closeModalRecurrenceEdit}
       onSubmit={handleSubmit}
+      onCancel={onCancel}
       options={{
         current: "Editar a atual",
         next: "Editar a atual e as proximas",
         all: "Editar todas",
       }}
+      isLoading={editTransaction.isLoading}
     />
   )
 }
