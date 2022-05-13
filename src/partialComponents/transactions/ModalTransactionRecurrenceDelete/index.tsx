@@ -57,6 +57,7 @@ export function ModalTransactionRecurrenceDelete() {
         titleBtnConfirm="Excluir"
         onClose={closeModalDelete}
         onSubmit={handleSubmitModalRecurrenceDelete}
+        onCancel={closeModalDelete}
         options={{
           current: "Excluir a atual",
           next: "Excluir a atual e as proximas",
