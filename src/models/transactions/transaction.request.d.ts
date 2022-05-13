@@ -9,6 +9,7 @@ export interface ITransactionRequestBase {
   typeRecurrence: string
   installments: string
   type: ITransactionPropType
+  isRecurrence: boolean
 }
 
 export type ITransactionRequestPost = ITransactionRequestBase
