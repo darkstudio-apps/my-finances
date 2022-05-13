@@ -1,6 +1,5 @@
 import { useToast } from "@chakra-ui/react"
-import { AlertDialogDelete } from "components/AlertDialogDelete"
-import { ModalRecurrence } from "components/ModalRecurrence"
+import { AlertDialogDelete, ModalRecurrence } from "components"
 import { useTransactions } from "contexts/transactions"
 import { ITransactionRequestQueryAction } from "models/transactions"
 

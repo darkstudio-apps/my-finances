@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import { css } from "@emotion/react"
 import {
   Modal,
@@ -15,7 +15,7 @@ import {
   Stack,
   useToast,
 } from "@chakra-ui/react"
-import { CheckBoxCard } from "components/CheckBoxCard"
+import { CheckBoxCard } from "components"
 import { useTransactions, generateTransactionToSave, validateTransaction } from "contexts/transactions"
 import { ITransactionFormState } from "models/transactions"
 

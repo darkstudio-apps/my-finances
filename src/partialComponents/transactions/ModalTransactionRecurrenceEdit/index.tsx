@@ -1,5 +1,5 @@
 import { useToast } from "@chakra-ui/react"
-import { ModalRecurrence } from "components/ModalRecurrence"
+import { ModalRecurrence } from "components"
 import { useTransactions } from "contexts/transactions"
 import { ITransactionRequestQueryAction } from "models/transactions"
 
