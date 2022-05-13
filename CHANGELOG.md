@@ -5,17 +5,17 @@ slug: "/changelog"
 
 O Changelog fornece uma visão geral das mudanças significativas que fizemos na aplicação.
 
-## xx-04-2021 - v0.3.0
+## xx-05-2021 - v0.3.0
 
 * feature de recorrência
 
-* Restruturação da camada de API
-
 * Implementado a funcionalidade de Edge Functions no middleware das API Routes
 
-* Atualização de libs (Next, Next Auth)
+* Atualização de libs (Next, Next Auth, entre outras...)
 
-* Implementado o docker com um serviço MongoDB rodando local
+* Reestruturação do Back-end
+
+* Reestruturação do Front-end
 
 ## 08-02-2021 - v0.2.1
 
