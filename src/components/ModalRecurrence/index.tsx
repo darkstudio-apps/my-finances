@@ -18,8 +18,9 @@ interface IModalRecurrence {
   isOpen: boolean
   title: string
   titleBtnConfirm?: string
-  onSubmit: (action: ITransactionRequestQueryAction) => void
   onClose: () => void
+  onSubmit: (action: ITransactionRequestQueryAction) => void
+  onCancel: () => void
   options: {
     current: string
     next?: string
@@ -33,8 +34,9 @@ export function ModalRecurrence({
   isOpen,
   title,
   titleBtnConfirm,
-  onSubmit,
   onClose,
+  onSubmit,
+  onCancel,
   options,
   colorScheme,
   isLoading,
@@ -74,7 +76,7 @@ export function ModalRecurrence({
         </ModalBody>
 
         <Stack as={ModalFooter} spacing={4} isInline>
-          <Button onClick={onClose}>Cancelar</Button>
+          <Button onClick={onCancel}>Cancelar</Button>
 
           <Button
             colorScheme={colorScheme ? colorScheme : "green"}

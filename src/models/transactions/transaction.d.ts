@@ -26,6 +26,12 @@ export interface ITransactionFormState {
   type: ITransactionPropType | null
 }
 
+export interface IModalTransactionForm {
+  isOpen: boolean
+  editMode: boolean
+  dataToEdit: ITransaction | null
+}
+
 export interface ITransactionSummary {
   deposit: string
   withdraw: string

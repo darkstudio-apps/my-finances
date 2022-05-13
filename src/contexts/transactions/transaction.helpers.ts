@@ -90,12 +90,15 @@ export async function generateTransactionToSave(
 
     const type: ITransactionPropType = transaction.type
 
+    const isRecurrence = transaction.typeRecurrence !== ""
+
     const newTransaction: ITransactionRequestBase = {
       ...transaction,
       idUser,
       type,
       amount: formatFloat(transaction.amount),
       date: parseToUTCandISO(transaction.date, "start"),
+      isRecurrence,
     }
 
     return newTransaction

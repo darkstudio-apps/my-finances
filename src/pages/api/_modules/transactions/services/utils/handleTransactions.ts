@@ -1,5 +1,5 @@
 
-import { uuid } from "../../../../../../utils/generateID"
+import { uuid } from "utils/generateID"
 import { generateDatesRecurrence } from "./"
 import {
   ITransaction,

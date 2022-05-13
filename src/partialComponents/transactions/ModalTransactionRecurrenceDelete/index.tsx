@@ -1,6 +1,5 @@
 import { useToast } from "@chakra-ui/react"
-import { AlertDialogDelete } from "components/AlertDialogDelete"
-import { ModalRecurrence } from "components/ModalRecurrence"
+import { AlertDialogDelete, ModalRecurrence } from "components"
 import { useTransactions } from "contexts/transactions"
 import { ITransactionRequestQueryAction } from "models/transactions"
 
@@ -57,6 +56,7 @@ export function ModalTransactionRecurrenceDelete() {
         titleBtnConfirm="Excluir"
         onClose={closeModalDelete}
         onSubmit={handleSubmitModalRecurrenceDelete}
+        onCancel={closeModalDelete}
         options={{
           current: "Excluir a atual",
           next: "Excluir a atual e as proximas",

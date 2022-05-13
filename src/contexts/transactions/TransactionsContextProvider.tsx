@@ -18,7 +18,8 @@ import {
   ITransactionRequestDelete,
   ITransactionModalDeleteState,
   ITransactionModalRecurrenceEditState,
-  ITransactionRequestBase
+  ITransactionRequestBase,
+  IModalTransactionForm
 } from "models/transactions"
 import { dateNowYearMonthDay, getObjYearMonthDay } from "utils/dateUtil"
 import { formatCurrency, formatReal } from "utils/maskUtil"
@@ -26,6 +27,8 @@ import { formatCurrency, formatReal } from "utils/maskUtil"
 interface ITransactionsContextProvider {
   children: ReactNode
 }
+
+const transactionsQuerie = '/transactions'
 
 export function TransactionsContextProvider({ children }: ITransactionsContextProvider) {
   const toast = useToast()
@@ -40,7 +43,7 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
   })
 
   const { data: transactions, isLoading, refetch, isFetching } = useQuery(
-    '/transactions',
+    transactionsQuerie,
     async () => {
       try {
         const { month, year } = filters
@@ -94,7 +97,7 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('/transactions')
+        queryClient.invalidateQueries(transactionsQuerie)
       },
     }
   )
@@ -123,7 +126,7 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
     }
   }, {
     onSuccess: () => {
-      queryClient.invalidateQueries('/transactions')
+      queryClient.invalidateQueries(transactionsQuerie)
     },
   })
 
@@ -151,7 +154,7 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
     }
   }, {
     onSuccess: () => {
-      queryClient.invalidateQueries('/transactions')
+      queryClient.invalidateQueries(transactionsQuerie)
     },
   })
 
@@ -177,9 +180,7 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
 
   const [transactionForm, setTransactionForm] = useState<ITransactionFormState>(transactionFormInitial)
 
-  const clearStateTransactionForm = () => {
-    setTransactionForm(transactionFormInitial)
-  }
+  const clearStateTransactionForm = () => setTransactionForm(transactionFormInitial)
 
   const handleChangeTransactionForm = (prop: string, value: string) => {
     if (prop === "amount") value = formatReal(value)
@@ -214,6 +215,20 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
       ...transactionForm,
       [prop]: value,
     })
+  }
+
+  const [modalTransactionForm, setModalTransactionForm] = useState<IModalTransactionForm>({
+    isOpen: false,
+    editMode: false,
+    dataToEdit: null,
+  })
+
+  const handleModalTransactionForm = ({ isOpen, editMode, dataToEdit }: Partial<IModalTransactionForm>) => {
+    setModalTransactionForm(oldValue => ({
+      isOpen: isOpen !== undefined ? isOpen : oldValue.isOpen,
+      editMode: editMode !== undefined ? editMode : oldValue.editMode,
+      dataToEdit: dataToEdit !== undefined ? dataToEdit : oldValue.dataToEdit,
+    }))
   }
 
   // -------------------- MODALS RECURRENCE --------------------
@@ -267,6 +282,8 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
 
   return (
     <TransactionsContext.Provider value={{
+      // ----- crud - transaction -----
+
       filters,
       setFilters,
       transactions: {
@@ -281,10 +298,17 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
 
       summary,
 
+      // ----- form -----
+
       transactionForm,
       setTransactionForm,
       clearStateTransactionForm,
       handleChangeTransactionForm,
+
+      modalTransactionForm,
+      handleModalTransactionForm,
+
+      // ----- modals -----
 
       modalRecurrenceEdit,
       setModalRecurrenceEdit,
