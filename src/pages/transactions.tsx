@@ -18,7 +18,7 @@ function Transactions() {
     filters,
     setFilters,
     summary,
-    openModalTransactionForm,
+    handleModalTransactionForm,
   } = useTransactions()
 
   const handleChangeFilters = (name: string, value: string) => {
@@ -29,7 +29,7 @@ function Transactions() {
   }
 
   const handleOpenNewTransaction = () => {
-    openModalTransactionForm({
+    handleModalTransactionForm({
       isOpen: true,
       editMode: false,
       dataToEdit: null,
