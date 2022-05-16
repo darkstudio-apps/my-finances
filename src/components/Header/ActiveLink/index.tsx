@@ -2,13 +2,13 @@ import { useRouter } from "next/router"
 import NextLink from "next/link"
 import { Link, LinkProps } from "@chakra-ui/react"
 
-interface ActiveLinkProps extends LinkProps {
+interface IActiveLink extends LinkProps {
   href: string
   children: string
   shouldMatchExactHref?: boolean
 }
 
-export function ActiveLink({ href, children, shouldMatchExactHref = false, ...rest }: ActiveLinkProps) {
+export function ActiveLink({ href, children, shouldMatchExactHref = false, ...rest }: IActiveLink) {
   const { asPath } = useRouter()
 
   let isActive = false

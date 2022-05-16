@@ -1,0 +1,37 @@
+### POST
+# endpoint: api/transactions
+# description: cadatra uma transaction
+
+POST http://localhost:3000/api/transactions
+Cookie: next-auth.csrf-token=e447b7d0b002168af491b2a906302b0a327114d696e5d4a1f3239d517c888a75|d021a872ae252337120337c46018d391329fdbc95e0cd3a5f150bfbce02ded7f; next-auth.callback-url=http://localhost:3000/; next-auth.session-token=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..rswZQtMMoRKaN_pQ.Z3xWW-AXvUyz4OjhWy6RN_-4mCVjWOa8SHYhDkUSRLWsPb7_AQ9fpWSHQ6682IYON58lpe3Pbrs9H_vLZXJ8pRYBD24lENayX3LfzYDaURcz4b32Io5ZySL-RBTANtnqmWlgUQzdoarHRAHd5c3cUx7UZOR66pc7B6cm7ldOZu37S5LpoLQu4Vk0iovuYWYr5LAvmnOliB9DQkHsGAlhzAxHjVDoefM1TdPk2nH0Z6Sq2dX7T8P-oT5mgzph_fFVbM2nR79uleNk01XWcncFsJEoq_BAXI_OB9z1C6yie1CM5wbQ2cqIcJvl-il-54fObNWAmcCu2CWYTWGNtlLG6ZKe6jAHLV3sRJk.Wi3VucRGmU1ys-aZxFWyNw
+content-type: application/json
+
+{
+  "title": "teste client http",
+  "amount": 10000.1,
+  "date": "2022-03-05T00:00:00.000Z",
+  "status": "paid",
+  "typeRecurrence": "",
+  "installments": "",
+  "type": "withdraw",
+  "idUser": "619c4a2502f154d3817c5314",
+  "isRecurrence": false
+}
+
+### Cadastrar uma transação como recorrência.
+
+POST http://localhost:3000/api/transactions
+Cookie: next-auth.csrf-token=e447b7d0b002168af491b2a906302b0a327114d696e5d4a1f3239d517c888a75|d021a872ae252337120337c46018d391329fdbc95e0cd3a5f150bfbce02ded7f; next-auth.callback-url=http://localhost:3000/; next-auth.session-token=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..rswZQtMMoRKaN_pQ.Z3xWW-AXvUyz4OjhWy6RN_-4mCVjWOa8SHYhDkUSRLWsPb7_AQ9fpWSHQ6682IYON58lpe3Pbrs9H_vLZXJ8pRYBD24lENayX3LfzYDaURcz4b32Io5ZySL-RBTANtnqmWlgUQzdoarHRAHd5c3cUx7UZOR66pc7B6cm7ldOZu37S5LpoLQu4Vk0iovuYWYr5LAvmnOliB9DQkHsGAlhzAxHjVDoefM1TdPk2nH0Z6Sq2dX7T8P-oT5mgzph_fFVbM2nR79uleNk01XWcncFsJEoq_BAXI_OB9z1C6yie1CM5wbQ2cqIcJvl-il-54fObNWAmcCu2CWYTWGNtlLG6ZKe6jAHLV3sRJk.Wi3VucRGmU1ys-aZxFWyNw
+content-type: application/json
+
+{
+  "title": "teste recorrencia - rest client",
+  "amount": 0.01,
+  "date": "2022-01-02T00:00:00.000Z",
+  "status": "deposit",
+  "typeRecurrence": "installments",
+  "installments": "3",
+  "type": "deposit",
+  "idUser": "619c4a2502f154d3817c5314",
+  "isRecurrence": true
+}

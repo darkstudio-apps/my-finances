@@ -1,5 +1,5 @@
+import { signOut, useSession } from "next-auth/react"
 import { Avatar, Tag, Box, Flex, Heading, HStack, Text, Menu, MenuButton, MenuList, MenuItem, Image } from "@chakra-ui/react"
-import { signOut, useSession } from "next-auth/client"
 // import { ActiveLink } from "./ActiveLink"
 import packageJson from "../../../package.json"
 
@@ -7,11 +7,10 @@ const VERCEL_ENV = process.env.NEXT_PUBLIC_VERCEL_ENV
 const APP_VERSION = packageJson.version
 
 export function Header() {
-  const [session] = useSession()
+  const { data: session } = useSession()
 
-  const handleSignOut = () => {
-    signOut()
-  }
+  const userName = session?.user?.name || ""
+  const userImage = session?.user?.image || ""
 
   return (
     <Flex as="header" align="center" justify="space-between" paddingY={8}>
@@ -35,18 +34,28 @@ export function Header() {
       </HStack>
 
       <HStack spacing={4}>
-        <Box>
-          <Heading fontSize="xl" fontWeight="semibold" color="gray.200">{session?.user?.name}</Heading>
+        <Box display={["none", "block"]}>
+          <Heading fontSize="xl" fontWeight="semibold" color="gray.200">
+            {userName}
+          </Heading>
+
           <Text fontSize="xs" color="gray.200">Sem pendências</Text>
         </Box>
 
         <Menu id="menu-avatar" isLazy>
           <MenuButton>
-            <Avatar name={session?.user?.name || ""} src={session?.user?.image || ""} />
+            <Avatar
+              width={["40px", "48px"]}
+              height={["40px", "48px"]}
+              name={userName}
+              src={userImage}
+            />
           </MenuButton>
 
           <MenuList>
-            <MenuItem onClick={handleSignOut}>Sair</MenuItem>
+            <MenuItem onClick={() => signOut()}>
+              Sair
+            </MenuItem>
           </MenuList>
         </Menu>
       </HStack>

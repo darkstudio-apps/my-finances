@@ -1,5 +1,5 @@
 import { GetServerSideProps } from "next"
-import { getSession, signIn } from "next-auth/client"
+import { getSession, signIn } from "next-auth/react"
 import { Heading, Text, Stack, HStack, Button, Image } from "@chakra-ui/react"
 
 export default function SignIn() {
