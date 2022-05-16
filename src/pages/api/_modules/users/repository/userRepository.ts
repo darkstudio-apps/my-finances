@@ -1,8 +1,5 @@
 import { PrismaClient } from "@prisma/client"
-import { UserReqProps } from "models/users/user"
-import { IUser, IUserPost } from "../types/user.type"
-
-type PartialUser = Partial<UserReqProps>
+import { IUser, IUserPost, IUserPut } from "../types/user.type"
 
 const prisma = new PrismaClient()
 
@@ -47,7 +44,7 @@ async function upsert(user: IUserPost): Promise<IUser> {
   return newUser as IUser
 }
 
-async function put(idUser: string, User: PartialUser): Promise<IUser> {
+async function put(idUser: string, User: IUserPut): Promise<IUser> {
   const editedUser = await prisma.user.update({
     where: { id: idUser },
     data: User,
