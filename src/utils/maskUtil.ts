@@ -17,6 +17,18 @@ export const formatFloat = (amount: string) => {
   const amountFormatReal = formatReal(amount).replace(".", "").replace(",", ".")
   return parseFloat(amountFormatReal)
 }
+export const formatCurrencyOnlyNumbers = (amount: number) => {
+  const currency = new Intl
+    .NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    })
+    .format(amount)
+
+  const currencyFormatted = currency.replace("R$", "").trim()
+
+  return currencyFormatted
+}
 
 export const formatReal = (amount: string | number) => {
   let tmp = onlyNumbers(String(amount)).replace(/([0-9]{2})$/g, ",$1")

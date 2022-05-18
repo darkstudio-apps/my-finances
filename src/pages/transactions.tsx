@@ -1,33 +1,25 @@
-import { useEffect, useState } from "react"
+/* eslint-disable import/no-anonymous-default-export */
+/* eslint-disable react/display-name */
 import { GetServerSideProps } from "next"
-import { getSession } from "next-auth/client"
-import { SimpleGrid, Stack, Button, Select, Spinner, HStack, useDisclosure } from "@chakra-ui/react"
+import { getSession } from "next-auth/react"
+import { SimpleGrid, Stack, Button, Select, Spinner, HStack } from "@chakra-ui/react"
+import {
+  CardTransaction,
+  TableTransaction,
+  ModalTransaction,
+  ModalTransactionRecurrenceDelete,
+  ModalTransactionRecurrenceEdit,
+} from "partialComponents/transactions"
+import { TransactionsContextProvider, useTransactions } from "contexts/transactions"
 
-import { CardTransaction } from "../components/CardTransaction"
-import { TableTransaction } from "../components/TableTransaction"
-import { ModalTransaction } from "../components/ModalTransaction"
-import { TransactionProps, useTransactions } from "../hooks/useTransactions"
-import { dateNowYearMonthDay, getObjYearMonthDay } from "../utils/dateUtil"
-
-export default function Transactions() {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-
-  const { transactions, filters, setFilters, summary, create, edit, remove } = useTransactions()
-
-  const [transactionToEdit, setTransactionToEdit] = useState<TransactionProps | null>(null)
-  const [editMode, setEditMode] = useState(false)
-
-  useEffect(() => {
-    const dateYearMonthDay = dateNowYearMonthDay()
-    const { month, year } = getObjYearMonthDay(dateYearMonthDay)
-    setFilters({ month, year })
-  }, [])
-
-  const handleOpenNewTransaction = () => {
-    setTransactionToEdit(null)
-    setEditMode(false)
-    onOpen()
-  }
+function Transactions() {
+  const {
+    transactions,
+    filters,
+    setFilters,
+    summary,
+    handleModalTransactionForm,
+  } = useTransactions()
 
   const handleChangeFilters = (name: string, value: string) => {
     setFilters(old => ({
@@ -36,15 +28,17 @@ export default function Transactions() {
     }))
   }
 
-  const handleEnableModal = (transaction: TransactionProps, edit_mode: boolean = false) => {
-    setTransactionToEdit(transaction)
-    setEditMode(edit_mode)
-    onOpen()
+  const handleOpenNewTransaction = () => {
+    handleModalTransactionForm({
+      isOpen: true,
+      editMode: false,
+      dataToEdit: null,
+    })
   }
 
   return (
-    <Stack paddingY={10} spacing={10}>
-      <SimpleGrid columns={3} spacing={10}>
+    <Stack paddingY={[6, 10]} spacing={[6, 10]}>
+      <SimpleGrid columns={[1, 1, 3]} spacing={[6, 10]}>
         <CardTransaction
           description="Entradas"
           title={summary.deposit}
@@ -64,10 +58,11 @@ export default function Transactions() {
         />
       </SimpleGrid>
 
-      <Stack spacing={4} >
+      <Stack spacing={4}>
         <HStack align="center" justify="space-between" spacing={4}>
           <HStack spacing={4}>
             <Select
+              fontSize={["13px", "15px", "15px", "15px"]}
               name="month"
               placeholder="Selecione o mês"
               value={filters.month}
@@ -88,10 +83,11 @@ export default function Transactions() {
             </Select>
 
             <Select
+              fontSize={["13px", "15px", "15px", "15px"]}
               name="year"
               placeholder="Selecione o ano"
               value={filters.year}
-              onChange={({ target: { name, value } }) => setFilters(old => ({ ...old, [name]: value }))}
+              onChange={({ target: { name, value } }) => handleChangeFilters(name, value)}
             >
               <option value="2021">2021</option>
               <option value="2022">2022</option>
@@ -107,6 +103,8 @@ export default function Transactions() {
             )}
 
             <Button
+              width={["110px", "120px", "160px", "180px"]}
+              fontSize={["11px", "15px", "15px", "15px"]}
               onClick={handleOpenNewTransaction}
               borderRadius="md"
               colorScheme="green"
@@ -117,26 +115,23 @@ export default function Transactions() {
           </HStack>
         </HStack>
 
-        <TableTransaction
-          data={transactions.data}
-          isLoading={transactions.isLoading}
-          enableModal={handleEnableModal}
-          onDelete={remove}
-        />
+        <TableTransaction />
       </Stack>
 
-      {isOpen && (
-        <ModalTransaction
-          dataToEdit={transactionToEdit}
-          editMode={editMode}
-          onClose={onClose}
-          onSave={create}
-          onSaveEdit={edit}
-        />
-      )}
+      <ModalTransaction />
+
+      <ModalTransactionRecurrenceEdit />
+
+      <ModalTransactionRecurrenceDelete />
     </Stack>
   )
 }
+
+export default () => (
+  <TransactionsContextProvider>
+    <Transactions />
+  </TransactionsContextProvider>
+)
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context)

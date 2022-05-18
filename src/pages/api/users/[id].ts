@@ -1,37 +1,41 @@
 import { NextApiRequest, NextApiResponse } from "next"
-import { RequestType } from "./_resources/types/userRequests.type"
-import { userController } from "./_resources/controller/userController"
-import authorization from "../_middlewares/authorization"
 
-async function users(req: NextApiRequest, res: NextApiResponse) {
+import { userController } from "../_modules/users/controller/userController"
+import { IUserRequestGet, IUserRequestPut, IUserRequestRemove } from "../_modules/users/types/userRequest.type"
+
+export default async function users(req: NextApiRequest, res: NextApiResponse) {
   const { method, query, body } = req
 
   const idUser = Array.isArray(query.id) ? query.id[0] : query.id
 
-  const request: RequestType = {
-    query: {
-      id: idUser,
-    },
-    body,
-  }
-
   switch (method) {
     case "GET":
-      userController.get(request, res)
+      const getRequest: IUserRequestGet = {
+        query: {
+          id: idUser,
+        },
+      }
+      userController.get(getRequest, res)
       break
     case "PUT":
-      userController.put(request, res)
-      break
-    case "PATCH":
-      userController.patch(request, res)
+      const putRequest: IUserRequestPut = {
+        query: {
+          id: idUser,
+        },
+        body,
+      }
+      userController.put(putRequest, res)
       break
     case "DELETE":
-      userController.remove(request, res)
+      const removeRequest: IUserRequestRemove = {
+        query: {
+          id: idUser,
+        },
+      }
+      userController.remove(removeRequest, res)
       break
     default:
       res.setHeader("Allow", ["GET", "PUT"])
       res.status(405).end(`Method ${method} Not Allowed`)
   }
 }
-
-export default authorization(users)

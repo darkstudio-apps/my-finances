@@ -1,0 +1,85 @@
+### PUT
+# endpoint: api/transactions/[idTransaction]
+# description: modifica o conteudo de uma transaction
+
+// TODO: criar uma chamada para cada uma das regras com um jsdoc contendo uma descrição
+// TODO: colocar um emoji nas regras para destacar
+
+PUT http://localhost:3000/api/transactions/6231053a8d6b12c5ae5330eb
+Cookie: next-auth.csrf-token=e447b7d0b002168af491b2a906302b0a327114d696e5d4a1f3239d517c888a75|d021a872ae252337120337c46018d391329fdbc95e0cd3a5f150bfbce02ded7f; next-auth.callback-url=http://localhost:3000/; next-auth.session-token=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..rswZQtMMoRKaN_pQ.Z3xWW-AXvUyz4OjhWy6RN_-4mCVjWOa8SHYhDkUSRLWsPb7_AQ9fpWSHQ6682IYON58lpe3Pbrs9H_vLZXJ8pRYBD24lENayX3LfzYDaURcz4b32Io5ZySL-RBTANtnqmWlgUQzdoarHRAHd5c3cUx7UZOR66pc7B6cm7ldOZu37S5LpoLQu4Vk0iovuYWYr5LAvmnOliB9DQkHsGAlhzAxHjVDoefM1TdPk2nH0Z6Sq2dX7T8P-oT5mgzph_fFVbM2nR79uleNk01XWcncFsJEoq_BAXI_OB9z1C6yie1CM5wbQ2cqIcJvl-il-54fObNWAmcCu2CWYTWGNtlLG6ZKe6jAHLV3sRJk.Wi3VucRGmU1ys-aZxFWyNw
+content-type: application/json
+
+{
+  "title": "teste client http",
+  "amount": 10000.1,
+  "date": "2022-03-05T00:00:00.000Z",
+  "status": "paid",
+  "typeRecurrence": "",
+  "installments": "",
+  "type": "deposit",
+  "idUser": "619c4a2502f154d3817c5314",
+  "isRecurrence": false
+}
+
+### Editar uma transação que não é uma recorrência, pra ser uma recorrência
+
+PUT http://localhost:3000/api/transactions/62364f9a42e1965888525afc
+Cookie: next-auth.csrf-token=e447b7d0b002168af491b2a906302b0a327114d696e5d4a1f3239d517c888a75|d021a872ae252337120337c46018d391329fdbc95e0cd3a5f150bfbce02ded7f; next-auth.callback-url=http://localhost:3000/; next-auth.session-token=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..rswZQtMMoRKaN_pQ.Z3xWW-AXvUyz4OjhWy6RN_-4mCVjWOa8SHYhDkUSRLWsPb7_AQ9fpWSHQ6682IYON58lpe3Pbrs9H_vLZXJ8pRYBD24lENayX3LfzYDaURcz4b32Io5ZySL-RBTANtnqmWlgUQzdoarHRAHd5c3cUx7UZOR66pc7B6cm7ldOZu37S5LpoLQu4Vk0iovuYWYr5LAvmnOliB9DQkHsGAlhzAxHjVDoefM1TdPk2nH0Z6Sq2dX7T8P-oT5mgzph_fFVbM2nR79uleNk01XWcncFsJEoq_BAXI_OB9z1C6yie1CM5wbQ2cqIcJvl-il-54fObNWAmcCu2CWYTWGNtlLG6ZKe6jAHLV3sRJk.Wi3VucRGmU1ys-aZxFWyNw
+content-type: application/json
+
+{
+  "title": "teste recorrencia - rest client",
+  "amount": 0.01,
+  "date": "2022-01-02T00:00:00.000Z",
+  "status": "deposit",
+  "typeRecurrence": "installments",
+  "installments": "3",
+  "type": "deposit",
+  "idUser": "619c4a2502f154d3817c5314",
+  "isRecurrence": true
+}
+
+### Editar uma transação que é uma recorrência
+
+PUT http://localhost:3000/api/transactions/6240e6e7613aa2ddc781d0f9?action=all
+Cookie: next-auth.csrf-token=e447b7d0b002168af491b2a906302b0a327114d696e5d4a1f3239d517c888a75|d021a872ae252337120337c46018d391329fdbc95e0cd3a5f150bfbce02ded7f; next-auth.callback-url=http://localhost:3000/; next-auth.session-token=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..rswZQtMMoRKaN_pQ.Z3xWW-AXvUyz4OjhWy6RN_-4mCVjWOa8SHYhDkUSRLWsPb7_AQ9fpWSHQ6682IYON58lpe3Pbrs9H_vLZXJ8pRYBD24lENayX3LfzYDaURcz4b32Io5ZySL-RBTANtnqmWlgUQzdoarHRAHd5c3cUx7UZOR66pc7B6cm7ldOZu37S5LpoLQu4Vk0iovuYWYr5LAvmnOliB9DQkHsGAlhzAxHjVDoefM1TdPk2nH0Z6Sq2dX7T8P-oT5mgzph_fFVbM2nR79uleNk01XWcncFsJEoq_BAXI_OB9z1C6yie1CM5wbQ2cqIcJvl-il-54fObNWAmcCu2CWYTWGNtlLG6ZKe6jAHLV3sRJk.Wi3VucRGmU1ys-aZxFWyNw
+content-type: application/json
+
+{
+  "id": "6240e6e7613aa2ddc781d0f9",
+  "amount": 1000,
+  "date": "2022-02-07T00:00:00.000Z",
+  "idUser": "619c4a2502f154d3817c5314",
+  "idRecurrence": "c620c8af-8fb3-4dbf-8aa3-e29ad99a39ef",
+  "typeRecurrence": "installments",
+  "isRecurrence": true,
+  "installments": "3",
+  "status": "deposit",
+  "title": "teste | client rest",
+  "type": "deposit"
+}
+
+### Editar o tipo de recorrência de um transaction
+// Editar o mês ou ano da data de uma transaction que é uma recorrência
+
+PUT http://localhost:3000/api/transactions/6241c44819128368324fe0ac?action=all
+Cookie: next-auth.csrf-token=e447b7d0b002168af491b2a906302b0a327114d696e5d4a1f3239d517c888a75|d021a872ae252337120337c46018d391329fdbc95e0cd3a5f150bfbce02ded7f; next-auth.callback-url=http://localhost:3000/; next-auth.session-token=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..rswZQtMMoRKaN_pQ.Z3xWW-AXvUyz4OjhWy6RN_-4mCVjWOa8SHYhDkUSRLWsPb7_AQ9fpWSHQ6682IYON58lpe3Pbrs9H_vLZXJ8pRYBD24lENayX3LfzYDaURcz4b32Io5ZySL-RBTANtnqmWlgUQzdoarHRAHd5c3cUx7UZOR66pc7B6cm7ldOZu37S5LpoLQu4Vk0iovuYWYr5LAvmnOliB9DQkHsGAlhzAxHjVDoefM1TdPk2nH0Z6Sq2dX7T8P-oT5mgzph_fFVbM2nR79uleNk01XWcncFsJEoq_BAXI_OB9z1C6yie1CM5wbQ2cqIcJvl-il-54fObNWAmcCu2CWYTWGNtlLG6ZKe6jAHLV3sRJk.Wi3VucRGmU1ys-aZxFWyNw
+content-type: application/json
+
+{
+  "id": "6241c44819128368324fe0ac",
+  "amount": 5000,
+  "date": "2022-01-05T00:00:00.000Z",
+  "idUser": "619c4a2502f154d3817c5314",
+  "idRecurrence": "4ad9c668-70b8-41bf-afd5-8fd88e5ae11d",
+  "typeRecurrence": "installments",
+  "isRecurrence": true,
+  "installments": "3",
+  "status": "deposit",
+  "title": "teste mes | client rest",
+  "type": "deposit"
+}
+
+// TODO: editar uma transação que é uma recorrência, pra não ser mais uma recorrência
+
+// TODO: editar as parcelas de uma transação que é uma recorrência
