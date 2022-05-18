@@ -18,7 +18,8 @@ export interface ITransaction extends ITransactionResponse {
 
 export interface ITransactionFormState {
   title: string
-  amount: string
+  amount: number
+  amountDisplay: string
   date: string
   status: string
   typeRecurrence: string
