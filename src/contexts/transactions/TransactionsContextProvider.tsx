@@ -85,6 +85,9 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
           duration: 3000,
           isClosable: true,
         })
+
+        handleModalTransactionForm({ isOpen: false })
+        clearStateTransactionForm()
       } catch (error) {
         toast({
           title: "Erro ao criar a transação!",
@@ -115,6 +118,9 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
         duration: 3000,
         isClosable: true,
       })
+
+      handleModalTransactionForm({ isOpen: false })
+      clearStateTransactionForm()
     } catch (error) {
       toast({
         title: "Erro ao editar a transação!",
