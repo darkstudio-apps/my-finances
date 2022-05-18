@@ -89,21 +89,26 @@ export async function generateTransactionToSave(
     const idUser = session?.user?.idUser
     if (!idUser) return null
 
-    const type: ITransactionPropType = transaction.type
+    const { title, status, typeRecurrence, installments } = transaction
 
+    const type: ITransactionPropType = transaction.type
+    const amount = formatFloat(transaction.amountDisplay)
+    const date = parseToUTCandISO(transaction.date, "start")
     const isRecurrence = transaction.typeRecurrence !== ""
 
     const newTransaction: ITransactionRequestBase = {
-      ...transaction,
+      title,
+      status,
+      typeRecurrence,
+      installments,
       idUser,
       type,
-      amount: formatFloat(transaction.amountDisplay),
-      date: parseToUTCandISO(transaction.date, "start"),
+      amount,
+      date,
       isRecurrence,
     }
 
     return newTransaction
-
   } catch (error) {
     return null
   }

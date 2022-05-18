@@ -90,14 +90,11 @@ export function ModalTransaction() {
 
         if (!modifiedTransaction) throw new Error()
 
-        if (modifiedTransaction.typeRecurrence === "") {
+        if (!modifiedTransaction.isRecurrence) {
           await editTransaction.mutateAsync({
             id: dataToEdit.id,
             transaction: modifiedTransaction,
           })
-
-          onClose()
-          clearStateTransactionForm()
         }
         else {
           openModalRecurrenceEdit(dataToEdit.id, modifiedTransaction)
@@ -106,7 +103,7 @@ export function ModalTransaction() {
       }
     } catch {
       toast({
-        title: "Erro ao editar a transação.",
+        title: "Erro ao realizar a ação.",
         status: "error",
         position: "top",
         duration: 3000,
@@ -241,26 +238,32 @@ export function ModalTransaction() {
         </ModalBody>
 
         <ModalFooter>
-          {(!dataToEdit || editMode) ? (
-            <>
-              <Button
-                colorScheme="green"
-                mr={3}
-                onClick={handleSave}
-                isLoading={createTransaction.isLoading || editTransaction.isLoading}
-              >
-                Salvar
-              </Button>
+          {(!dataToEdit || editMode)
+            ? (
+              <>
+                <Button
+                  colorScheme="green"
+                  mr={3}
+                  onClick={handleSave}
+                  isLoading={createTransaction.isLoading || editTransaction.isLoading}
+                >
+                  Salvar
+                </Button>
 
-              <Button onClick={onClose}>
-                Cancelar
+                <Button onClick={onClose}>
+                  Cancelar
+                </Button>
+              </>
+            )
+            : (
+              <Button
+                width="240px"
+                marginX="auto"
+                onClick={() => handleModalTransactionForm({ editMode: true })}
+              >
+                Editar
               </Button>
-            </>
-          ) : (
-            <Button w="240px" mx="auto" onClick={() => handleModalTransactionForm({ editMode: false })}>
-              Editar
-            </Button>
-          )}
+            )}
         </ModalFooter>
       </ModalContent>
     </Modal>
