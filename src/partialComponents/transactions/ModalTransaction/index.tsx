@@ -238,26 +238,32 @@ export function ModalTransaction() {
         </ModalBody>
 
         <ModalFooter>
-          {(!dataToEdit || editMode) ? (
-            <>
-              <Button
-                colorScheme="green"
-                mr={3}
-                onClick={handleSave}
-                isLoading={createTransaction.isLoading || editTransaction.isLoading}
-              >
-                Salvar
-              </Button>
+          {(!dataToEdit || editMode)
+            ? (
+              <>
+                <Button
+                  colorScheme="green"
+                  mr={3}
+                  onClick={handleSave}
+                  isLoading={createTransaction.isLoading || editTransaction.isLoading}
+                >
+                  Salvar
+                </Button>
 
-              <Button onClick={onClose}>
-                Cancelar
+                <Button onClick={onClose}>
+                  Cancelar
+                </Button>
+              </>
+            )
+            : (
+              <Button
+                width="240px"
+                marginX="auto"
+                onClick={() => handleModalTransactionForm({ editMode: true })}
+              >
+                Editar
               </Button>
-            </>
-          ) : (
-            <Button w="240px" mx="auto" onClick={() => handleModalTransactionForm({ editMode: false })}>
-              Editar
-            </Button>
-          )}
+            )}
         </ModalFooter>
       </ModalContent>
     </Modal>
