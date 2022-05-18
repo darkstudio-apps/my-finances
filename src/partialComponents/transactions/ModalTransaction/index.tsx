@@ -90,14 +90,11 @@ export function ModalTransaction() {
 
         if (!modifiedTransaction) throw new Error()
 
-        if (modifiedTransaction.typeRecurrence === "") {
+        if (!modifiedTransaction.isRecurrence) {
           await editTransaction.mutateAsync({
             id: dataToEdit.id,
             transaction: modifiedTransaction,
           })
-
-          onClose()
-          clearStateTransactionForm()
         }
         else {
           openModalRecurrenceEdit(dataToEdit.id, modifiedTransaction)
@@ -106,7 +103,7 @@ export function ModalTransaction() {
       }
     } catch {
       toast({
-        title: "Erro ao editar a transação.",
+        title: "Erro ao realizar a ação.",
         status: "error",
         position: "top",
         duration: 3000,
