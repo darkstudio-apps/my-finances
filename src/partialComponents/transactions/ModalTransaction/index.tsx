@@ -39,7 +39,8 @@ export function ModalTransaction() {
     if (dataToEdit) {
       const transitionToEdit: ITransactionFormState = {
         title: dataToEdit.title,
-        amount: dataToEdit.amountDisplay,
+        amount: dataToEdit.amount,
+        amountDisplay: dataToEdit.amountDisplay,
         date: dataToEdit.date,
         status: dataToEdit.status,
         typeRecurrence: dataToEdit.typeRecurrence,
@@ -150,7 +151,7 @@ export function ModalTransaction() {
               <Input
                 name="amount"
                 placeholder="Valor"
-                value={transactionForm.amount}
+                value={transactionForm.amountDisplay}
                 onChange={({ target }) => handleChangeTransactionForm(target.name, target.value)}
                 disabled={isDisabled}
                 _disabled={{ cursor: "no-drop" }}

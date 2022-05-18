@@ -22,7 +22,7 @@ import {
   IModalTransactionForm
 } from "models/transactions"
 import { dateNowYearMonthDay, getObjYearMonthDay } from "utils/dateUtil"
-import { formatCurrency, formatReal } from "utils/maskUtil"
+import { formatCurrency, formatCurrencyOnlyNumbers, formatFloat, formatReal } from "utils/maskUtil"
 
 interface ITransactionsContextProvider {
   children: ReactNode
@@ -183,7 +183,16 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
   const clearStateTransactionForm = () => setTransactionForm(transactionFormInitial)
 
   const handleChangeTransactionForm = (prop: string, value: string) => {
-    if (prop === "amount") value = formatReal(value)
+    if (prop === "amount") {
+      const amountDisplay = formatReal(value)
+      const amount = formatFloat(amountDisplay)
+
+      return setTransactionForm({
+        ...transactionForm,
+        amountDisplay,
+        amount,
+      })
+    }
 
     if (prop === "status") {
       const type = value === "deposit" || value === "withdraw"
@@ -209,6 +218,36 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
           type,
         })
       }
+    }
+    if (prop === "installments") {
+      const currentAmount = transactionForm.amount
+      console.log(currentAmount)
+
+      const currentInstalments = Number(transactionForm.installments)
+      const editedInstalments = Number(value)
+
+      console.log("currentInstalments", currentInstalments)
+      console.log("editedInstalments", editedInstalments)
+
+      const totalAmount = currentInstalments === 0
+        ? currentAmount
+        : currentInstalments * currentAmount
+      console.log("totalAmount", totalAmount)
+
+      const editedAmount = editedInstalments > 0
+        ? totalAmount / editedInstalments
+        : totalAmount
+      console.log("editedAmount", editedAmount)
+
+      const amountDisplay = formatCurrencyOnlyNumbers(editedAmount)
+      console.log("amountDisplay", amountDisplay)
+
+      return setTransactionForm({
+        ...transactionForm,
+        installments: value,
+        amount: editedAmount,
+        amountDisplay,
+      })
     }
 
     setTransactionForm({

@@ -11,7 +11,8 @@ import {
 
 export const transactionFormInitial: ITransactionFormState = {
   title: "",
-  amount: "0,00",
+  amount: 0,
+  amountDisplay: "0,00",
   date: "",
   status: "",
   typeRecurrence: "",
@@ -64,7 +65,7 @@ export function validateTransaction(transaction: ITransactionFormState): boolean
     const { title, date } = transaction
 
     const includesValueEmpty = [title, date].includes("")
-    const amountZero = transaction.amount === "0,00"
+    const amountZero = transaction.amountDisplay === "0,00"
     const isTypeNull = transaction.type === null
 
     if (includesValueEmpty || amountZero || isTypeNull) {
@@ -96,7 +97,7 @@ export async function generateTransactionToSave(
       ...transaction,
       idUser,
       type,
-      amount: formatFloat(transaction.amount),
+      amount: formatFloat(transaction.amountDisplay),
       date: parseToUTCandISO(transaction.date, "start"),
       isRecurrence,
     }

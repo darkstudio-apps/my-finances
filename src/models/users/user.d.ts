@@ -1,11 +1,5 @@
-
-export interface UserReqProps {
+export interface IUser {
   id: string
-  name: string
-  email: string
-}
-
-export interface UserModelProps {
   name: string
   email: string
 }

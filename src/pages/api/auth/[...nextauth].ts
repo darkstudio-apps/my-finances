@@ -3,8 +3,7 @@ import NextAuth from "next-auth"
 import Google from "next-auth/providers/google"
 import { userService } from "../_modules/users/services/userService"
 import { userRepository } from "../_modules/users/repository/userRepository"
-// TODO: mudar a tipagem - usar a tipagem do back essa é a do front
-import { UserModelProps } from "models/users/user"
+import { IUserRequestPost } from 'models/users'
 
 export default NextAuth({
   providers: [
@@ -51,7 +50,7 @@ export default NextAuth({
       try {
         const { name, email } = user
 
-        const userObj: UserModelProps = {
+        const userObj: IUserRequestPost = {
           name: String(name),
           email: String(email),
         }

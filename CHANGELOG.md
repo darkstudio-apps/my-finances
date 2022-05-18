@@ -17,6 +17,8 @@ O Changelog fornece uma visão geral das mudanças significativas que fizemos na
 
 * Reestruturação do Front-end
 
+* Divisão por parcelas
+
 ## 08-02-2021 - v0.2.1
 
 * Correção do Bug em relação ao fuso horário
