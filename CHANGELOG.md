@@ -5,7 +5,13 @@ slug: "/changelog"
 
 O Changelog fornece uma visão geral das mudanças significativas que fizemos na aplicação.
 
-## xx-05-2021 - v0.3.0
+## 18-05-2021 - v0.3.1
+
+* Fix - criação e edição de transaction
+
+## 17-05-2021 - v0.3.0
+
+* Criação do arquivo CHANGELOG.md
 
 * feature de recorrência
 
