@@ -1,4 +1,4 @@
-import { dateAddDays, dateAddMonths, dateAddYears, dateIsBefore } from "../../../../../../utils/dateUtil"
+import { dateAddDays, dateAddMonths, dateAddYears, dateIsBefore } from "utils/dateUtil"
 import { ITransactionServicePost } from "../../types/transactionService.type"
 
 const generateDatesByDays = (transaction: ITransactionServicePost, days: number) => {
