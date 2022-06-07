@@ -1,3 +1,4 @@
+import { connectToDatabase } from "libs/mongodb"
 import { prisma } from "libs/prisma"
 import {
   ITransaction,
@@ -20,20 +21,38 @@ interface IList {
 
 async function list({ idUser, dateStartISO, dateStartNotInclusive, dateEndISO, idRecurrence }: IList): Promise<ITransactionListResponse> {
   try {
-    const transactions = await prisma.transaction.findMany({
-      where: {
+    const { db } = await connectToDatabase()
+
+    const transactions = await db
+      .collection<ITransaction>("Transaction")
+      .find({
         idUser,
+        idRecurrence: idRecurrence || new RegExp(""),
         date: {
-          gte: dateStartISO,
-          gt: dateStartNotInclusive,
-          lte: dateEndISO,
+          $gte: dateStartISO || "",
+          $gt: dateStartNotInclusive || "",
+          $lte: dateEndISO || "",
         },
-        idRecurrence,
-      },
-      orderBy: {
-        date: "asc",
-      },
-    }) as ITransaction[] | undefined
+      })
+      .sort({ date: 1 })
+      .toArray()
+
+    const mappedTransactions = transactions.map((t) => {
+      const mappedTransaction: ITransaction = {
+        id: t._id.toString(),
+        idUser: t.idUser,
+        title: t.title,
+        amount: t.amount,
+        date: t.date,
+        status: t.status,
+        idRecurrence: t.idRecurrence,
+        typeRecurrence: t.typeRecurrence,
+        isRecurrence: t.isRecurrence,
+        installments: t.installments,
+        type: t.type,
+      }
+      return mappedTransaction
+    })
 
     // TODO: mover isso para a camada de services
     const transactionsData: ITransactionListResponse = {
@@ -41,8 +60,8 @@ async function list({ idUser, dateStartISO, dateStartNotInclusive, dateEndISO, i
         dateStart: dateStartISO || "",
         dateEnd: dateEndISO || "",
       },
-      length: transactions?.length || 0,
-      data: transactions || [],
+      length: mappedTransactions?.length || 0,
+      data: mappedTransactions || [],
     }
 
     return transactionsData
