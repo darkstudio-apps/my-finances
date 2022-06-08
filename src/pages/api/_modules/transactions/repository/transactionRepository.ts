@@ -9,7 +9,6 @@ import {
   ITransactionRemove,
   ITransactionRemoveMany,
 } from "../types/transaction.type"
-import { ITransactionListResponse } from "../types/transactionResponse.type"
 
 interface IList {
   idUser: string
@@ -19,7 +18,7 @@ interface IList {
   idRecurrence?: string
 }
 
-async function list({ idUser, dateStartISO, dateStartNotInclusive, dateEndISO, idRecurrence }: IList): Promise<ITransactionListResponse> {
+async function list({ idUser, dateStartISO, dateStartNotInclusive, dateEndISO, idRecurrence }: IList): Promise<ITransaction[]> {
   try {
     const { db } = await connectToDatabase()
 
@@ -54,17 +53,7 @@ async function list({ idUser, dateStartISO, dateStartNotInclusive, dateEndISO, i
       return mappedTransaction
     })
 
-    // TODO: mover isso para a camada de services
-    const transactionsData: ITransactionListResponse = {
-      search: {
-        dateStart: dateStartISO || "",
-        dateEnd: dateEndISO || "",
-      },
-      length: mappedTransactions?.length || 0,
-      data: mappedTransactions || [],
-    }
-
-    return transactionsData
+    return mappedTransactions
   } catch (error) {
     throw error
   }

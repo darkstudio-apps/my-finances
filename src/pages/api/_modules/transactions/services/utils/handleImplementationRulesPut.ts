@@ -67,7 +67,7 @@ export const implementationRulesPut = {
 
     const transactions = await transactionRepository.list({ idUser, dateStartNotInclusive })
 
-    const idTransactions = transactions.data.map(transaction => transaction.id)
+    const idTransactions = transactions.map(transaction => transaction.id)
 
     await transactionRepository.put(id, transactionToPut)
 
@@ -92,7 +92,7 @@ export const implementationRulesPut = {
 
     const { day } = getObjYearMonthDayUTC(transaction.date)
 
-    const transactionsToPut = transactions.data.map(currentTransaction => {
+    const transactionsToPut = transactions.map(currentTransaction => {
       const { month, year } = getObjYearMonthDayUTC(currentTransaction.date)
 
       // TODO: verificar se a data existe naquele mes
@@ -171,7 +171,7 @@ export const implementationRulesPut = {
       const idRecurrence = currentTransaction.idRecurrence
       const transactions = await transactionRepository.list({ idUser, idRecurrence })
 
-      const lastTransaction = transactions.data.pop() || currentTransaction
+      const lastTransaction = transactions.pop() || currentTransaction
 
       const transactionToGenerate = generateTransactionToCreate(lastTransaction, transaction)
 
@@ -189,7 +189,7 @@ export const implementationRulesPut = {
 
       const start = Number(transaction.installments)
       const end = transactions.length
-      const transactionsToDelete = transactions.data.slice(start, end)
+      const transactionsToDelete = transactions.slice(start, end)
 
       const idTransactions = transactionsToDelete.map(transaction => transaction.id)
 

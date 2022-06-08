@@ -1,13 +1,25 @@
 import { transactionRepository } from "../repository/transactionRepository"
-
 import { generateTransaction, generateTransactionsRecurrence, implementationRulesPut } from "./utils"
-import { dateNowYearMonthDay, endOfMonthInYearMonthDay, generateDecimalNumberInString, getObjYearMonthDay, getObjYearMonthDayUTC, parseToUTCandISO } from "../../../../../utils/dateUtil"
-
+import {
+  dateNowYearMonthDay,
+  endOfMonthInYearMonthDay,
+  generateDecimalNumberInString,
+  getObjYearMonthDay,
+  getObjYearMonthDayUTC,
+  parseToUTCandISO,
+} from "utils/dateUtil"
 import { ITransaction } from "../types/transaction.type"
-import { ITransactionServiceList, ITransactionServicePatch, ITransactionServicePost, ITransactionServicePut, ITransactionServiceRemove } from "../types/transactionService.type"
+import {
+  ITransactionServiceList,
+  ITransactionServicePatch,
+  ITransactionServicePost,
+  ITransactionServicePut,
+  ITransactionServiceRemove,
+} from "../types/transactionService.type"
 import { ITransactionRequestQueryActionParam } from "../types/transactionRequest.type"
+import { ITransactionListResponse } from "../types/transactionResponse.type"
 
-async function list({ idUser, month, year }: ITransactionServiceList) {
+async function list({ idUser, month, year }: ITransactionServiceList): Promise<ITransactionListResponse> {
   const dateYearMonthDay = dateNowYearMonthDay()
   const dateNow = getObjYearMonthDay(dateYearMonthDay)
 
@@ -21,7 +33,16 @@ async function list({ idUser, month, year }: ITransactionServiceList) {
   const dateStartISO = parseToUTCandISO(dateStart, "start")
   const dateEndISO = parseToUTCandISO(dateEnd, "end")
 
-  const transactionsData = await transactionRepository.list({ idUser, dateStartISO, dateEndISO })
+  const transactions = await transactionRepository.list({ idUser, dateStartISO, dateEndISO })
+
+  const transactionsData: ITransactionListResponse = {
+    search: {
+      dateStart: dateStartISO || "",
+      dateEnd: dateEndISO || "",
+    },
+    length: transactions?.length || 0,
+    data: transactions || [],
+  }
 
   return transactionsData
 }
@@ -162,7 +183,7 @@ async function remove({ id, action }: ITransactionServiceRemove): Promise<boolea
   }
 
   const filtersList = generateFiltersListRemove(transaction, action)
-  const { data: transactions } = await transactionRepository.list(filtersList)
+  const transactions = await transactionRepository.list(filtersList)
 
   // TODO: quando não tiver dados, retornar um obj diferente ou um erro?
   // {
