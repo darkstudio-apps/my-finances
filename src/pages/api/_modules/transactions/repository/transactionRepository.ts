@@ -59,15 +59,33 @@ async function list({ idUser, dateStartISO, dateStartNotInclusive, dateEndISO, i
   }
 }
 
-async function get(idTransaction: string): Promise<ITransaction | null> {
-  // TODO: não permitir que um user acesse uma transaction que não é dele
-  const transaction = await prisma.transaction.findUnique({
-    where: {
-      id: idTransaction,
-    },
-  }) as ITransaction | null
+async function get(idUser: string, idTransaction: string): Promise<ITransaction | null> {
+  const { db } = await connectToDatabase()
 
-  return transaction
+  const transaction = await db
+    .collection<ITransaction>("Transaction")
+    .findOne({
+      id: idTransaction,
+      idUser,
+    })
+
+  if (!transaction) return null
+
+  const mappedTransaction: ITransaction = {
+    id: transaction._id.toString(),
+    idUser: transaction.idUser,
+    title: transaction.title,
+    amount: transaction.amount,
+    date: transaction.date,
+    status: transaction.status,
+    idRecurrence: transaction.idRecurrence,
+    typeRecurrence: transaction.typeRecurrence,
+    isRecurrence: transaction.isRecurrence,
+    installments: transaction.installments,
+    type: transaction.type,
+  }
+
+  return mappedTransaction
 }
 
 async function post(transaction: ITransactionPost) {
@@ -104,8 +122,10 @@ interface IPutMany {
   dateStartISO?: string
 }
 
-async function putMany(transaction: ITransactionPutMany, { idUser, idRecurrence, dateStartISO }: IPutMany) {
+async function putMany(transaction: ITransactionPutMany, filters: IPutMany) {
   try {
+    const { idUser, idRecurrence, dateStartISO } = filters
+
     const editedTransactions = await prisma.transaction.updateMany({
       where: {
         idUser,

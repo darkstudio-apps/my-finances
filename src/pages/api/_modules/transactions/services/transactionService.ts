@@ -47,12 +47,15 @@ async function list({ idUser, month, year }: ITransactionServiceList): Promise<I
   return transactionsData
 }
 
-async function get(id: string) {
-  const transaction = await transactionRepository.get(id)
+async function get(idUser: string, idTransaction: string) {
+  const transaction = await transactionRepository.get(idUser, idTransaction)
 
   // TODO: retornar um obj com a tipagem de transactionResponse
+  const transactionData = {
+    transaction,
+  }
 
-  return transaction
+  return transactionData
 }
 
 async function post(transaction: ITransactionServicePost) {
@@ -84,7 +87,7 @@ type IEditRule = "edit_transaction"
   | "when_to_change_basic_data"
 
 async function put({ idUser, id, transaction, action }: ITransactionServicePut) {
-  const currentTransaction = await transactionRepository.get(id)
+  const currentTransaction = await transactionRepository.get(idUser, id)
 
   if (!currentTransaction) throw new Error("transaction not found")
 
@@ -128,7 +131,7 @@ async function put({ idUser, id, transaction, action }: ITransactionServicePut) 
     editRule = "when_to_change_the_installments"
   }
   // quando mudar apenas o dia em relação a data de uma transaction que é uma recorrência
-  else if (!isSameDay && isSameMonth && isSameYear) {
+  else if (!isSameDay && isSameMonth && isSameYear && action && action !== "current") {
     editRule = "when_to_change_only_the_day_of_a_date"
     throw new Error("when_to_change_only_the_day_of_a_date not implemented")
   }
@@ -172,8 +175,8 @@ const generateFiltersListRemove = (transaction: ITransaction, action?: ITransact
   return { idUser, id }
 }
 
-async function remove({ id, action }: ITransactionServiceRemove): Promise<boolean> {
-  const transaction = await get(id)
+async function remove({ idUser, id, action }: ITransactionServiceRemove): Promise<boolean> {
+  const { transaction } = await get(idUser, id)
 
   if (!transaction) throw new Error("transaction not found")
 

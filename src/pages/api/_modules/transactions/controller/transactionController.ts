@@ -4,7 +4,6 @@ import { ITransactionRequest, ITransactionRequestRoot } from "../types/transacti
 
 async function list(req: ITransactionRequestRoot, res: NextApiResponse) {
   try {
-    // TODO: receber o idRecurrence e usar ele para fazer a busca tbm
     const { idUser, month, year } = req.query
 
     const transactionsData = await transactionService.list({ idUser, month, year })
@@ -17,12 +16,11 @@ async function list(req: ITransactionRequestRoot, res: NextApiResponse) {
 
 async function get(req: ITransactionRequest, res: NextApiResponse) {
   try {
-    const { id } = req.query
+    const { idUser, id } = req.query
 
-    // TODO: retornar um obj no formato de data que está implementado no list
-    const transaction = await transactionService.get(id)
+    const transactionData = await transactionService.get(idUser, id)
 
-    return res.status(200).json({ transaction })
+    return res.status(200).json(transactionData)
   } catch (error) {
     return res.status(400).json({ message: error })
   }
@@ -73,9 +71,9 @@ async function remove(req: ITransactionRequest, res: NextApiResponse) {
   try {
     const { idUser, id, action } = req.query
 
-    // TODO: retornar um obj no formato de data que está implementado no list
     await transactionService.remove({ idUser, id, action })
 
+    // TODO: retornar 201 e remover o corpo
     return res.status(200).json({ message: "Success" })
   } catch (error) {
     return res.status(400).json({ message: error })

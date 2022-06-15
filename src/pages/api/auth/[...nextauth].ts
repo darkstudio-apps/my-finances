@@ -3,7 +3,7 @@ import NextAuth from "next-auth"
 import Google from "next-auth/providers/google"
 import { userService } from "../_modules/users/services/userService"
 import { userRepository } from "../_modules/users/repository/userRepository"
-import { IUserRequestPost } from 'models/users'
+import { IUserRequestPost } from "models/users"
 
 export default NextAuth({
   providers: [
