@@ -52,7 +52,7 @@ function Transactions() {
         />
 
         <CardTransaction
-          description="Total"
+          description="Saldo"
           title={summary.total}
           icon="dollarSign"
         />
