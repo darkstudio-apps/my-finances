@@ -10,7 +10,7 @@ async function list(req: ITransactionRequestRoot, res: NextApiResponse) {
 
     return res.status(200).json(transactionsData)
   } catch (error) {
-    return res.status(400).json({ message: "error:catch" })
+    return res.status(500).json({ message: error })
   }
 }
 
@@ -22,7 +22,7 @@ async function get(req: ITransactionRequest, res: NextApiResponse) {
 
     return res.status(200).json(transactionData)
   } catch (error) {
-    return res.status(400).json({ message: error })
+    return res.status(500).json({ message: error })
   }
 }
 
@@ -35,7 +35,7 @@ async function post(req: ITransactionRequestRoot, res: NextApiResponse) {
 
     return res.status(200).json({ transaction })
   } catch (error) {
-    return res.status(400).json({ message: error })
+    return res.status(500).json({ message: error })
   }
 }
 
@@ -49,7 +49,7 @@ async function put(req: ITransactionRequest, res: NextApiResponse) {
 
     return res.status(200).json({ transaction: transactionData })
   } catch (error) {
-    return res.status(400).json({ message: error })
+    return res.status(500).json({ message: error })
   }
 }
 
@@ -63,7 +63,7 @@ function patch(req: ITransactionRequest, res: NextApiResponse) {
 
     return res.status(200).json({ transaction: transactionData })
   } catch (error) {
-    return res.status(400).json({ message: error })
+    return res.status(500).json({ message: error })
   }
 }
 
@@ -71,12 +71,16 @@ async function remove(req: ITransactionRequest, res: NextApiResponse) {
   try {
     const { idUser, id, action } = req.query
 
-    await transactionService.remove({ idUser, id, action })
+    const response = await transactionService.remove({ idUser, id, action })
 
-    // TODO: retornar 201 e remover o corpo
-    return res.status(200).json({ message: "Success" })
+    if (response) {
+      // TODO: retornar 201 e remover o corpo
+      return res.status(200).json({ message: "Success" })
+    }
+
+    return res.status(400).end()
   } catch (error) {
-    return res.status(400).json({ message: error })
+    return res.status(500).json({ message: error })
   }
 }
 

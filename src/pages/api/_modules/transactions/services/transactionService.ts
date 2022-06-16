@@ -176,14 +176,14 @@ const generateFiltersListRemove = (transaction: ITransaction, action?: ITransact
 }
 
 async function remove({ idUser, id, action }: ITransactionServiceRemove): Promise<boolean> {
+  if (!action || action === "current") {
+    const responseRemove = await transactionRepository.remove(idUser, id)
+    return responseRemove
+  }
+
   const { transaction } = await get(idUser, id)
 
   if (!transaction) throw new Error("transaction not found")
-
-  if (!action || action === "current") {
-    await transactionRepository.remove(id)
-    return true
-  }
 
   const filtersList = generateFiltersListRemove(transaction, action)
   const transactions = await transactionRepository.list(filtersList)

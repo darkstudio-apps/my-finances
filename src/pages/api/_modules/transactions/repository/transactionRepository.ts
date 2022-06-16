@@ -1,5 +1,6 @@
 import { connectToDatabase } from "libs/mongodb"
 import { prisma } from "libs/prisma"
+import { ObjectId } from "mongodb"
 import {
   ITransaction,
   ITransactionPatch,
@@ -65,7 +66,7 @@ async function get(idUser: string, idTransaction: string): Promise<ITransaction 
   const transaction = await db
     .collection<ITransaction>("Transaction")
     .findOne({
-      id: idTransaction,
+      _id: new ObjectId(idTransaction),
       idUser,
     })
 
@@ -154,13 +155,21 @@ async function patch(idTransaction: string, transaction: ITransactionPatch) {
   return editedTransaction
 }
 
-async function remove(idTransaction: ITransactionRemove): Promise<boolean> {
-  // TODO: não permitir que um user edite uma transaction que não é dele
-  const transaction = await prisma.transaction.delete({
-    where: { id: idTransaction },
-  })
+async function remove(idUser: string, idTransaction: ITransactionRemove): Promise<boolean> {
+  try {
+    const { db } = await connectToDatabase()
 
-  return !!transaction
+    const { deletedCount } = await db
+      .collection("Transaction")
+      .deleteOne({
+        _id: new ObjectId(idTransaction),
+        idUser,
+      })
+
+    return deletedCount > 0
+  } catch (error) {
+    throw error
+  }
 }
 
 async function removeMany(idTransactions: ITransactionRemoveMany): Promise<boolean> {
