@@ -71,7 +71,7 @@ export const implementationRulesPut = {
 
     await transactionRepository.put(id, transactionToPut)
 
-    const response = await transactionRepository.removeMany(idTransactions)
+    const response = await transactionRepository.removeMany(idUser, idTransactions)
 
     return !!response
   },
@@ -193,7 +193,7 @@ export const implementationRulesPut = {
 
       const idTransactions = transactionsToDelete.map(transaction => transaction.id)
 
-      const response = await transactionRepository.removeMany(idTransactions)
+      const response = await transactionRepository.removeMany(idUser, idTransactions)
 
       return !!response
     }

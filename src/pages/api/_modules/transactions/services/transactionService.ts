@@ -193,11 +193,11 @@ async function remove({ idUser, id, action }: ITransactionServiceRemove): Promis
   //   success: false,
   //   message: "transactions not found",
   // }
-  if (!transactions) return false
+  if (!transactions || !transactions.length) return false
 
   const idTransactions = transactions.map(transaction => transaction.id)
 
-  const respondeMany = await transactionRepository.removeMany(idTransactions)
+  const respondeMany = await transactionRepository.removeMany(idUser, idTransactions)
 
   return !!respondeMany
 }

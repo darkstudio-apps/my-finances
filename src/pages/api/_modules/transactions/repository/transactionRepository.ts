@@ -172,17 +172,23 @@ async function remove(idUser: string, idTransaction: ITransactionRemove): Promis
   }
 }
 
-async function removeMany(idTransactions: ITransactionRemoveMany): Promise<boolean> {
-  // TODO: não permitir que um user edite uma transaction que não é dele
-  const transaction = await prisma.transaction.deleteMany({
-    where: {
-      id: { in: idTransactions },
-    },
-  })
+async function removeMany(idUser: string, idTransactions: ITransactionRemoveMany): Promise<boolean> {
+  try {
+    const { db } = await connectToDatabase()
 
-  // TODO: retornar um obj com a tipagem de transactionResponse
+    const transactionsObjectId = idTransactions.map(id => new ObjectId(id))
 
-  return !!transaction
+    const { deletedCount } = await db
+      .collection<ITransaction>("Transaction")
+      .deleteMany({
+        _id: { $in: transactionsObjectId },
+        idUser,
+      })
+
+    return deletedCount > 0
+  } catch (error) {
+    throw error
+  }
 }
 
 export const transactionRepository = {
