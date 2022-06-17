@@ -1,6 +1,7 @@
 import { connectToDatabase } from "libs/mongodb"
 import { prisma } from "libs/prisma"
-import { ObjectId } from "mongodb"
+import { Filter, ObjectId } from "mongodb"
+import { clearUndefinedValuesFromObject } from "utils/clearUndefinedValuesFromObject"
 import {
   ITransaction,
   ITransactionPatch,
@@ -23,17 +24,19 @@ async function list({ idUser, dateStartISO, dateStartNotInclusive, dateEndISO, i
   try {
     const { db } = await connectToDatabase()
 
+    const filters = clearUndefinedValuesFromObject<Filter<ITransaction>>({
+      idUser,
+      idRecurrence,
+      date: {
+        $gte: dateStartISO,
+        $gt: dateStartNotInclusive,
+        $lte: dateEndISO,
+      },
+    })
+
     const transactions = await db
       .collection<ITransaction>("Transaction")
-      .find({
-        idUser,
-        idRecurrence: idRecurrence || new RegExp(""),
-        date: {
-          $gte: dateStartISO || "",
-          $gt: dateStartNotInclusive || "",
-          $lte: dateEndISO || "",
-        },
-      })
+      .find(filters)
       .sort({ date: 1 })
       .toArray()
 
