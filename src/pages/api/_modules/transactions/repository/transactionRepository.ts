@@ -123,14 +123,26 @@ async function postMany(idUser: string, transactions: ITransactionPost[]) {
   }
 }
 
-async function put(idTransaction: string, transaction: ITransactionPut) {
-  // TODO: não permitir que um user edite uma transaction que não é dele
-  const editedTransaction = await prisma.transaction.update({
-    where: { id: idTransaction },
-    data: transaction,
-  })
+async function put(idUser: string, idTransaction: string, transaction: ITransactionPut) {
+  try {
+    const { db } = await connectToDatabase()
 
-  return editedTransaction
+    const editedTransaction = await db
+      .collection<ITransactionPut>("Transaction")
+      .updateOne(
+        {
+          _id: new ObjectId(idTransaction),
+          idUser,
+        },
+        {
+          $set: transaction,
+        }
+      )
+
+    return editedTransaction
+  } catch (error) {
+    throw error
+  }
 }
 
 interface IPutMany {

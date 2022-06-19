@@ -14,10 +14,10 @@ interface IImplementationRulesPut {
 }
 
 export const implementationRulesPut = {
-  async edit_transaction({ id, transaction }: IImplementationRulesPut) {
+  async edit_transaction({ idUser, id, transaction }: IImplementationRulesPut) {
     console.log("🔎 - edit_transaction")
 
-    const editedTransaction = await transactionRepository.put(id, transaction)
+    const editedTransaction = await transactionRepository.put(idUser, id, transaction)
     return editedTransaction
   },
 
@@ -69,7 +69,7 @@ export const implementationRulesPut = {
 
     const idTransactions = transactions.map(transaction => transaction.id)
 
-    await transactionRepository.put(id, transactionToPut)
+    await transactionRepository.put(idUser, id, transactionToPut)
 
     const response = await transactionRepository.removeMany(idUser, idTransactions)
 
@@ -115,7 +115,7 @@ export const implementationRulesPut = {
         const { id, ...restTransaction } = mappedTransaction
         const idTransaction = String(id)
 
-        const response = transactionRepository.put(idTransaction, restTransaction)
+        const response = transactionRepository.put(idUser, idTransaction, restTransaction)
 
         return response
       })
