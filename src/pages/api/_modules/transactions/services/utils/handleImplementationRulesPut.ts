@@ -179,7 +179,7 @@ export const implementationRulesPut = {
       const [, ...newTransactions] = generateTransactionsRecurrence(transactionToGenerate)
 
       // TODO: postMany
-      await transactionRepository.postMany(newTransactions)
+      await transactionRepository.postMany(idUser, newTransactions)
 
       return true
     }

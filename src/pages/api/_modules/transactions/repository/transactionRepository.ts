@@ -108,13 +108,20 @@ async function post(idUser: string, transaction: ITransactionPost) {
   }
 }
 
-async function postMany(transactions: ITransactionPost[]) {
-  // TODO: não permitir que um user cadastre uma transaction que não é dele
-  const newTransactions = await prisma.transaction.createMany({
-    data: transactions,
-  })
+async function postMany(idUser: string, transactions: ITransactionPost[]) {
+  try {
+    if (idUser !== transactions[0].idUser) throw new Error("ação não permitida!")
 
-  return newTransactions
+    const { db } = await connectToDatabase()
+
+    const newTransactions = await db
+      .collection<ITransactionPost>("Transaction")
+      .insertMany(transactions)
+
+    return newTransactions
+  } catch (error) {
+    throw error
+  }
 }
 
 async function put(idTransaction: string, transaction: ITransactionPut) {

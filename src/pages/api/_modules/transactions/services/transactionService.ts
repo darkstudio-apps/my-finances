@@ -73,7 +73,7 @@ async function post(idUser: string, transaction: ITransactionServicePost) {
   else {
     const transactions = generateTransactionsRecurrence(objTransaction)
 
-    const createdTransactions = await transactionRepository.postMany(transactions)
+    const createdTransactions = await transactionRepository.postMany(idUser, transactions)
 
     const createdTransactionsData = {
       createdTransactions,
