@@ -53,20 +53,6 @@ async function put(req: ITransactionRequest, res: NextApiResponse) {
   }
 }
 
-function patch(req: ITransactionRequest, res: NextApiResponse) {
-  try {
-    const { idUser, id, action } = req.query
-    const transaction = req.body
-
-    // TODO: retornar um obj no formato de data que está implementado no list
-    const transactionData = transactionService.put({ idUser, id, action, transaction })
-
-    return res.status(200).json({ transaction: transactionData })
-  } catch (error) {
-    return res.status(500).json({ message: error })
-  }
-}
-
 async function remove(req: ITransactionRequest, res: NextApiResponse) {
   try {
     const { idUser, id, action } = req.query
@@ -89,6 +75,5 @@ export const transactionController = {
   get,
   post,
   put,
-  patch,
   remove,
 }

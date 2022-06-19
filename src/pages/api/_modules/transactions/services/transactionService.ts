@@ -11,7 +11,6 @@ import {
 import { ITransaction } from "../types/transaction.type"
 import {
   ITransactionServiceList,
-  ITransactionServicePatch,
   ITransactionServicePost,
   ITransactionServicePut,
   ITransactionServiceRemove,
@@ -165,14 +164,6 @@ async function put({ idUser, id, transaction, action }: ITransactionServicePut) 
   return response
 }
 
-async function patch({ id, transaction }: ITransactionServicePatch) {
-  const editedTransaction = await transactionRepository.put(id, transaction)
-
-  // TODO: retornar um obj com a tipagem de transactionResponse
-
-  return editedTransaction
-}
-
 const generateFiltersListRemove = (transaction: ITransaction, action?: ITransactionRequestQueryActionParam) => {
   const { id, idUser, idRecurrence, date } = transaction
 
@@ -217,6 +208,5 @@ export const transactionService = {
   get,
   post,
   put,
-  patch,
   remove,
 }

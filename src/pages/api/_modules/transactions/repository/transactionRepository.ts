@@ -4,7 +4,6 @@ import { Filter, ObjectId } from "mongodb"
 import { clearUndefinedValuesFromObject } from "utils/clearUndefinedValuesFromObject"
 import {
   ITransaction,
-  ITransactionPatch,
   ITransactionPost,
   ITransactionPut,
   ITransactionPutMany,
@@ -161,17 +160,6 @@ async function putMany(transaction: ITransactionPutMany, filters: IPutMany) {
   }
 }
 
-// TODO: Talvez receber um obj como param, fica mais facil pra tipar
-async function patch(idTransaction: string, transaction: ITransactionPatch) {
-  // TODO: não permitir que um user edite uma transaction que não é dele
-  const editedTransaction = await prisma.transaction.update({
-    where: { id: idTransaction },
-    data: transaction,
-  })
-
-  return editedTransaction
-}
-
 async function remove(idUser: string, idTransaction: ITransactionRemove): Promise<boolean> {
   try {
     const { db } = await connectToDatabase()
@@ -215,7 +203,6 @@ export const transactionRepository = {
   postMany,
   put,
   putMany,
-  patch,
   remove,
   removeMany,
 }

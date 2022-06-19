@@ -26,11 +26,6 @@ export interface ITransactionServicePut {
   action?: ITransactionRequestQueryActionParam
 }
 
-export interface ITransactionServicePatch {
-  id: string
-  transaction: ITransactionPatch
-}
-
 export interface ITransactionServiceRemove {
   idUser: string
   id: string
