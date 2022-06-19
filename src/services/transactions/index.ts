@@ -37,15 +37,10 @@ export async function getTransactionService() {
 
 export async function createTransactionService(
   transaction: ITransactionRequestPost
-): Promise<ITransaction | undefined> {
-  const { data } = await apiClient.post<ITransactionResponseGet>("/transactions", transaction)
+): Promise<boolean> {
+  const response = await apiClient.post("/transactions", transaction)
 
-  const transactionCreated = data.transaction
-  if (!transactionCreated) return undefined
-
-  const transactionMapped = generateTransaction(transactionCreated)
-
-  return transactionMapped
+  return response.status === 200
 
   // TODO: tratar o erro criando um obj de erro global
 }
