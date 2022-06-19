@@ -44,10 +44,9 @@ async function put(req: ITransactionRequest, res: NextApiResponse) {
     const { idUser, id, action } = req.query
     const transaction = req.body
 
-    // TODO: retornar um obj no formato de data que está implementado no list
     const transactionData = await transactionService.put({ idUser, id, action, transaction })
 
-    return res.status(200).json({ transaction: transactionData })
+    return res.status(200).json(transactionData)
   } catch (error) {
     return res.status(500).json({ message: error })
   }

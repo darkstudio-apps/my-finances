@@ -160,8 +160,11 @@ async function put({ idUser, id, transaction, action }: ITransactionServicePut) 
   })
 
   // TODO: retornar um obj com a tipagem de transactionResponse
+  const responseData = {
+    response,
+  }
 
-  return response
+  return responseData
 }
 
 const generateFiltersListRemove = (transaction: ITransaction, action?: ITransactionRequestQueryActionParam) => {
