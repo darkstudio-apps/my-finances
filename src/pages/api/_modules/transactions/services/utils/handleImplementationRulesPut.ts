@@ -52,7 +52,7 @@ export const implementationRulesPut = {
 
     // TODO: caso uma das operações falhe, é necessário desfazer as outras
     await transactionService.remove({ idUser, id })
-    await transactionService.post(transactionToPost)
+    await transactionService.post(idUser, transactionToPost)
 
     return true
   },
@@ -140,7 +140,7 @@ export const implementationRulesPut = {
       id,
       action,
     })
-    await transactionService.post(transactionToPost)
+    await transactionService.post(idUser, transactionToPost)
 
     return true
   },
@@ -156,7 +156,7 @@ export const implementationRulesPut = {
       id,
       action,
     })
-    await transactionService.post(transactionToPost)
+    await transactionService.post(idUser, transactionToPost)
 
     return true
   },

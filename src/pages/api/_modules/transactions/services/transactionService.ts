@@ -58,18 +58,28 @@ async function get(idUser: string, idTransaction: string) {
   return transactionData
 }
 
-async function post(transaction: ITransactionServicePost) {
+async function post(idUser: string, transaction: ITransactionServicePost) {
   const objTransaction = generateTransaction(transaction)
 
   if (!objTransaction.isRecurrence) {
-    const createdTransaction = await transactionRepository.post(objTransaction)
-    return createdTransaction
+    const createdTransaction = await transactionRepository.post(idUser, objTransaction)
+
+    const createdTransactionData = {
+      createdTransaction,
+    }
+
+    return createdTransactionData
   }
   else {
     const transactions = generateTransactionsRecurrence(objTransaction)
 
     const createdTransactions = await transactionRepository.postMany(transactions)
-    return createdTransactions
+
+    const createdTransactionsData = {
+      createdTransactions,
+    }
+
+    return createdTransactionsData
   }
 
   // TODO: retornar um obj com a tipagem de transactionResponse

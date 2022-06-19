@@ -29,11 +29,11 @@ async function get(req: ITransactionRequest, res: NextApiResponse) {
 async function post(req: ITransactionRequestRoot, res: NextApiResponse) {
   try {
     const { body } = req
+    const { idUser } = req.query
 
-    // TODO: retornar um obj no formato de data que está implementado no list
-    const transaction = await transactionService.post(body)
+    const transactionData = await transactionService.post(idUser, body)
 
-    return res.status(200).json({ transaction })
+    return res.status(200).json(transactionData)
   } catch (error) {
     return res.status(500).json({ message: error })
   }
