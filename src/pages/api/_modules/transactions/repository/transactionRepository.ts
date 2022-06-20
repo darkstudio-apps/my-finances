@@ -1,5 +1,4 @@
 import { connectToDatabase } from "libs/mongodb"
-import { prisma } from "libs/prisma"
 import { Filter, ObjectId } from "mongodb"
 import { clearUndefinedValuesFromObject } from "utils/clearUndefinedValuesFromObject"
 import {
