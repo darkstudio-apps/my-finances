@@ -155,16 +155,24 @@ async function putMany(transaction: ITransactionPutMany, filters: IPutMany) {
   try {
     const { idUser, idRecurrence, dateStartISO } = filters
 
-    const editedTransactions = await prisma.transaction.updateMany({
-      where: {
-        idUser,
-        date: {
-          gte: dateStartISO,
-        },
-        idRecurrence,
+    const { db } = await connectToDatabase()
+
+    const updateManyFilters = clearUndefinedValuesFromObject<Filter<ITransactionPutMany>>({
+      idUser,
+      idRecurrence,
+      date: {
+        $gte: dateStartISO,
       },
-      data: transaction,
     })
+
+    const editedTransactions = await db
+      .collection<ITransactionPut>("Transaction")
+      .updateMany(
+        updateManyFilters,
+        {
+          $set: transaction,
+        }
+      )
 
     return editedTransactions
   } catch (error) {
