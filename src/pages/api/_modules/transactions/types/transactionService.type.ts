@@ -1,4 +1,8 @@
-import { ITransactionPatch, ITransactionPut, ITransactionTypeProp, ITransactionTypeRecurrence } from "./transaction.type"
+import {
+  ITransactionPut,
+  ITransactionTypeProp,
+  ITransactionTypeRecurrence,
+} from "./transaction.type"
 import { ITransactionRequestQueryActionParam } from "./transactionRequest.type"
 
 export interface ITransactionServiceList {
