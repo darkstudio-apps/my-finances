@@ -67,17 +67,23 @@ async function put(id: string, transaction: IUserPut): Promise<IUserResponsePut>
 }
 
 async function remove(id: string): Promise<IUserResponseRemove> {
-  const ok = await userRepository.remove(id)
+  try {
+    const isDeleted = await userRepository.remove(id)
 
-  const response: IUserResponseRemove = {
-    success: !!ok,
+    const response: IUserResponseRemove = {
+      isDeleted,
+    }
+
+    return response
+  } catch (error) {
+    throw error
   }
-  return response
 }
 
 export const userService = {
   get,
   post,
+  upsert,
   put,
   remove,
 }

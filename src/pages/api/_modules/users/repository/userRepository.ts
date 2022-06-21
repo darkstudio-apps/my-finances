@@ -10,7 +10,6 @@ async function get(email: string): Promise<IUser | null> {
       .collection<IUser>("User")
       .findOne({
         email,
-    },
       })
 
     if (!user) return null
@@ -64,21 +63,22 @@ async function put(idUser: string, user: IUserPut): Promise<boolean> {
   }
 }
 
-async function put(idUser: string, User: IUserPut): Promise<IUser> {
-  const editedUser = await prisma.user.update({
-    where: { id: idUser },
-    data: User,
-  })
+async function remove(idUser: string): Promise<boolean> {
+  try {
+    const { db } = await connectToDatabase()
 
-  return editedUser as IUser
-}
+    const { deletedCount } = await db
+      .collection<IUser>("User")
+      .deleteOne({
+        _id: new ObjectId(idUser),
+      })
 
-async function remove(idUser: string): Promise<IUser> {
-  const user: any = await prisma.user.delete({
-    where: { id: idUser },
-  })
+    const isDeleted = deletedCount > 0
 
-  return user as IUser
+    return isDeleted
+  } catch (error) {
+    throw error
+  }
 }
 
 export const userRepository = {

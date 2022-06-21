@@ -18,5 +18,5 @@ export interface IUserResponsePut {
 }
 
 export interface IUserResponseRemove {
-  success: boolean
+  isDeleted: boolean
 }
