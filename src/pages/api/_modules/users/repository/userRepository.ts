@@ -1,24 +1,31 @@
-import { PrismaClient } from "@prisma/client"
+import { ObjectId } from "mongodb"
+import { connectToDatabase } from "libs/mongodb"
 import { IUser, IUserPost, IUserPut } from "../types/user.type"
 
-const prisma = new PrismaClient()
+async function get(email: string): Promise<IUser | null> {
+  try {
+    const { db } = await connectToDatabase()
 
-// TODO: um usuario nunca pode conseguir ter acesso à informações de outros usuarios
-// O mesmo para as outras ações, o user só pode editar ele mesmo
-async function get(email: string): Promise<IUser> {
-  const user: any = await prisma.user.findFirst({
-    where: {
-      email,
+    const user = await db
+      .collection<IUser>("User")
+      .findOne({
+        email,
     },
-  })
+      })
 
-  return user as IUser
+    if (!user) return null
+
+    const mappedUser: IUser = {
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+    }
+
+    return mappedUser
+  } catch (error) {
+    throw error
+  }
 }
-
-async function post(user: IUserPost): Promise<IUser> {
-  const newUser = await prisma.user.create({
-    data: user,
-  })
 
   return newUser as IUser
 }

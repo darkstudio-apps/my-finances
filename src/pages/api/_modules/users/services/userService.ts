@@ -1,15 +1,25 @@
 import { userRepository } from "../repository/userRepository"
 import { IUserPost, IUserPut } from "../types/user.type"
-import { IUserResponseGet, IUserResponsePost, IUserResponsePut, IUserResponseRemove } from "../types/userResponse.type"
+import {
+  IUserResponseGet,
+  IUserResponsePost,
+  IUserResponsePut,
+  IUserResponseRemove,
+  IUserResponseUpsert,
+} from "../types/userResponse.type"
 
 async function get(email: string): Promise<IUserResponseGet> {
-  const user = await userRepository.get(email)
+  try {
+    const user = await userRepository.get(email)
 
-  const response: IUserResponseGet = {
-    user,
+    const response: IUserResponseGet = {
+      user,
+    }
+
+    return response
+  } catch (error) {
+    throw error
   }
-
-  return response
 }
 
 async function post(user: IUserPost): Promise<IUserResponsePost> {

@@ -1,7 +1,7 @@
 import { IUser } from "./user.type"
 
 export interface IUserResponseGet {
-  user: IUser
+  user: IUser | null
 }
 
 export interface IUserResponsePost {
