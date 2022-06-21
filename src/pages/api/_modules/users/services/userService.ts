@@ -53,12 +53,17 @@ async function upsert(userToUpsert: IUserPost): Promise<IUserResponseUpsert> {
 }
 
 async function put(id: string, transaction: IUserPut): Promise<IUserResponsePut> {
-  const editedUser = await userRepository.put(id, transaction)
+  try {
+    const isModified = await userRepository.put(id, transaction)
 
-  const response: IUserResponsePut = {
-    user: editedUser,
+    const response: IUserResponsePut = {
+      isModified,
+    }
+
+    return response
+  } catch (error) {
+    throw error
   }
-  return response
 }
 
 async function remove(id: string): Promise<IUserResponseRemove> {

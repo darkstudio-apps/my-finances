@@ -43,25 +43,25 @@ async function post(user: IUserPost): Promise<string> {
   }
 }
 
-async function upsert(user: IUserPost): Promise<IUser> {
-  const { name, email } = user
+async function put(idUser: string, user: IUserPut): Promise<boolean> {
+  try {
+    const { db } = await connectToDatabase()
 
-  const getUser: any = await prisma.user.findFirst({
-    where: {
-      email,
-    },
-  })
+    const { modifiedCount } = await db
+      .collection<IUserPut>("User")
+      .updateOne(
+        {
+          _id: new ObjectId(idUser),
+        },
+        user,
+      )
 
-  if (getUser) return getUser
+    const isModified = modifiedCount > 0
 
-  const newUser = await prisma.user.create({
-    data: {
-      name,
-      email,
-    },
-  })
-
-  return newUser as IUser
+    return isModified
+  } catch (error) {
+    throw error
+  }
 }
 
 async function put(idUser: string, User: IUserPut): Promise<IUser> {

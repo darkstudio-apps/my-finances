@@ -14,7 +14,7 @@ export interface IUserResponseUpsert {
 }
 
 export interface IUserResponsePut {
-  user: IUser
+  isModified: boolean
 }
 
 export interface IUserResponseRemove {
