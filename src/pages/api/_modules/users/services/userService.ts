@@ -31,6 +31,25 @@ async function post(user: IUserPost): Promise<IUserResponsePost> {
     }
 
     return response
+  } catch (error) {
+    throw error
+  }
+}
+
+async function upsert(userToUpsert: IUserPost): Promise<IUserResponseUpsert> {
+  try {
+    const { email } = userToUpsert
+
+    const { user } = await get(email)
+
+    if (user) return { user }
+
+    const { insertedUserId } = await post(userToUpsert)
+
+    return { insertedUserId }
+  } catch (error) {
+    throw error
+  }
 }
 
 async function put(id: string, transaction: IUserPut): Promise<IUserResponsePut> {

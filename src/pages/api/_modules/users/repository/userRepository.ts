@@ -84,7 +84,6 @@ async function remove(idUser: string): Promise<IUser> {
 export const userRepository = {
   get,
   post,
-  upsert,
   put,
   remove,
 }

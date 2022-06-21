@@ -9,7 +9,8 @@ export interface IUserResponsePost {
 }
 
 export interface IUserResponseUpsert {
-  user: IUser
+  user?: IUser
+  insertedUserId?: string
 }
 
 export interface IUserResponsePut {
