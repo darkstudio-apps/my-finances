@@ -27,7 +27,20 @@ async function get(email: string): Promise<IUser | null> {
   }
 }
 
-  return newUser as IUser
+async function post(user: IUserPost): Promise<string> {
+  try {
+    const { db } = await connectToDatabase()
+
+    const { insertedId } = await db
+      .collection<IUserPost>("User")
+      .insertOne(user)
+
+    const insertedUserId = insertedId.toString()
+
+    return insertedUserId
+  } catch (error) {
+    throw error
+  }
 }
 
 async function upsert(user: IUserPost): Promise<IUser> {

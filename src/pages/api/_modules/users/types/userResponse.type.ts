@@ -5,7 +5,7 @@ export interface IUserResponseGet {
 }
 
 export interface IUserResponsePost {
-  user: IUser
+  insertedUserId: string
 }
 
 export interface IUserResponseUpsert {

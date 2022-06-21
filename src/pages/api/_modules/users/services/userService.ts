@@ -23,13 +23,14 @@ async function get(email: string): Promise<IUserResponseGet> {
 }
 
 async function post(user: IUserPost): Promise<IUserResponsePost> {
-  const createdUser = await userRepository.post(user)
+  try {
+    const insertedUserId = await userRepository.post(user)
 
-  const response: IUserResponsePost = {
-    user: createdUser,
-  }
+    const response: IUserResponsePost = {
+      insertedUserId,
+    }
 
-  return response
+    return response
 }
 
 async function put(id: string, transaction: IUserPut): Promise<IUserResponsePut> {
