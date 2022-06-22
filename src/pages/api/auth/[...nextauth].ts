@@ -1,7 +1,7 @@
 
 import NextAuth from "next-auth"
 import Google from "next-auth/providers/google"
-import { userService } from "../_modules/users/services/userService"
+import { userServiceGet, userServiceUpsert } from "../_modules/users/userService"
 import { IUserRequestPost } from "models/users"
 
 export default NextAuth({
@@ -26,7 +26,7 @@ export default NextAuth({
 
         if (typeof userEmail !== "string") throw new Error("User email not found")
 
-        const { user } = await userService.get(userEmail)
+        const { user } = await userServiceGet(userEmail)
 
         if (user) {
           const idUser = user.id
@@ -58,7 +58,7 @@ export default NextAuth({
           email,
         }
 
-        await userService.upsert(userObj)
+        await userServiceUpsert(userObj)
 
         return true
       } catch (error) {
