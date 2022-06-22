@@ -1,70 +1,89 @@
-import { PrismaClient } from "@prisma/client"
+import { ObjectId } from "mongodb"
+import { connectToDatabase } from "libs/mongodb"
 import { IUser, IUserPost, IUserPut } from "../types/user.type"
 
-const prisma = new PrismaClient()
+async function get(email: string): Promise<IUser | null> {
+  try {
+    const { db } = await connectToDatabase()
 
-// TODO: um usuario nunca pode conseguir ter acesso à informações de outros usuarios
-// O mesmo para as outras ações, o user só pode editar ele mesmo
-async function get(email: string): Promise<IUser> {
-  const user: any = await prisma.user.findFirst({
-    where: {
-      email,
-    },
-  })
+    const user = await db
+      .collection<IUser>("User")
+      .findOne({
+        email,
+      })
 
-  return user as IUser
+    if (!user) return null
+
+    const mappedUser: IUser = {
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+    }
+
+    return mappedUser
+  } catch (error) {
+    throw error
+  }
 }
 
-async function post(user: IUserPost): Promise<IUser> {
-  const newUser = await prisma.user.create({
-    data: user,
-  })
+async function post(user: IUserPost): Promise<string> {
+  try {
+    const { db } = await connectToDatabase()
 
-  return newUser as IUser
+    const { insertedId } = await db
+      .collection<IUserPost>("User")
+      .insertOne(user)
+
+    const insertedUserId = insertedId.toString()
+
+    return insertedUserId
+  } catch (error) {
+    throw error
+  }
 }
 
-async function upsert(user: IUserPost): Promise<IUser> {
-  const { name, email } = user
+async function put(idUser: string, user: IUserPut): Promise<boolean> {
+  try {
+    const { db } = await connectToDatabase()
 
-  const getUser: any = await prisma.user.findFirst({
-    where: {
-      email,
-    },
-  })
+    const { modifiedCount } = await db
+      .collection<IUserPut>("User")
+      .updateOne(
+        {
+          _id: new ObjectId(idUser),
+        },
+        user,
+      )
 
-  if (getUser) return getUser
+    const isModified = modifiedCount > 0
 
-  const newUser = await prisma.user.create({
-    data: {
-      name,
-      email,
-    },
-  })
-
-  return newUser as IUser
+    return isModified
+  } catch (error) {
+    throw error
+  }
 }
 
-async function put(idUser: string, User: IUserPut): Promise<IUser> {
-  const editedUser = await prisma.user.update({
-    where: { id: idUser },
-    data: User,
-  })
+async function remove(idUser: string): Promise<boolean> {
+  try {
+    const { db } = await connectToDatabase()
 
-  return editedUser as IUser
-}
+    const { deletedCount } = await db
+      .collection<IUser>("User")
+      .deleteOne({
+        _id: new ObjectId(idUser),
+      })
 
-async function remove(idUser: string): Promise<IUser> {
-  const user: any = await prisma.user.delete({
-    where: { id: idUser },
-  })
+    const isDeleted = deletedCount > 0
 
-  return user as IUser
+    return isDeleted
+  } catch (error) {
+    throw error
+  }
 }
 
 export const userRepository = {
   get,
   post,
-  upsert,
   put,
   remove,
 }

@@ -1,13 +1,24 @@
 import { transactionRepository } from "../repository/transactionRepository"
-
 import { generateTransaction, generateTransactionsRecurrence, implementationRulesPut } from "./utils"
-import { dateNowYearMonthDay, endOfMonthInYearMonthDay, generateDecimalNumberInString, getObjYearMonthDay, getObjYearMonthDayUTC, parseToUTCandISO } from "../../../../../utils/dateUtil"
-
+import {
+  dateNowYearMonthDay,
+  endOfMonthInYearMonthDay,
+  generateDecimalNumberInString,
+  getObjYearMonthDay,
+  getObjYearMonthDayUTC,
+  parseToUTCandISO,
+} from "utils/dateUtil"
 import { ITransaction } from "../types/transaction.type"
-import { ITransactionServiceList, ITransactionServicePatch, ITransactionServicePost, ITransactionServicePut, ITransactionServiceRemove } from "../types/transactionService.type"
+import {
+  ITransactionServiceList,
+  ITransactionServicePost,
+  ITransactionServicePut,
+  ITransactionServiceRemove,
+} from "../types/transactionService.type"
 import { ITransactionRequestQueryActionParam } from "../types/transactionRequest.type"
+import { ITransactionListResponse } from "../types/transactionResponse.type"
 
-async function list({ idUser, month, year }: ITransactionServiceList) {
+async function list({ idUser, month, year }: ITransactionServiceList): Promise<ITransactionListResponse> {
   const dateYearMonthDay = dateNowYearMonthDay()
   const dateNow = getObjYearMonthDay(dateYearMonthDay)
 
@@ -21,31 +32,53 @@ async function list({ idUser, month, year }: ITransactionServiceList) {
   const dateStartISO = parseToUTCandISO(dateStart, "start")
   const dateEndISO = parseToUTCandISO(dateEnd, "end")
 
-  const transactionsData = await transactionRepository.list({ idUser, dateStartISO, dateEndISO })
+  const transactions = await transactionRepository.list({ idUser, dateStartISO, dateEndISO })
+
+  const transactionsData: ITransactionListResponse = {
+    search: {
+      dateStart: dateStartISO || "",
+      dateEnd: dateEndISO || "",
+    },
+    length: transactions?.length || 0,
+    data: transactions || [],
+  }
 
   return transactionsData
 }
 
-async function get(id: string) {
-  const transaction = await transactionRepository.get(id)
+async function get(idUser: string, idTransaction: string) {
+  const transaction = await transactionRepository.get(idUser, idTransaction)
 
   // TODO: retornar um obj com a tipagem de transactionResponse
+  const transactionData = {
+    transaction,
+  }
 
-  return transaction
+  return transactionData
 }
 
-async function post(transaction: ITransactionServicePost) {
+async function post(idUser: string, transaction: ITransactionServicePost) {
   const objTransaction = generateTransaction(transaction)
 
   if (!objTransaction.isRecurrence) {
-    const createdTransaction = await transactionRepository.post(objTransaction)
-    return createdTransaction
+    const createdTransaction = await transactionRepository.post(idUser, objTransaction)
+
+    const createdTransactionData = {
+      createdTransaction,
+    }
+
+    return createdTransactionData
   }
   else {
     const transactions = generateTransactionsRecurrence(objTransaction)
 
-    const createdTransactions = await transactionRepository.postMany(transactions)
-    return createdTransactions
+    const createdTransactions = await transactionRepository.postMany(idUser, transactions)
+
+    const createdTransactionsData = {
+      createdTransactions,
+    }
+
+    return createdTransactionsData
   }
 
   // TODO: retornar um obj com a tipagem de transactionResponse
@@ -63,7 +96,7 @@ type IEditRule = "edit_transaction"
   | "when_to_change_basic_data"
 
 async function put({ idUser, id, transaction, action }: ITransactionServicePut) {
-  const currentTransaction = await transactionRepository.get(id)
+  const currentTransaction = await transactionRepository.get(idUser, id)
 
   if (!currentTransaction) throw new Error("transaction not found")
 
@@ -107,7 +140,7 @@ async function put({ idUser, id, transaction, action }: ITransactionServicePut) 
     editRule = "when_to_change_the_installments"
   }
   // quando mudar apenas o dia em relação a data de uma transaction que é uma recorrência
-  else if (!isSameDay && isSameMonth && isSameYear) {
+  else if (!isSameDay && isSameMonth && isSameYear && action && action !== "current") {
     editRule = "when_to_change_only_the_day_of_a_date"
     throw new Error("when_to_change_only_the_day_of_a_date not implemented")
   }
@@ -127,16 +160,11 @@ async function put({ idUser, id, transaction, action }: ITransactionServicePut) 
   })
 
   // TODO: retornar um obj com a tipagem de transactionResponse
+  const responseData = {
+    response,
+  }
 
-  return response
-}
-
-async function patch({ id, transaction }: ITransactionServicePatch) {
-  const editedTransaction = await transactionRepository.put(id, transaction)
-
-  // TODO: retornar um obj com a tipagem de transactionResponse
-
-  return editedTransaction
+  return responseData
 }
 
 const generateFiltersListRemove = (transaction: ITransaction, action?: ITransactionRequestQueryActionParam) => {
@@ -151,29 +179,29 @@ const generateFiltersListRemove = (transaction: ITransaction, action?: ITransact
   return { idUser, id }
 }
 
-async function remove({ id, action }: ITransactionServiceRemove): Promise<boolean> {
-  const transaction = await get(id)
+async function remove({ idUser, id, action }: ITransactionServiceRemove): Promise<boolean> {
+  if (!action || action === "current") {
+    const responseRemove = await transactionRepository.remove(idUser, id)
+    return responseRemove
+  }
+
+  const { transaction } = await get(idUser, id)
 
   if (!transaction) throw new Error("transaction not found")
 
-  if (!action || action === "current") {
-    await transactionRepository.remove(id)
-    return true
-  }
-
   const filtersList = generateFiltersListRemove(transaction, action)
-  const { data: transactions } = await transactionRepository.list(filtersList)
+  const transactions = await transactionRepository.list(filtersList)
 
   // TODO: quando não tiver dados, retornar um obj diferente ou um erro?
   // {
   //   success: false,
   //   message: "transactions not found",
   // }
-  if (!transactions) return false
+  if (!transactions || !transactions.length) return false
 
   const idTransactions = transactions.map(transaction => transaction.id)
 
-  const respondeMany = await transactionRepository.removeMany(idTransactions)
+  const respondeMany = await transactionRepository.removeMany(idUser, idTransactions)
 
   return !!respondeMany
 }
@@ -183,6 +211,5 @@ export const transactionService = {
   get,
   post,
   put,
-  patch,
   remove,
 }

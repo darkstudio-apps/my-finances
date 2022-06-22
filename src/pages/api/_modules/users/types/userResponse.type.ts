@@ -1,21 +1,22 @@
 import { IUser } from "./user.type"
 
 export interface IUserResponseGet {
-  user: IUser
+  user: IUser | null
 }
 
 export interface IUserResponsePost {
-  user: IUser
+  insertedUserId: string
 }
 
 export interface IUserResponseUpsert {
-  user: IUser
+  user?: IUser
+  insertedUserId?: string
 }
 
 export interface IUserResponsePut {
-  user: IUser
+  isModified: boolean
 }
 
 export interface IUserResponseRemove {
-  success: boolean
+  isDeleted: boolean
 }

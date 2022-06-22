@@ -38,14 +38,11 @@ export default async function transactions(req: NextApiRequest, res: NextApiResp
       case "PUT":
         transactionController.put(request, res)
         break
-      case "PATCH":
-        transactionController.patch(request, res)
-        break
       case "DELETE":
         transactionController.remove(request, res)
         break
       default:
-        res.setHeader("Allow", ["GET", "PUT", "PATCH", "DELETE"])
+        res.setHeader("Allow", ["GET", "PUT", "DELETE"])
         res.status(405).end(`Method ${method} Not Allowed`)
     }
   } catch (error) {

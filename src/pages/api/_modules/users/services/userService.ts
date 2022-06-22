@@ -1,48 +1,89 @@
 import { userRepository } from "../repository/userRepository"
 import { IUserPost, IUserPut } from "../types/user.type"
-import { IUserResponseGet, IUserResponsePost, IUserResponsePut, IUserResponseRemove } from "../types/userResponse.type"
+import {
+  IUserResponseGet,
+  IUserResponsePost,
+  IUserResponsePut,
+  IUserResponseRemove,
+  IUserResponseUpsert,
+} from "../types/userResponse.type"
 
 async function get(email: string): Promise<IUserResponseGet> {
-  const user = await userRepository.get(email)
+  try {
+    const user = await userRepository.get(email)
 
-  const response: IUserResponseGet = {
-    user,
+    const response: IUserResponseGet = {
+      user,
+    }
+
+    return response
+  } catch (error) {
+    throw error
   }
-
-  return response
 }
 
 async function post(user: IUserPost): Promise<IUserResponsePost> {
-  const createdUser = await userRepository.post(user)
+  try {
+    const insertedUserId = await userRepository.post(user)
 
-  const response: IUserResponsePost = {
-    user: createdUser,
+    const response: IUserResponsePost = {
+      insertedUserId,
+    }
+
+    return response
+  } catch (error) {
+    throw error
   }
+}
 
-  return response
+async function upsert(userToUpsert: IUserPost): Promise<IUserResponseUpsert> {
+  try {
+    const { email } = userToUpsert
+
+    const { user } = await get(email)
+
+    if (user) return { user }
+
+    const { insertedUserId } = await post(userToUpsert)
+
+    return { insertedUserId }
+  } catch (error) {
+    throw error
+  }
 }
 
 async function put(id: string, transaction: IUserPut): Promise<IUserResponsePut> {
-  const editedUser = await userRepository.put(id, transaction)
+  try {
+    const isModified = await userRepository.put(id, transaction)
 
-  const response: IUserResponsePut = {
-    user: editedUser,
+    const response: IUserResponsePut = {
+      isModified,
+    }
+
+    return response
+  } catch (error) {
+    throw error
   }
-  return response
 }
 
 async function remove(id: string): Promise<IUserResponseRemove> {
-  const ok = await userRepository.remove(id)
+  try {
+    const isDeleted = await userRepository.remove(id)
 
-  const response: IUserResponseRemove = {
-    success: !!ok,
+    const response: IUserResponseRemove = {
+      isDeleted,
+    }
+
+    return response
+  } catch (error) {
+    throw error
   }
-  return response
 }
 
 export const userService = {
   get,
   post,
+  upsert,
   put,
   remove,
 }

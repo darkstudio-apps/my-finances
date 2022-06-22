@@ -4,40 +4,38 @@ import { ITransactionRequest, ITransactionRequestRoot } from "../types/transacti
 
 async function list(req: ITransactionRequestRoot, res: NextApiResponse) {
   try {
-    // TODO: receber o idRecurrence e usar ele para fazer a busca tbm
     const { idUser, month, year } = req.query
 
     const transactionsData = await transactionService.list({ idUser, month, year })
 
     return res.status(200).json(transactionsData)
   } catch (error) {
-    return res.status(400).json({ message: "error:catch" })
+    return res.status(500).json({ message: error })
   }
 }
 
 async function get(req: ITransactionRequest, res: NextApiResponse) {
   try {
-    const { id } = req.query
+    const { idUser, id } = req.query
 
-    // TODO: retornar um obj no formato de data que está implementado no list
-    const transaction = await transactionService.get(id)
+    const transactionData = await transactionService.get(idUser, id)
 
-    return res.status(200).json({ transaction })
+    return res.status(200).json(transactionData)
   } catch (error) {
-    return res.status(400).json({ message: error })
+    return res.status(500).json({ message: error })
   }
 }
 
 async function post(req: ITransactionRequestRoot, res: NextApiResponse) {
   try {
     const { body } = req
+    const { idUser } = req.query
 
-    // TODO: retornar um obj no formato de data que está implementado no list
-    const transaction = await transactionService.post(body)
+    const transactionData = await transactionService.post(idUser, body)
 
-    return res.status(200).json({ transaction })
+    return res.status(200).json(transactionData)
   } catch (error) {
-    return res.status(400).json({ message: error })
+    return res.status(500).json({ message: error })
   }
 }
 
@@ -46,26 +44,11 @@ async function put(req: ITransactionRequest, res: NextApiResponse) {
     const { idUser, id, action } = req.query
     const transaction = req.body
 
-    // TODO: retornar um obj no formato de data que está implementado no list
     const transactionData = await transactionService.put({ idUser, id, action, transaction })
 
-    return res.status(200).json({ transaction: transactionData })
+    return res.status(200).json(transactionData)
   } catch (error) {
-    return res.status(400).json({ message: error })
-  }
-}
-
-function patch(req: ITransactionRequest, res: NextApiResponse) {
-  try {
-    const { idUser, id, action } = req.query
-    const transaction = req.body
-
-    // TODO: retornar um obj no formato de data que está implementado no list
-    const transactionData = transactionService.put({ idUser, id, action, transaction })
-
-    return res.status(200).json({ transaction: transactionData })
-  } catch (error) {
-    return res.status(400).json({ message: error })
+    return res.status(500).json({ message: error })
   }
 }
 
@@ -73,12 +56,16 @@ async function remove(req: ITransactionRequest, res: NextApiResponse) {
   try {
     const { idUser, id, action } = req.query
 
-    // TODO: retornar um obj no formato de data que está implementado no list
-    await transactionService.remove({ idUser, id, action })
+    const response = await transactionService.remove({ idUser, id, action })
 
-    return res.status(200).json({ message: "Success" })
+    if (response) {
+      // TODO: retornar 201 e remover o corpo
+      return res.status(200).json({ message: "Success" })
+    }
+
+    return res.status(400).end()
   } catch (error) {
-    return res.status(400).json({ message: error })
+    return res.status(500).json({ message: error })
   }
 }
 
@@ -87,6 +74,5 @@ export const transactionController = {
   get,
   post,
   put,
-  patch,
   remove,
 }

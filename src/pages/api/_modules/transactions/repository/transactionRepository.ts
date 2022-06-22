@@ -1,14 +1,14 @@
-import { prisma } from "libs/prisma"
+import { connectToDatabase } from "libs/mongodb"
+import { Filter, ObjectId } from "mongodb"
+import { clearUndefinedValuesFromObject } from "utils/clearUndefinedValuesFromObject"
 import {
   ITransaction,
-  ITransactionPatch,
   ITransactionPost,
   ITransactionPut,
   ITransactionPutMany,
   ITransactionRemove,
   ITransactionRemoveMany,
 } from "../types/transaction.type"
-import { ITransactionListResponse } from "../types/transactionResponse.type"
 
 interface IList {
   idUser: string
@@ -18,76 +18,130 @@ interface IList {
   idRecurrence?: string
 }
 
-async function list({ idUser, dateStartISO, dateStartNotInclusive, dateEndISO, idRecurrence }: IList): Promise<ITransactionListResponse> {
+async function list({ idUser, dateStartISO, dateStartNotInclusive, dateEndISO, idRecurrence }: IList): Promise<ITransaction[]> {
   try {
-    const transactions = await prisma.transaction.findMany({
-      where: {
-        idUser,
-        date: {
-          gte: dateStartISO,
-          gt: dateStartNotInclusive,
-          lte: dateEndISO,
-        },
-        idRecurrence,
-      },
-      orderBy: {
-        date: "asc",
-      },
-    }) as ITransaction[] | undefined
+    const { db } = await connectToDatabase()
 
-    // TODO: mover isso para a camada de services
-    const transactionsData: ITransactionListResponse = {
-      search: {
-        dateStart: dateStartISO || "",
-        dateEnd: dateEndISO || "",
+    const filters = clearUndefinedValuesFromObject<Filter<ITransaction>>({
+      idUser,
+      idRecurrence,
+      date: {
+        $gte: dateStartISO,
+        $gt: dateStartNotInclusive,
+        $lte: dateEndISO,
       },
-      length: transactions?.length || 0,
-      data: transactions || [],
-    }
+    })
 
-    return transactionsData
+    const transactions = await db
+      .collection<ITransaction>("Transaction")
+      .find(filters)
+      .sort({ date: 1 })
+      .toArray()
+
+    const mappedTransactions = transactions.map((t) => {
+      const mappedTransaction: ITransaction = {
+        id: t._id.toString(),
+        idUser: t.idUser,
+        title: t.title,
+        amount: t.amount,
+        date: t.date,
+        status: t.status,
+        idRecurrence: t.idRecurrence,
+        typeRecurrence: t.typeRecurrence,
+        isRecurrence: t.isRecurrence,
+        installments: t.installments,
+        type: t.type,
+      }
+      return mappedTransaction
+    })
+
+    return mappedTransactions
   } catch (error) {
     throw error
   }
 }
 
-async function get(idTransaction: string): Promise<ITransaction | null> {
-  // TODO: não permitir que um user acesse uma transaction que não é dele
-  const transaction = await prisma.transaction.findUnique({
-    where: {
-      id: idTransaction,
-    },
-  }) as ITransaction | null
+async function get(idUser: string, idTransaction: string): Promise<ITransaction | null> {
+  const { db } = await connectToDatabase()
 
-  return transaction
+  const transaction = await db
+    .collection<ITransaction>("Transaction")
+    .findOne({
+      _id: new ObjectId(idTransaction),
+      idUser,
+    })
+
+  if (!transaction) return null
+
+  const mappedTransaction: ITransaction = {
+    id: transaction._id.toString(),
+    idUser: transaction.idUser,
+    title: transaction.title,
+    amount: transaction.amount,
+    date: transaction.date,
+    status: transaction.status,
+    idRecurrence: transaction.idRecurrence,
+    typeRecurrence: transaction.typeRecurrence,
+    isRecurrence: transaction.isRecurrence,
+    installments: transaction.installments,
+    type: transaction.type,
+  }
+
+  return mappedTransaction
 }
 
-async function post(transaction: ITransactionPost) {
-  // TODO: não permitir que um user cadastre uma transaction que não é dele
-  const newTransaction = await prisma.transaction.create({
-    data: transaction,
-  })
+async function post(idUser: string, transaction: ITransactionPost) {
+  try {
+    if (idUser !== transaction.idUser) throw new Error("ação não permitida!")
 
-  return newTransaction
+    const { db } = await connectToDatabase()
+
+    const newTransaction = await db
+      .collection<ITransactionPost>("Transaction")
+      .insertOne(transaction)
+
+    return newTransaction
+  } catch (error) {
+    throw error
+  }
 }
 
-async function postMany(transactions: ITransactionPost[]) {
-  // TODO: não permitir que um user cadastre uma transaction que não é dele
-  const newTransactions = await prisma.transaction.createMany({
-    data: transactions,
-  })
+async function postMany(idUser: string, transactions: ITransactionPost[]) {
+  try {
+    if (idUser !== transactions[0].idUser) throw new Error("ação não permitida!")
 
-  return newTransactions
+    const { db } = await connectToDatabase()
+
+    const newTransactions = await db
+      .collection<ITransactionPost>("Transaction")
+      .insertMany(transactions)
+
+    return newTransactions
+  } catch (error) {
+    throw error
+  }
 }
 
-async function put(idTransaction: string, transaction: ITransactionPut) {
-  // TODO: não permitir que um user edite uma transaction que não é dele
-  const editedTransaction = await prisma.transaction.update({
-    where: { id: idTransaction },
-    data: transaction,
-  })
+async function put(idUser: string, idTransaction: string, transaction: ITransactionPut) {
+  try {
+    const { db } = await connectToDatabase()
 
-  return editedTransaction
+    const editedTransaction = await db
+      .collection<ITransactionPut>("Transaction")
+      .updateOne(
+        {
+          _id: new ObjectId(idTransaction),
+          idUser,
+        },
+        {
+          $set: transaction,
+        }
+      )
+
+    return editedTransaction
+  } catch (error) {
+    throw error
+  }
 }
 
 interface IPutMany {
@@ -96,18 +150,28 @@ interface IPutMany {
   dateStartISO?: string
 }
 
-async function putMany(transaction: ITransactionPutMany, { idUser, idRecurrence, dateStartISO }: IPutMany) {
+async function putMany(transaction: ITransactionPutMany, filters: IPutMany) {
   try {
-    const editedTransactions = await prisma.transaction.updateMany({
-      where: {
-        idUser,
-        date: {
-          gte: dateStartISO,
-        },
-        idRecurrence,
+    const { idUser, idRecurrence, dateStartISO } = filters
+
+    const { db } = await connectToDatabase()
+
+    const updateManyFilters = clearUndefinedValuesFromObject<Filter<ITransactionPutMany>>({
+      idUser,
+      idRecurrence,
+      date: {
+        $gte: dateStartISO,
       },
-      data: transaction,
     })
+
+    const editedTransactions = await db
+      .collection<ITransactionPut>("Transaction")
+      .updateMany(
+        updateManyFilters,
+        {
+          $set: transaction,
+        }
+      )
 
     return editedTransactions
   } catch (error) {
@@ -115,37 +179,40 @@ async function putMany(transaction: ITransactionPutMany, { idUser, idRecurrence,
   }
 }
 
-// TODO: Talvez receber um obj como param, fica mais facil pra tipar
-async function patch(idTransaction: string, transaction: ITransactionPatch) {
-  // TODO: não permitir que um user edite uma transaction que não é dele
-  const editedTransaction = await prisma.transaction.update({
-    where: { id: idTransaction },
-    data: transaction,
-  })
+async function remove(idUser: string, idTransaction: ITransactionRemove): Promise<boolean> {
+  try {
+    const { db } = await connectToDatabase()
 
-  return editedTransaction
+    const { deletedCount } = await db
+      .collection("Transaction")
+      .deleteOne({
+        _id: new ObjectId(idTransaction),
+        idUser,
+      })
+
+    return deletedCount > 0
+  } catch (error) {
+    throw error
+  }
 }
 
-async function remove(idTransaction: ITransactionRemove): Promise<boolean> {
-  // TODO: não permitir que um user edite uma transaction que não é dele
-  const transaction = await prisma.transaction.delete({
-    where: { id: idTransaction },
-  })
+async function removeMany(idUser: string, idTransactions: ITransactionRemoveMany): Promise<boolean> {
+  try {
+    const { db } = await connectToDatabase()
 
-  return !!transaction
-}
+    const transactionsObjectId = idTransactions.map(id => new ObjectId(id))
 
-async function removeMany(idTransactions: ITransactionRemoveMany): Promise<boolean> {
-  // TODO: não permitir que um user edite uma transaction que não é dele
-  const transaction = await prisma.transaction.deleteMany({
-    where: {
-      id: { in: idTransactions },
-    },
-  })
+    const { deletedCount } = await db
+      .collection<ITransaction>("Transaction")
+      .deleteMany({
+        _id: { $in: transactionsObjectId },
+        idUser,
+      })
 
-  // TODO: retornar um obj com a tipagem de transactionResponse
-
-  return !!transaction
+    return deletedCount > 0
+  } catch (error) {
+    throw error
+  }
 }
 
 export const transactionRepository = {
@@ -155,7 +222,6 @@ export const transactionRepository = {
   postMany,
   put,
   putMany,
-  patch,
   remove,
   removeMany,
 }

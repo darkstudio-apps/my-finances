@@ -1,4 +1,8 @@
-import { ITransactionPatch, ITransactionPut, ITransactionTypeProp, ITransactionTypeRecurrence } from "./transaction.type"
+import {
+  ITransactionPut,
+  ITransactionTypeProp,
+  ITransactionTypeRecurrence,
+} from "./transaction.type"
 import { ITransactionRequestQueryActionParam } from "./transactionRequest.type"
 
 export interface ITransactionServiceList {
@@ -24,11 +28,6 @@ export interface ITransactionServicePut {
   // TODO: modificar a tipagem para obrigar o envio de todos os dados, algumas regras dependem de certos dados
   transaction: ITransactionPut
   action?: ITransactionRequestQueryActionParam
-}
-
-export interface ITransactionServicePatch {
-  id: string
-  transaction: ITransactionPatch
 }
 
 export interface ITransactionServiceRemove {
