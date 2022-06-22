@@ -1,7 +1,14 @@
 import { NextApiRequest, NextApiResponse } from "next"
-import { ITransactionRequest, ITransactionRequestSession } from "../_modules/transactions/types/transactionRequest.type"
-import { transactionController } from "../_modules/transactions/controller/transactionController"
 import { getSession } from "next-auth/react"
+import {
+  transactionControllerDelete,
+  transactionControllerGet,
+  transactionControllerPut,
+} from "../_modules/transactions/transactionController"
+import {
+  ITransactionRequest,
+  ITransactionRequestSession,
+} from "../_modules/transactions/types/transactionRequest.type"
 
 export default async function transactions(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -33,13 +40,13 @@ export default async function transactions(req: NextApiRequest, res: NextApiResp
 
     switch (method) {
       case "GET":
-        transactionController.get(request, res)
+        transactionControllerGet(request, res)
         break
       case "PUT":
-        transactionController.put(request, res)
+        transactionControllerPut(request, res)
         break
       case "DELETE":
-        transactionController.remove(request, res)
+        transactionControllerDelete(request, res)
         break
       default:
         res.setHeader("Allow", ["GET", "PUT", "DELETE"])
