@@ -1,7 +1,17 @@
-import { transactionService } from "../transactionService"
-import { transactionRepository } from "../../repository/transactionRepository"
-import { getObjYearMonthDayUTC, parseObjToUTCandISO } from "../../../../../../utils/dateUtil"
-import { generateTransactionsRecurrence, generateTransactionToCreate, generateTransactionToPost } from "./handleTransactions"
+import { transactionServicePost, transactionServiceDelete } from ".."
+import {
+  transactionRepositoryDeleteMany,
+  transactionRepositoryFind,
+  transactionRepositoryInsertMany,
+  transactionRepositoryUpdateMany,
+  transactionRepositoryUpdateOne,
+} from "../../transactionRepository"
+import {
+  generateTransactionsRecurrence,
+  generateTransactionToCreate,
+  generateTransactionToPost,
+} from "./handleTransactions"
+import { getObjYearMonthDayUTC, parseObjToUTCandISO } from "utils/dateUtil"
 import { ITransaction, ITransactionPut } from "../../types/transaction.type"
 import { ITransactionRequestQueryActionParam } from "../../types/transactionRequest.type"
 
@@ -17,7 +27,7 @@ export const implementationRulesPut = {
   async edit_transaction({ idUser, id, transaction }: IImplementationRulesPut) {
     console.log("🔎 - edit_transaction")
 
-    const editedTransaction = await transactionRepository.put(idUser, id, transaction)
+    const editedTransaction = await transactionRepositoryUpdateOne(idUser, id, transaction)
     return editedTransaction
   },
 
@@ -36,7 +46,7 @@ export const implementationRulesPut = {
     const dateFilter = transaction.date || currentTransaction.date
     const dateStartISO = action === "next" ? dateFilter : undefined
 
-    const editedTransactions = await transactionRepository.putMany(transactionMapped, {
+    const editedTransactions = await transactionRepositoryUpdateMany(transactionMapped, {
       idUser,
       idRecurrence,
       dateStartISO,
@@ -51,8 +61,8 @@ export const implementationRulesPut = {
     const transactionToPost = generateTransactionToPost(currentTransaction, transaction)
 
     // TODO: caso uma das operações falhe, é necessário desfazer as outras
-    await transactionService.remove({ idUser, id })
-    await transactionService.post(idUser, transactionToPost)
+    await transactionServiceDelete({ idUser, id })
+    await transactionServicePost(idUser, transactionToPost)
 
     return true
   },
@@ -65,13 +75,13 @@ export const implementationRulesPut = {
 
     const dateStartNotInclusive = currentTransaction.date
 
-    const transactions = await transactionRepository.list({ idUser, dateStartNotInclusive })
+    const transactions = await transactionRepositoryFind({ idUser, dateStartNotInclusive })
 
     const idTransactions = transactions.map(transaction => transaction.id)
 
-    await transactionRepository.put(idUser, id, transactionToPut)
+    await transactionRepositoryUpdateOne(idUser, id, transactionToPut)
 
-    const response = await transactionRepository.removeMany(idUser, idTransactions)
+    const response = await transactionRepositoryDeleteMany(idUser, idTransactions)
 
     return !!response
   },
@@ -84,7 +94,7 @@ export const implementationRulesPut = {
     const dateFilter = transaction.date
     const dateStartISO = action === "next" ? dateFilter : undefined
 
-    const transactions = await transactionRepository.list({
+    const transactions = await transactionRepositoryFind({
       idUser,
       idRecurrence,
       dateStartISO,
@@ -115,7 +125,7 @@ export const implementationRulesPut = {
         const { id, ...restTransaction } = mappedTransaction
         const idTransaction = String(id)
 
-        const response = transactionRepository.put(idUser, idTransaction, restTransaction)
+        const response = transactionRepositoryUpdateOne(idUser, idTransaction, restTransaction)
 
         return response
       })
@@ -135,12 +145,12 @@ export const implementationRulesPut = {
     const transactionToPost = generateTransactionToPost(currentTransaction, transaction)
 
     // TODO: caso uma das operações falhe, é necessário desfazer as outras
-    await transactionService.remove({
+    await transactionServiceDelete({
       idUser,
       id,
       action,
     })
-    await transactionService.post(idUser, transactionToPost)
+    await transactionServicePost(idUser, transactionToPost)
 
     return true
   },
@@ -151,12 +161,12 @@ export const implementationRulesPut = {
     const transactionToPost = generateTransactionToPost(currentTransaction, transaction)
 
     // TODO: caso uma das operações falhe, é necessário desfazer as outras
-    await transactionService.remove({
+    await transactionServiceDelete({
       idUser,
       id,
       action,
     })
-    await transactionService.post(idUser, transactionToPost)
+    await transactionServicePost(idUser, transactionToPost)
 
     return true
   },
@@ -169,7 +179,7 @@ export const implementationRulesPut = {
     if (isMoreInstallments) {
       // TODO: identificar a data da ultima parcela
       const idRecurrence = currentTransaction.idRecurrence
-      const transactions = await transactionRepository.list({ idUser, idRecurrence })
+      const transactions = await transactionRepositoryFind({ idUser, idRecurrence })
 
       const lastTransaction = transactions.pop() || currentTransaction
 
@@ -179,13 +189,13 @@ export const implementationRulesPut = {
       const [, ...newTransactions] = generateTransactionsRecurrence(transactionToGenerate)
 
       // TODO: postMany
-      await transactionRepository.postMany(idUser, newTransactions)
+      await transactionRepositoryInsertMany(idUser, newTransactions)
 
       return true
     }
     else {
       const idRecurrence = currentTransaction.idRecurrence
-      const transactions = await transactionRepository.list({ idUser, idRecurrence })
+      const transactions = await transactionRepositoryFind({ idUser, idRecurrence })
 
       const start = Number(transaction.installments)
       const end = transactions.length
@@ -193,7 +203,7 @@ export const implementationRulesPut = {
 
       const idTransactions = transactionsToDelete.map(transaction => transaction.id)
 
-      const response = await transactionRepository.removeMany(idUser, idTransactions)
+      const response = await transactionRepositoryDeleteMany(idUser, idTransactions)
 
       return !!response
     }

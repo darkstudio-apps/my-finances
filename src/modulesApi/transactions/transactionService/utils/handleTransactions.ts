@@ -1,6 +1,6 @@
 
+import { generateDatesRecurrence } from "."
 import { uuid } from "utils/generateID"
-import { generateDatesRecurrence } from "./"
 import {
   ITransaction,
   ITransactionPost,

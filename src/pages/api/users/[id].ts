@@ -1,7 +1,14 @@
 import { NextApiRequest, NextApiResponse } from "next"
-
-import { userController } from "../_modules/users/controller/userController"
-import { IUserRequestGet, IUserRequestPut, IUserRequestRemove } from "../_modules/users/types/userRequest.type"
+import {
+  userControllerDelete,
+  userControllerGet,
+  userControllerPut,
+} from "modulesApi/users/userController"
+import {
+  IUserRequestGet,
+  IUserRequestPut,
+  IUserRequestRemove,
+} from "modulesApi/users/types/userRequest.type"
 
 export default async function users(req: NextApiRequest, res: NextApiResponse) {
   const { method, query, body } = req
@@ -15,7 +22,7 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
           id: idUser,
         },
       }
-      userController.get(getRequest, res)
+      userControllerGet(getRequest, res)
       break
     case "PUT":
       const putRequest: IUserRequestPut = {
@@ -24,7 +31,7 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
         },
         body,
       }
-      userController.put(putRequest, res)
+      userControllerPut(putRequest, res)
       break
     case "DELETE":
       const removeRequest: IUserRequestRemove = {
@@ -32,7 +39,7 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
           id: idUser,
         },
       }
-      userController.remove(removeRequest, res)
+      userControllerDelete(removeRequest, res)
       break
     default:
       res.setHeader("Allow", ["GET", "PUT"])
