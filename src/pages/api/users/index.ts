@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next"
-import { userControllerPost } from "../_modules/users/userController"
+import { userControllerPost } from "modulesApi/users/userController"
 
 export default async function users(req: NextApiRequest, res: NextApiResponse) {
   const { method } = req

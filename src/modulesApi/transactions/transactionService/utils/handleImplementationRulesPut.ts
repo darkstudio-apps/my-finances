@@ -1,4 +1,4 @@
-import { transactionServicePost, transactionServiceDelete } from "../"
+import { transactionServicePost, transactionServiceDelete } from ".."
 import {
   transactionRepositoryDeleteMany,
   transactionRepositoryFind,

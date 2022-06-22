@@ -4,11 +4,11 @@ import {
   transactionControllerDelete,
   transactionControllerGet,
   transactionControllerPut,
-} from "../_modules/transactions/transactionController"
+} from "../../../modulesApi/transactions/transactionController"
 import {
   ITransactionRequest,
   ITransactionRequestSession,
-} from "../_modules/transactions/types/transactionRequest.type"
+} from "../../../modulesApi/transactions/types/transactionRequest.type"
 
 export default async function transactions(req: NextApiRequest, res: NextApiResponse) {
   try {

@@ -1,7 +1,7 @@
 
 import NextAuth from "next-auth"
 import Google from "next-auth/providers/google"
-import { userServiceGet, userServiceUpsert } from "../_modules/users/userService"
+import { userServiceGet, userServiceUpsert } from "modulesApi/users/userService"
 import { IUserRequestPost } from "models/users"
 
 export default NextAuth({

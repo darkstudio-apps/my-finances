@@ -3,12 +3,12 @@ import {
   userControllerDelete,
   userControllerGet,
   userControllerPut,
-} from "../_modules/users/userController"
+} from "modulesApi/users/userController"
 import {
   IUserRequestGet,
   IUserRequestPut,
   IUserRequestRemove,
-} from "../_modules/users/types/userRequest.type"
+} from "modulesApi/users/types/userRequest.type"
 
 export default async function users(req: NextApiRequest, res: NextApiResponse) {
   const { method, query, body } = req

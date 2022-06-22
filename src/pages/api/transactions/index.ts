@@ -3,11 +3,11 @@ import { getSession } from "next-auth/react"
 import {
   transactionControllerList,
   transactionControllerPost,
-} from "../_modules/transactions/transactionController"
+} from "../../../modulesApi/transactions/transactionController"
 import {
   ITransactionRequestRoot,
   ITransactionRequestSession,
-} from "../_modules/transactions/types/transactionRequest.type"
+} from "../../../modulesApi/transactions/types/transactionRequest.type"
 
 export default async function transactions(req: NextApiRequest, res: NextApiResponse) {
   try {
