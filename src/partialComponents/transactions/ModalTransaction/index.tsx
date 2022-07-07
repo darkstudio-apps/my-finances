@@ -32,7 +32,9 @@ export function ModalTransaction() {
     clearStateTransactionForm,
     openModalRecurrenceEdit,
     modalTransactionForm: { isOpen, editMode, dataToEdit },
-    handleModalTransactionForm
+    handleModalTransactionForm,
+    filters
+
   } = useTransactions()
 
   useEffect(() => {
@@ -55,6 +57,28 @@ export function ModalTransaction() {
       handleModalTransactionForm({ editMode: false })
     }
   }, [dataToEdit])
+
+  useEffect(() => {
+    const dateFilter = `${filters.year}-${filters.month}-01`
+    const date = new Date()
+    const monthCurrent = date.getMonth() + 1
+    const filterMonth = Number(filters.month)
+
+    if(monthCurrent !==  filterMonth){
+      setTransactionForm(currentState => ({
+        ...currentState,
+        date: dateFilter
+      }))
+    }
+    else{
+      setTransactionForm(currentState => ({
+        ...currentState,
+        date: ''
+      }))
+    }
+
+
+  }, [filters, setTransactionForm])
 
   const isDisabled = !!dataToEdit && !editMode
 
