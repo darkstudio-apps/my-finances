@@ -77,7 +77,6 @@ export function ModalTransaction() {
       }))
     }
 
-
   }, [filters, setTransactionForm])
 
   const isDisabled = !!dataToEdit && !editMode
