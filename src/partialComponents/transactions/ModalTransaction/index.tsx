@@ -18,6 +18,7 @@ import {
 import { CheckBoxCard } from "components"
 import { useTransactions, generateTransactionToSave, validateTransaction } from "contexts/transactions"
 import { ITransactionFormState } from "models/transactions"
+import { dateNowObj } from 'utils/dateUtil'
 
 export function ModalTransaction() {
   const toast = useToast()
@@ -34,7 +35,6 @@ export function ModalTransaction() {
     modalTransactionForm: { isOpen, editMode, dataToEdit },
     handleModalTransactionForm,
     filters
-
   } = useTransactions()
 
   useEffect(() => {
@@ -60,11 +60,11 @@ export function ModalTransaction() {
 
   useEffect(() => {
     const dateFilter = `${filters.year}-${filters.month}-01`
-    const date = new Date()
-    const monthCurrent = date.getMonth() + 1
     const filterMonth = Number(filters.month)
+    const filterYear = Number(filters.year)
+    const {month, year} = dateNowObj()
 
-    if(monthCurrent !==  filterMonth){
+    if(month !==  filterMonth || filterYear !== year){
       setTransactionForm(currentState => ({
         ...currentState,
         date: dateFilter
