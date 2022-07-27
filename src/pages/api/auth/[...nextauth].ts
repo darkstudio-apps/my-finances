@@ -1,9 +1,8 @@
 
 import NextAuth from "next-auth"
 import Google from "next-auth/providers/google"
-import { userService } from "../_modules/users/services/userService"
-import { userRepository } from "../_modules/users/repository/userRepository"
-import { IUserRequestPost } from 'models/users'
+import { userServiceGet, userServiceUpsert } from "modulesApi/users/userService"
+import { IUserRequestPost } from "models/users"
 
 export default NextAuth({
   providers: [
@@ -27,7 +26,7 @@ export default NextAuth({
 
         if (typeof userEmail !== "string") throw new Error("User email not found")
 
-        const { user } = await userService.get(userEmail)
+        const { user } = await userServiceGet(userEmail)
 
         if (user) {
           const idUser = user.id
@@ -50,13 +49,16 @@ export default NextAuth({
       try {
         const { name, email } = user
 
-        const userObj: IUserRequestPost = {
-          name: String(name),
-          email: String(email),
+        if (typeof name !== "string" || typeof email !== "string") {
+          throw new Error("invalid data")
         }
 
-        // TODO: Criar esse metodo no userServices e não acessar o repository direto
-        await userRepository.upsert(userObj)
+        const userObj: IUserRequestPost = {
+          name,
+          email,
+        }
+
+        await userServiceUpsert(userObj)
 
         return true
       } catch (error) {

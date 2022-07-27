@@ -227,26 +227,19 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
     }
     if (prop === "installments") {
       const currentAmount = transactionForm.amount
-      console.log(currentAmount)
 
       const currentInstalments = Number(transactionForm.installments)
       const editedInstalments = Number(value)
 
-      console.log("currentInstalments", currentInstalments)
-      console.log("editedInstalments", editedInstalments)
-
       const totalAmount = currentInstalments === 0
         ? currentAmount
         : currentInstalments * currentAmount
-      console.log("totalAmount", totalAmount)
 
       const editedAmount = editedInstalments > 0
         ? totalAmount / editedInstalments
         : totalAmount
-      console.log("editedAmount", editedAmount)
 
       const amountDisplay = formatCurrencyOnlyNumbers(editedAmount)
-      console.log("amountDisplay", amountDisplay)
 
       return setTransactionForm({
         ...transactionForm,

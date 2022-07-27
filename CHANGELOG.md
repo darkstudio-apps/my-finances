@@ -5,6 +5,16 @@ slug: "/changelog"
 
 O Changelog fornece uma visão geral das mudanças significativas que fizemos na aplicação.
 
+## 27-07-2021 - v0.4.0
+
+* Alteração do cliente de banco de dados.
+
+* Reestruturação nas camadas da API.
+
+* Fix - Erro ao editar a data de uma transação que não é uma recorrência
+
+* Melhoria na usabilidade de data da modal de cadastrar uma nova recorrência
+
 ## 18-05-2021 - v0.3.1
 
 * Fix - criação e edição de transaction

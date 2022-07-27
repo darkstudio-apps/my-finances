@@ -18,6 +18,7 @@ import {
 import { CheckBoxCard } from "components"
 import { useTransactions, generateTransactionToSave, validateTransaction } from "contexts/transactions"
 import { ITransactionFormState } from "models/transactions"
+import { dateNowObj } from 'utils/dateUtil'
 
 export function ModalTransaction() {
   const toast = useToast()
@@ -32,7 +33,8 @@ export function ModalTransaction() {
     clearStateTransactionForm,
     openModalRecurrenceEdit,
     modalTransactionForm: { isOpen, editMode, dataToEdit },
-    handleModalTransactionForm
+    handleModalTransactionForm,
+    filters
   } = useTransactions()
 
   useEffect(() => {
@@ -55,6 +57,27 @@ export function ModalTransaction() {
       handleModalTransactionForm({ editMode: false })
     }
   }, [dataToEdit])
+
+  useEffect(() => {
+    const dateFilter = `${filters.year}-${filters.month}-01`
+    const filterMonth = Number(filters.month)
+    const filterYear = Number(filters.year)
+    const {month, year} = dateNowObj()
+
+    if(month !==  filterMonth || filterYear !== year){
+      setTransactionForm(currentState => ({
+        ...currentState,
+        date: dateFilter
+      }))
+    }
+    else{
+      setTransactionForm(currentState => ({
+        ...currentState,
+        date: ''
+      }))
+    }
+
+  }, [filters, setTransactionForm])
 
   const isDisabled = !!dataToEdit && !editMode
 
