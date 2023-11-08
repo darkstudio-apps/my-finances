@@ -2,11 +2,11 @@ import { Stack, Text, Heading, HStack } from "@chakra-ui/react"
 import { Icon } from "components"
 import { ITransactionSummary } from "models/transactions"
 
-interface ITransactionsSummaryMobile {
+interface ITransactionSummaryMobile {
   summary: ITransactionSummary
 }
 
-export function TransactionsSummaryMobile({ summary }: ITransactionsSummaryMobile) {
+export function TransactionSummaryMobile({ summary }: ITransactionSummaryMobile) {
   return (
     <Stack bg="gray.700" borderRadius="xl" padding={4} spacing={2}>
       <HStack alignItems="center" justifyContent="space-between">

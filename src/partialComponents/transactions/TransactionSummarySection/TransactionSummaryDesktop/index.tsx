@@ -2,11 +2,11 @@ import { SimpleGrid } from "@chakra-ui/react"
 import { CardTransaction } from "components"
 import { ITransactionSummary } from "models/transactions"
 
-interface ITransactionsSummaryDesktop {
+interface ITransactionSummaryDesktop {
   summary: ITransactionSummary
 }
 
-export function TransactionsSummaryDesktop({ summary }: ITransactionsSummaryDesktop) {
+export function TransactionSummaryDesktop({ summary }: ITransactionSummaryDesktop) {
   return (
     <SimpleGrid columns={[1, 1, 3]} spacing={[6, 10]}>
       <CardTransaction
