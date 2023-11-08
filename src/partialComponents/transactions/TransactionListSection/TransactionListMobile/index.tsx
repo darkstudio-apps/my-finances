@@ -4,7 +4,7 @@ import { getColorStatus } from "../TransactionListHelpers"
 
 interface ITransactionListMobile {
   data: ITransaction[]
-  openDialogDelete: (transaction: ITransaction) => void
+  handleOpenModalDelete?: (transaction: ITransaction) => void
   handleEnableModal: (transactionToEdit: ITransaction, editMode?: boolean) => void
 }
 
@@ -21,6 +21,7 @@ export function TransactionListMobile({ data, handleEnableModal }: ITransactionL
             borderRadius="xl"
             padding={3}
             spacing={1}
+            cursor="pointer"
             onClick={() => handleEnableModal(transaction)}
           >
             <Text>{transaction.title}</Text>

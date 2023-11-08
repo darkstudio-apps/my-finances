@@ -6,11 +6,11 @@ import { getColorStatus } from "../TransactionListHelpers"
 
 interface ITransactionListDesktop {
   data: ITransaction[]
-  openDialogDelete: (transaction: ITransaction) => void
+  handleOpenModalDelete: (transaction: ITransaction) => void
   handleEnableModal: (transactionToEdit: ITransaction, editMode?: boolean) => void
 }
 
-export function TransactionListDesktop({ data, openDialogDelete, handleEnableModal }: ITransactionListDesktop) {
+export function TransactionListDesktop({ data, handleOpenModalDelete, handleEnableModal }: ITransactionListDesktop) {
   return (
     <Table variant="simple" bg="gray.700" borderRadius="xl">
       <Thead>
@@ -69,7 +69,7 @@ export function TransactionListDesktop({ data, openDialogDelete, handleEnableMod
                     as={FiTrash}
                     width={5}
                     height={5}
-                    onClick={() => openDialogDelete(transaction)}
+                    onClick={() => handleOpenModalDelete(transaction)}
                     transition="200ms"
                     _hover={{ color: "red.400" }}
                   />

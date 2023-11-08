@@ -10,7 +10,7 @@ export function TransactionListSection() {
 
   const isDesktopMode = useIsDesktopMode()
 
-  const openDialogDelete = (transaction: ITransaction) => {
+  const handleOpenModalDelete = (transaction: ITransaction) => {
     const { id, isRecurrence } = transaction
     openModalDelete(id, isRecurrence)
   }
@@ -34,14 +34,13 @@ export function TransactionListSection() {
       ? (
         <TransactionListDesktop
           data={transactions.data}
-          openDialogDelete={openDialogDelete}
+          handleOpenModalDelete={handleOpenModalDelete}
           handleEnableModal={handleEnableModal}
         />
       )
       : (
         <TransactionListMobile
           data={transactions.data}
-          openDialogDelete={openDialogDelete}
           handleEnableModal={handleEnableModal}
         />
       )
