@@ -218,10 +218,11 @@ export function ModalTransaction() {
                 disabled={isDisabled}
                 _disabled={{ cursor: "no-drop", opacity: 1 }}
               >
-                <option value="deposit">À receber</option>
-                <option value="withdraw">À pagar</option>
+                {transactionForm.type !== "deposit" && <option value="withdraw">A pagar</option>}
+                {transactionForm.type !== "deposit" && <option value="paid">Pago</option>}
+                {transactionForm.type !== "withdraw" && <option value="deposit">A receber</option>}
+                {transactionForm.type !== "withdraw" && <option value="paid">Recebido</option>}
                 <option value="overdue">Vencido</option>
-                <option value="paid">Pago</option>
               </Select>
 
               <Select
