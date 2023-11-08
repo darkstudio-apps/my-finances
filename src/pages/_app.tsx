@@ -17,7 +17,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
         </Head>
 
         <ChakraProvider theme={theme}>
-          <Box maxW="1168px" h="100vh" mx="auto" px={6}>
+          <Box maxW="1168px" h="100vh" mx="auto" px={[3, 3, 6]}>
             <Header />
             <Divider borderColor="gray.700" />
             <Component {...pageProps} />

@@ -2,9 +2,9 @@
 /* eslint-disable react/display-name */
 import { GetServerSideProps } from "next"
 import { getSession } from "next-auth/react"
-import { SimpleGrid, Stack, Button, Select, Spinner, HStack } from "@chakra-ui/react"
+import { Stack, Button, Select, Spinner, HStack } from "@chakra-ui/react"
 import {
-  CardTransaction,
+  TransactionsSummarySection,
   TableTransaction,
   ModalTransaction,
   ModalTransactionRecurrenceDelete,
@@ -17,7 +17,6 @@ function Transactions() {
     transactions,
     filters,
     setFilters,
-    summary,
     handleModalTransactionForm,
   } = useTransactions()
 
@@ -38,25 +37,7 @@ function Transactions() {
 
   return (
     <Stack paddingY={[6, 10]} spacing={[6, 10]}>
-      <SimpleGrid columns={[1, 1, 3]} spacing={[6, 10]}>
-        <CardTransaction
-          description="Entradas"
-          title={summary.deposit}
-          icon="arrowUp"
-        />
-
-        <CardTransaction
-          description="Saídas"
-          title={summary.withdraw}
-          icon="arrowDown"
-        />
-
-        <CardTransaction
-          description="Saldo"
-          title={summary.total}
-          icon="dollarSign"
-        />
-      </SimpleGrid>
+      <TransactionsSummarySection />
 
       <Stack spacing={4}>
         <HStack align="center" justify="space-between" spacing={4}>
