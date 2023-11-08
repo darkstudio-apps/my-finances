@@ -43,7 +43,7 @@ export function ModalTransactionRecurrenceDelete() {
         isOpen={isOpenModal}
         id={idTransaction || ""}
         title="Deletar transação"
-        description="Deseja realmente exluir a transação?"
+        description="Deseja realmente excluir a transação?"
         onClose={closeModalDelete}
         onSubmit={handleSubmitModalDelete}
         isLoading={deleteTransaction.isLoading}
@@ -59,7 +59,7 @@ export function ModalTransactionRecurrenceDelete() {
         onCancel={closeModalDelete}
         options={{
           current: "Excluir a atual",
-          next: "Excluir a atual e as proximas",
+          next: "Excluir a atual e as próximas",
           all: "Excluir todas",
         }}
         isLoading={deleteTransaction.isLoading}
