@@ -1,5 +1,6 @@
 export * from "./ModalTransaction"
 export * from "./ModalTransactionRecurrenceDelete"
 export * from "./ModalTransactionRecurrenceEdit"
+export * from "./TransactionListFiltersSection"
 export * from "./TransactionListSection"
 export * from "./TransactionSummarySection"
