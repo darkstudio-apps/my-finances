@@ -4,8 +4,8 @@ import { GetServerSideProps } from "next"
 import { getSession } from "next-auth/react"
 import { Stack, Button, Select, Spinner, HStack } from "@chakra-ui/react"
 import {
-  TransactionsSummarySection,
-  TableTransaction,
+  TransactionSummarySection,
+  TransactionListSection,
   ModalTransaction,
   ModalTransactionRecurrenceDelete,
   ModalTransactionRecurrenceEdit,
@@ -37,7 +37,7 @@ function Transactions() {
 
   return (
     <Stack paddingY={[6, 10]} spacing={[6, 10]}>
-      <TransactionsSummarySection />
+      <TransactionSummarySection />
 
       <Stack spacing={4}>
         <HStack align="center" justify="space-between" spacing={4}>
@@ -96,7 +96,7 @@ function Transactions() {
           </HStack>
         </HStack>
 
-        <TableTransaction />
+        <TransactionListSection />
       </Stack>
 
       <ModalTransaction />

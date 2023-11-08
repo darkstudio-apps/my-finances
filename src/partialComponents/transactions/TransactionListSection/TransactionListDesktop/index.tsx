@@ -1,44 +1,16 @@
 import { Box, Text, Table, Thead, Tbody, Tr, Td, Icon, HStack, Tfoot, Th } from "@chakra-ui/react"
 import { FiEdit3, FiTrash } from "react-icons/fi"
 import { TableTransactionTh } from "./TableTransactionTh"
-import { NoContentTableTransaction } from "./NoContentTableTransaction"
-import { useTransactions } from "contexts/transactions"
 import { ITransaction } from "models/transactions"
+import { getColorStatus } from "../TransactionListHelpers"
 
-const colorStatus: any = {
-  deposit: "orange.600",
-  withdraw: "orange.600",
-  overdue: "red.600",
-  paid: "green.600",
+interface ITransactionListDesktop {
+  data: ITransaction[]
+  openDialogDelete: (transaction: ITransaction) => void
+  handleEnableModal: (transactionToEdit: ITransaction, editMode?: boolean) => void
 }
 
-const getColorStatus = (type: string) => {
-  const color = colorStatus[type]
-  return color ? color : "gray.400"
-}
-
-export function TableTransaction() {
-  const { transactions, handleModalTransactionForm, openModalDelete } = useTransactions()
-
-  const openDialogDelete = (transaction: ITransaction) => {
-    const { id, isRecurrence } = transaction
-    openModalDelete(id, isRecurrence)
-  }
-
-  const handleEnableModal = (transactionToEdit: ITransaction, editMode = false) => {
-    handleModalTransactionForm({
-      isOpen: true,
-      editMode,
-      dataToEdit: { ...transactionToEdit },
-    })
-  }
-
-  if (transactions.isLoading) return null
-
-  if (!transactions.data || transactions.data.length < 1) {
-    return <NoContentTableTransaction />
-  }
-
+export function TransactionListDesktop({ data, openDialogDelete, handleEnableModal }: ITransactionListDesktop) {
   return (
     <Table variant="simple" bg="gray.700" borderRadius="xl">
       <Thead>
@@ -52,7 +24,7 @@ export function TableTransaction() {
       </Thead>
 
       <Tbody>
-        {transactions.data?.map((transaction) => {
+        {data.map((transaction) => {
           const isIncome = transaction.type === "deposit"
 
           return (

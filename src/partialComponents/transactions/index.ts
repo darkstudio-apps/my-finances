@@ -1,5 +1,5 @@
 export * from "./ModalTransaction"
 export * from "./ModalTransactionRecurrenceDelete"
 export * from "./ModalTransactionRecurrenceEdit"
-export * from "./TableTransaction"
-export * from "./TransactionsSummarySection"
+export * from "./TransactionListSection"
+export * from "./TransactionSummarySection"
