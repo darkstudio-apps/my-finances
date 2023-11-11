@@ -37,10 +37,9 @@ export function Header() {
       <HStack spacing={4}>
         <Image src="./icons/money-with-wings.svg" alt="money" />
 
-        <Stack
-          align={isDesktopMode ? "center" : "flex-start"}
-          spacing={isDesktopMode ? 4 : 1}
-          direction={isDesktopMode ? "row" : "column"}
+        <HStack
+          align="center"
+          spacing={isDesktopMode ? 4 : 2}
         >
           <Heading size={isDesktopMode ? "lg" : "md"} color="gray.200">
             My Finances
@@ -49,13 +48,13 @@ export function Header() {
           <Tag size="sm" css={!isDesktopMode && "font-size: 8px;"}>
             {
               VERCEL_ENV === "production"
-                ? `v${APP_VERSION} Beta`
+                ? `v${APP_VERSION}`
                 : VERCEL_ENV === "preview"
-                  ? `Homolog | v${APP_VERSION} Beta`
-                  : `Develop | v${APP_VERSION} Beta`
+                  ? `Homolog | v${APP_VERSION}`
+                  : `Develop | v${APP_VERSION}`
             }
           </Tag>
-        </Stack>
+        </HStack>
       </HStack>
 
       <HStack spacing={4}>
