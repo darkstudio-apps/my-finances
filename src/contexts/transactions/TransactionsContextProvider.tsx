@@ -201,9 +201,10 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
     }
 
     if (prop === "status") {
-      const type = value === "deposit" || value === "withdraw"
-        ? value
-        : transactionForm.type
+      let type = transactionForm.type
+
+      if (value === "withdraw" || value === "paid") type = "withdraw"
+      else if (value === "deposit" || value === "received") type = "deposit"
 
       return setTransactionForm({
         ...transactionForm,
@@ -213,18 +214,19 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
     }
 
     if (prop === "type") {
-      if (transactionForm.status === "deposit" || transactionForm.status === "withdraw") {
-        const type = value === "deposit" || value === "withdraw"
-          ? value
-          : null
+      if (value === "deposit" || value === "withdraw") {
+        const status = transactionForm.status === "overdue"
+          ? transactionForm.status
+          : ""
 
         return setTransactionForm({
           ...transactionForm,
-          status: value,
-          type,
+          type: value,
+          status,
         })
       }
     }
+
     if (prop === "installments") {
       const currentAmount = transactionForm.amount
 

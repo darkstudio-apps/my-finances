@@ -221,7 +221,7 @@ export function ModalTransaction() {
                 {transactionForm.type !== "deposit" && <option value="withdraw">A pagar</option>}
                 {transactionForm.type !== "deposit" && <option value="paid">Pago</option>}
                 {transactionForm.type !== "withdraw" && <option value="deposit">A receber</option>}
-                {transactionForm.type !== "withdraw" && <option value="paid">Recebido</option>}
+                {transactionForm.type !== "withdraw" && <option value="received">Recebido</option>}
                 <option value="overdue">Vencido</option>
               </Select>
 

@@ -3,15 +3,14 @@ import { parseDateBrUTC, parseYearMonthDayUTC } from "utils/dateUtil"
 import { formatCurrency } from "utils/maskUtil"
 
 const statusDisplayObj: any = {
-  deposit: "A receber",
   withdraw: "A pagar",
-  overdue: "Vencido",
   paid: "Pago",
+  deposit: "A receber",
+  received: "Recebido",
+  overdue: "Vencido",
 }
 
-export function getStatusDisplay(status: string, type: string) {
-  if (status === "paid" && type === "deposit") return "Recebido"
-
+export function getStatusDisplay(status: string) {
   const statusDisplay = statusDisplayObj[status]
   return statusDisplay
 }
@@ -19,7 +18,7 @@ export function getStatusDisplay(status: string, type: string) {
 export function generateTransaction(transaction: ITransactionResponse): ITransaction {
   const dateUTC = transaction.date
   const statusDisplay = transaction.status
-    ? getStatusDisplay(transaction.status, transaction.type)
+    ? getStatusDisplay(transaction.status)
     : ""
 
   const transactionMapped: ITransaction = {

@@ -3,6 +3,7 @@ const colorStatus: any = {
   withdraw: "orange.600",
   overdue: "red.600",
   paid: "green.600",
+  received: "green.600",
 }
 
 export function getColorStatus(type: string) {
