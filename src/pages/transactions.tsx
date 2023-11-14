@@ -1,7 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 /* eslint-disable react/display-name */
 import { GetServerSideProps } from "next"
-import { getSession } from "next-auth/react"
+import { getServerSessionCustom } from "pages/api/auth/[...nextauth]"
 import { Stack } from "@chakra-ui/react"
 import {
   TransactionSummarySection,
@@ -40,7 +40,7 @@ export default () => (
 )
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getSession(context)
+  const session = await getServerSessionCustom(context)
 
   if (!session) {
     return {
