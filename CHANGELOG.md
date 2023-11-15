@@ -5,7 +5,7 @@ slug: "/changelog"
 
 O Changelog fornece uma visão geral das mudanças significativas que fizemos na aplicação.
 
-## 27-07-2021 - v0.4.0
+## 27-07-2022 - v0.4.0
 
 * Alteração do cliente de banco de dados.
 
@@ -15,11 +15,11 @@ O Changelog fornece uma visão geral das mudanças significativas que fizemos na
 
 * Melhoria na usabilidade de data da modal de cadastrar uma nova recorrência
 
-## 18-05-2021 - v0.3.1
+## 18-05-2022 - v0.3.1
 
 * Fix - criação e edição de transaction
 
-## 17-05-2021 - v0.3.0
+## 17-05-2022 - v0.3.0
 
 * Criação do arquivo CHANGELOG.md
 
@@ -35,7 +35,7 @@ O Changelog fornece uma visão geral das mudanças significativas que fizemos na
 
 * Divisão por parcelas
 
-## 08-02-2021 - v0.2.1
+## 08-02-2022 - v0.2.1
 
 * Correção do Bug em relação ao fuso horário
 
@@ -50,3 +50,7 @@ O Changelog fornece uma visão geral das mudanças significativas que fizemos na
 * Adicionado a label para indicar a versão e o ambiente no comp. Header
 
 * Implementação inicial da feature de recorrência
+
+## 22-11-2021 - v0.1.0
+
+* Data do primeiro deploy em produção
