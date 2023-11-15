@@ -1,12 +1,13 @@
 
-import NextAuth from "next-auth"
-import Google from "next-auth/providers/google"
+import { GetServerSidePropsContext, NextApiRequest, NextApiResponse } from "next"
+import NextAuth, { getServerSession, NextAuthOptions } from "next-auth"
+import GoogleProvider from "next-auth/providers/google"
 import { userServiceGet, userServiceUpsert } from "modulesApi/users/userService"
 import { IUserRequestPost } from "models/users"
 
-export default NextAuth({
+const nextAuthOptions: NextAuthOptions = {
   providers: [
-    Google({
+    GoogleProvider({
       clientId: process.env.GOOGLE_ID || "",
       clientSecret: process.env.GOOGLE_SECRET || "",
       authorization: {
@@ -66,4 +67,15 @@ export default NextAuth({
       }
     },
   },
-})
+}
+
+interface GetServerSessionCustom {
+  req: GetServerSidePropsContext["req"] | NextApiRequest
+  res: GetServerSidePropsContext["res"] | NextApiResponse
+}
+
+export function getServerSessionCustom({ req, res }: GetServerSessionCustom) {
+  return getServerSession(req, res, nextAuthOptions)
+}
+
+export default NextAuth(nextAuthOptions)

@@ -5,9 +5,16 @@ export async function userRepositoryInsertOne(user: IUserPost): Promise<string> 
   try {
     const { db } = await connectToDatabase()
 
+    const createdAt = new Date().toISOString()
+
+    const userToInsert: IUserPost = {
+      ...user,
+      createdAt,
+    }
+
     const { insertedId } = await db
       .collection<IUserPost>("User")
-      .insertOne(user)
+      .insertOne(userToInsert)
 
     const insertedUserId = insertedId.toString()
 

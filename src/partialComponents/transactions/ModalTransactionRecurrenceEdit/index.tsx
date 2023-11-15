@@ -50,7 +50,7 @@ export function ModalTransactionRecurrenceEdit() {
       onCancel={onCancel}
       options={{
         current: "Editar a atual",
-        next: "Editar a atual e as proximas",
+        next: "Editar a atual e as próximas",
         all: "Editar todas",
       }}
       isLoading={editTransaction.isLoading}

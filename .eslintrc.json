@@ -4,10 +4,10 @@
     "next/core-web-vitals"
   ],
   "rules": {
-    "no-trailing-spaces": "error",
+    "no-trailing-spaces": "warn",
     "@typescript-eslint/no-explicit-any": "off",
     "semi": [
-      "error",
+      "warn",
       "never"
     ],
     "quotes": [
@@ -15,22 +15,22 @@
       "double"
     ],
     "jsx-quotes": [
-      "error",
+      "warn",
       "prefer-double"
     ],
     "comma-dangle": [
-      "error",
+      "warn",
       "always-multiline"
     ],
     "no-multiple-empty-lines": [
-      "error",
+      "warn",
       {
         "max": 1,
         "maxEOF": 0
       }
     ],
     "eol-last": [
-      "error",
+      "warn",
       "always"
     ],
     "no-console": [

@@ -17,12 +17,14 @@ import {
 } from "@chakra-ui/react"
 import { CheckBoxCard } from "components"
 import { useTransactions, generateTransactionToSave, validateTransaction } from "contexts/transactions"
-import { ITransactionFormState } from "models/transactions"
-import { dateNowObj } from 'utils/dateUtil'
+import { ITransaction, ITransactionFormState } from "models/transactions"
+import { dateNowObj } from "utils/dateUtil"
+import { useIsDesktopMode } from "utils/helpers"
 
 export function ModalTransaction() {
   const toast = useToast()
   const initialRef = useRef(null)
+  const isDesktopMode = useIsDesktopMode()
 
   const {
     transactionForm,
@@ -30,11 +32,12 @@ export function ModalTransaction() {
     handleChangeTransactionForm,
     createTransaction,
     editTransaction,
+    openModalDelete,
     clearStateTransactionForm,
     openModalRecurrenceEdit,
     modalTransactionForm: { isOpen, editMode, dataToEdit },
     handleModalTransactionForm,
-    filters
+    filters,
   } = useTransactions()
 
   useEffect(() => {
@@ -62,18 +65,18 @@ export function ModalTransaction() {
     const dateFilter = `${filters.year}-${filters.month}-01`
     const filterMonth = Number(filters.month)
     const filterYear = Number(filters.year)
-    const {month, year} = dateNowObj()
+    const { month, year } = dateNowObj()
 
-    if(month !==  filterMonth || filterYear !== year){
+    if (month !== filterMonth || filterYear !== year) {
       setTransactionForm(currentState => ({
         ...currentState,
-        date: dateFilter
+        date: dateFilter,
       }))
     }
-    else{
+    else {
       setTransactionForm(currentState => ({
         ...currentState,
-        date: ''
+        date: "",
       }))
     }
 
@@ -135,15 +138,24 @@ export function ModalTransaction() {
     }
   }
 
+  const handleOpenModalDelete = (transaction: ITransaction) => {
+    handleModalTransactionForm({ isOpen: false })
+
+    const { id, isRecurrence } = transaction
+    openModalDelete(id, isRecurrence)
+  }
+
   return (
     <Modal
       initialFocusRef={initialRef}
       isOpen={isOpen}
       onClose={onClose}
+      size={isDesktopMode ? "md" : "full"}
       isCentered
     >
       <ModalOverlay />
-      <ModalContent borderRadius="xl">
+
+      <ModalContent borderRadius={["none", "xl"]}>
         <ModalHeader>
           {
             !dataToEdit
@@ -153,6 +165,7 @@ export function ModalTransaction() {
                 : "Visualizar Transação"
           }
         </ModalHeader>
+
         <ModalCloseButton />
 
         <ModalBody pb={6}>
@@ -205,10 +218,11 @@ export function ModalTransaction() {
                 disabled={isDisabled}
                 _disabled={{ cursor: "no-drop", opacity: 1 }}
               >
-                <option value="deposit">À receber</option>
-                <option value="withdraw">À pagar</option>
+                {transactionForm.type !== "deposit" && <option value="withdraw">A pagar</option>}
+                {transactionForm.type !== "deposit" && <option value="paid">Pago</option>}
+                {transactionForm.type !== "withdraw" && <option value="deposit">A receber</option>}
+                {transactionForm.type !== "withdraw" && <option value="received">Recebido</option>}
                 <option value="overdue">Vencido</option>
-                <option value="paid">Pago</option>
               </Select>
 
               <Select
@@ -261,32 +275,42 @@ export function ModalTransaction() {
         </ModalBody>
 
         <ModalFooter>
-          {(!dataToEdit || editMode)
-            ? (
-              <>
-                <Button
-                  colorScheme="green"
-                  mr={3}
-                  onClick={handleSave}
-                  isLoading={createTransaction.isLoading || editTransaction.isLoading}
-                >
-                  Salvar
-                </Button>
+          <HStack width="100%" spacing={3}>
+            {(!dataToEdit || editMode)
+              ? (
+                <>
+                  <Button width="100%" onClick={onClose}>
+                    Cancelar
+                  </Button>
 
-                <Button onClick={onClose}>
-                  Cancelar
-                </Button>
-              </>
-            )
-            : (
-              <Button
-                width="240px"
-                marginX="auto"
-                onClick={() => handleModalTransactionForm({ editMode: true })}
-              >
-                Editar
-              </Button>
-            )}
+                  <Button
+                    colorScheme="green"
+                    width="100%"
+                    onClick={handleSave}
+                    isLoading={createTransaction.isLoading || editTransaction.isLoading}
+                  >
+                    Salvar
+                  </Button>
+                </>
+              )
+              : (
+                <>
+                  <Button
+                    width="100%"
+                    onClick={() => handleOpenModalDelete(dataToEdit)}
+                  >
+                    Excluir
+                  </Button>
+
+                  <Button
+                    width="100%"
+                    onClick={() => handleModalTransactionForm({ editMode: true })}
+                  >
+                    Editar
+                  </Button>
+                </>
+              )}
+          </HStack>
         </ModalFooter>
       </ModalContent>
     </Modal>

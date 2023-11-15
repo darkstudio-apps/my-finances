@@ -1,6 +1,19 @@
 import { signOut, useSession } from "next-auth/react"
-import { Avatar, Tag, Box, Flex, Heading, HStack, Text, Menu, MenuButton, MenuList, MenuItem, Image } from "@chakra-ui/react"
-// import { ActiveLink } from "./ActiveLink"
+import {
+  Avatar,
+  Tag,
+  Box,
+  Flex,
+  Heading,
+  HStack,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Image,
+  Stack,
+} from "@chakra-ui/react"
+import { useIsDesktopMode } from "utils/helpers"
 import packageJson from "../../../package.json"
 
 const VERCEL_ENV = process.env.NEXT_PUBLIC_VERCEL_ENV
@@ -12,25 +25,36 @@ export function Header() {
   const userName = session?.user?.name || ""
   const userImage = session?.user?.image || ""
 
+  const isDesktopMode = useIsDesktopMode()
+
   return (
-    <Flex as="header" align="center" justify="space-between" paddingY={8}>
+    <Flex
+      as="header"
+      align="center"
+      justify="space-between"
+      paddingY={isDesktopMode ? 8 : 4}
+    >
       <HStack spacing={4}>
         <Image src="./icons/money-with-wings.svg" alt="money" />
-        <Heading size="lg" color="gray.200">My Finances</Heading>
-        <Tag size="sm">
-          {
-            VERCEL_ENV === "production"
-              ? `v${APP_VERSION} Beta`
-              : VERCEL_ENV === "preview"
-                ? `Homolog | v${APP_VERSION} Beta`
-                : `Develop | v${APP_VERSION} Beta`
-          }
-        </Tag>
-      </HStack>
 
-      <HStack as="nav" spacing={8}>
-        {/* <ActiveLink href="/transactions">Transações</ActiveLink> */}
-        {/* <ActiveLink href="/lists">Listas</ActiveLink> */}
+        <HStack
+          align="center"
+          spacing={isDesktopMode ? 4 : 2}
+        >
+          <Heading size={isDesktopMode ? "lg" : "md"} color="gray.200">
+            My Finances
+          </Heading>
+
+          <Tag size="sm" css={!isDesktopMode && "font-size: 8px;"}>
+            {
+              VERCEL_ENV === "production"
+                ? `v${APP_VERSION}`
+                : VERCEL_ENV === "preview"
+                  ? `Homolog | v${APP_VERSION}`
+                  : `Develop | v${APP_VERSION}`
+            }
+          </Tag>
+        </HStack>
       </HStack>
 
       <HStack spacing={4}>
@@ -38,8 +62,6 @@ export function Header() {
           <Heading fontSize="xl" fontWeight="semibold" color="gray.200">
             {userName}
           </Heading>
-
-          <Text fontSize="xs" color="gray.200">Sem pendências</Text>
         </Box>
 
         <Menu id="menu-avatar" isLazy>

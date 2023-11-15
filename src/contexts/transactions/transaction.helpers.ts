@@ -26,7 +26,7 @@ export const summaryDefault: ITransactionSummary = {
   total: "R$ 0,00",
 }
 
-export function generateResumeSummary(transactions: ITransaction[]) {
+export function generateTransactionsSummary(transactions: ITransaction[]) {
   try {
     const deposit = transactions.reduce((acc, transaction) => {
       if (transaction.type === "deposit") {

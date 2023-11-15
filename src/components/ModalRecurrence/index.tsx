@@ -59,10 +59,12 @@ export function ModalRecurrence({
       isCentered
     >
       <ModalOverlay />
-      <ModalContent borderRadius="xl">
+
+      <ModalContent borderRadius="xl" margin={6}>
         <ModalHeader>
           {title}
         </ModalHeader>
+
         <ModalCloseButton />
 
         <ModalBody pb={4}>
@@ -76,7 +78,9 @@ export function ModalRecurrence({
         </ModalBody>
 
         <Stack as={ModalFooter} spacing={4} isInline>
-          <Button onClick={onCancel}>Cancelar</Button>
+          <Button onClick={onCancel}>
+            Cancelar
+          </Button>
 
           <Button
             colorScheme={colorScheme ? colorScheme : "green"}
