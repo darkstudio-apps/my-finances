@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next"
-import { getSession } from "next-auth/react"
+import { getServerSessionCustom } from "pages/api/auth/[...nextauth]"
 import {
   transactionControllerList,
   transactionControllerPost,
@@ -11,7 +11,7 @@ import {
 
 export default async function transactions(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const session: ITransactionRequestSession = await getSession({ req }) as any
+    const session: ITransactionRequestSession = await getServerSessionCustom({ req, res }) as any
 
     const idUser = session?.user?.idUser
 

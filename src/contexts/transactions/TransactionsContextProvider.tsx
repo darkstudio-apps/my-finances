@@ -2,12 +2,12 @@ import { ReactNode, useEffect, useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import { useToast } from "@chakra-ui/react"
 import { TransactionsContext } from "./TransactionsContext"
-import { generateResumeSummary, summaryDefault, transactionFormInitial } from "./transaction.helpers"
+import { generateTransactionsSummary, summaryDefault, transactionFormInitial } from "./transaction.helpers"
 import {
   createTransactionService,
   deleteTransactionService,
   editTransactionService,
-  getTransactionsService
+  getTransactionsService,
 } from "services/transactions"
 import {
   ITransactionGetFilters,
@@ -19,7 +19,7 @@ import {
   ITransactionModalDeleteState,
   ITransactionModalRecurrenceEditState,
   ITransactionRequestBase,
-  IModalTransactionForm
+  IModalTransactionForm,
 } from "models/transactions"
 import { dateNowYearMonthDay, getObjYearMonthDay } from "utils/dateUtil"
 import { formatCurrency, formatCurrencyOnlyNumbers, formatFloat, formatReal } from "utils/maskUtil"
@@ -28,7 +28,7 @@ interface ITransactionsContextProvider {
   children: ReactNode
 }
 
-const transactionsQuerie = '/transactions'
+const transactionsQuerie = "/transactions"
 
 export function TransactionsContextProvider({ children }: ITransactionsContextProvider) {
   const toast = useToast()
@@ -63,7 +63,7 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
       }
     },
     {
-      refetchInterval: false
+      refetchInterval: false,
     }
   )
 
@@ -170,7 +170,7 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
 
   useEffect(() => {
     if (transactions && transactions.length > 0) {
-      const { deposit, withdraw, total } = generateResumeSummary(transactions)
+      const { deposit, withdraw, total } = generateTransactionsSummary(transactions)
 
       setSummary({
         deposit: formatCurrency(deposit),
@@ -201,9 +201,10 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
     }
 
     if (prop === "status") {
-      const type = value === "deposit" || value === "withdraw"
-        ? value
-        : transactionForm.type
+      let type = transactionForm.type
+
+      if (value === "withdraw" || value === "paid") type = "withdraw"
+      else if (value === "deposit" || value === "received") type = "deposit"
 
       return setTransactionForm({
         ...transactionForm,
@@ -213,18 +214,19 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
     }
 
     if (prop === "type") {
-      if (transactionForm.status === "deposit" || transactionForm.status === "withdraw") {
-        const type = value === "deposit" || value === "withdraw"
-          ? value
-          : null
+      if (value === "deposit" || value === "withdraw") {
+        const status = transactionForm.status === "overdue"
+          ? transactionForm.status
+          : ""
 
         return setTransactionForm({
           ...transactionForm,
-          status: value,
-          type,
+          type: value,
+          status,
         })
       }
     }
+
     if (prop === "installments") {
       const currentAmount = transactionForm.amount
 
@@ -274,11 +276,11 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
   const [modalRecurrenceEdit, setModalRecurrenceEdit] = useState<ITransactionModalRecurrenceEditState>({
     isOpen: false,
     idTransaction: null,
-    transaction: null
+    transaction: null,
   })
 
   const openModalRecurrenceEdit = (idTransaction: string, transaction: ITransactionRequestBase) => {
-    setModalRecurrenceEdit(oldValue => ({
+    setModalRecurrenceEdit(() => ({
       isOpen: true,
       idTransaction,
       transaction,
@@ -289,7 +291,7 @@ export function TransactionsContextProvider({ children }: ITransactionsContextPr
     setModalRecurrenceEdit({
       isOpen: false,
       idTransaction: null,
-      transaction: null
+      transaction: null,
     })
   }
 

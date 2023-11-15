@@ -1,5 +1,7 @@
 export * from "./AlertDialogDelete"
+export * from "./CardTransaction"
 export * from "./CheckBoxCard"
 export * from "./Header"
+export * from "./Icon"
 export * from "./Input"
 export * from "./ModalRecurrence"

@@ -17,10 +17,20 @@ interface IAlertDialog {
   isOpen: boolean
   onClose: () => void
   onSubmit: (id: string) => void
+  onCancel: () => void
   isLoading: boolean
 }
 
-export function AlertDialogDelete({ id, title, description, isOpen, onClose, onSubmit, isLoading }: IAlertDialog) {
+export function AlertDialogDelete({
+  id,
+  title,
+  description,
+  isOpen,
+  onClose,
+  onSubmit,
+  onCancel,
+  isLoading,
+}: IAlertDialog) {
   const cancelRef = useRef(null)
 
   return (
@@ -33,17 +43,28 @@ export function AlertDialogDelete({ id, title, description, isOpen, onClose, onS
     >
       <AlertDialogOverlay />
 
-      <AlertDialogContent>
-        <AlertDialogHeader>{title}</AlertDialogHeader>
+      <AlertDialogContent margin={6}>
+        <AlertDialogHeader>
+          {title}
+        </AlertDialogHeader>
+
         <AlertDialogCloseButton />
+
         <AlertDialogBody>
           {description}
         </AlertDialogBody>
+
         <AlertDialogFooter>
-          <Button onClick={onClose} ref={cancelRef}>
+          <Button onClick={onCancel} ref={cancelRef}>
             Não
           </Button>
-          <Button onClick={() => onSubmit(id)} colorScheme="red" ml={3} isLoading={isLoading}>
+
+          <Button
+            colorScheme="red"
+            ml={3}
+            isLoading={isLoading}
+            onClick={() => onSubmit(id)}
+          >
             Sim
           </Button>
         </AlertDialogFooter>

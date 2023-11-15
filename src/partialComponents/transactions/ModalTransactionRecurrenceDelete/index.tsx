@@ -10,6 +10,7 @@ export function ModalTransactionRecurrenceDelete() {
     modalDelete: { idTransaction, isOpenModal, isOpenModalRecurrence },
     closeModalDelete,
     deleteTransaction,
+    handleModalTransactionForm,
   } = useTransactions()
 
   const handleSubmit = async (id: string | null, action?: ITransactionRequestQueryAction) => {
@@ -27,6 +28,7 @@ export function ModalTransactionRecurrenceDelete() {
     await deleteTransaction.mutateAsync({ id, action })
 
     closeModalDelete()
+    closeModalTransactionForm()
   }
 
   const handleSubmitModalDelete = async () => {
@@ -37,15 +39,25 @@ export function ModalTransactionRecurrenceDelete() {
     handleSubmit(idTransaction, action)
   }
 
+  const closeModalTransactionForm = () => {
+    handleModalTransactionForm({ isOpen: false })
+  }
+
+  const handleCloseModalDelete = () => {
+    closeModalDelete()
+    handleModalTransactionForm({ isOpen: true })
+  }
+
   return (
     <>
       <AlertDialogDelete
         isOpen={isOpenModal}
         id={idTransaction || ""}
         title="Deletar transação"
-        description="Deseja realmente exluir a transação?"
+        description="Deseja realmente excluir a transação?"
         onClose={closeModalDelete}
         onSubmit={handleSubmitModalDelete}
+        onCancel={handleCloseModalDelete}
         isLoading={deleteTransaction.isLoading}
       />
 
@@ -56,10 +68,10 @@ export function ModalTransactionRecurrenceDelete() {
         titleBtnConfirm="Excluir"
         onClose={closeModalDelete}
         onSubmit={handleSubmitModalRecurrenceDelete}
-        onCancel={closeModalDelete}
+        onCancel={handleCloseModalDelete}
         options={{
           current: "Excluir a atual",
-          next: "Excluir a atual e as proximas",
+          next: "Excluir a atual e as próximas",
           all: "Excluir todas",
         }}
         isLoading={deleteTransaction.isLoading}

@@ -7,6 +7,7 @@ export interface IUser {
 export interface IUserPost {
   name: string
   email: string
+  createdAt?: string
 }
 
 export interface IUserPut {
