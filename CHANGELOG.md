@@ -5,6 +5,18 @@ slug: "/changelog"
 
 O Changelog fornece uma visão geral das mudanças significativas que fizemos na aplicação.
 
+## 15-11-2023 - v0.5.0
+
+* Implementa a responsividade para mobile.
+
+* Melhora a usabilidade do campo status no cadastro de uma nova transação.
+
+* Adiciona a informação de createdAt no registro de um novo usuário.
+
+* Atualiza a lib nextAuth(v4.2 -> v4.24), faz ajustes necessários para o funcionamento correto da lib em sua versão mais atual.
+
+* Atualiza o Node (v14.x -> v18.x)
+
 ## 27-07-2022 - v0.4.0
 
 * Alteração do cliente de banco de dados.
